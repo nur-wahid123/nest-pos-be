@@ -11,6 +11,7 @@ import {
     OneToOne,
 } from 'typeorm';
 import { Sale } from './sale.entity';
+import { Purchase } from './purchase.entity';
 
 @Entity({ name: 'payments' })
 export class Payment {
@@ -39,8 +40,11 @@ export class Payment {
      * Relations
      */
 
-    @OneToOne(() => Sale, (sale) => sale.payment)
+    @OneToOne(() => Sale, (sale) => sale.payment, { nullable: true })
     sale: Sale;
+
+    @OneToOne(() => Purchase, (purchase) => purchase.payment, { nullable: true })
+    purchase: Purchase;
 
     /**
      * Changelog

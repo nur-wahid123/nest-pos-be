@@ -1,49 +1,34 @@
-import { Expose, Type } from 'class-transformer';
-import {
-    Entity,
-    CreateDateColumn,
-    Column,
-    PrimaryGeneratedColumn,
-    OneToMany,
-    DeleteDateColumn,
-    UpdateDateColumn,
-    ManyToOne,
-    OneToOne,
-} from 'typeorm';
-import { Sale } from './sale.entity';
-import { Product } from './product.entity';
+import { Column, CreateDateColumn, DeleteDateColumn, Entity, JoinColumn, OneToMany, OneToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
+import { Product } from "./product.entity";
+import { Expose } from "class-transformer";
+import InventoryLedger from "./inventory-ledger.entity";
 
-@Entity({ name: 'sale_items' })
-export default class SaleItem {
+@Entity({ name: 'inventories' })
+export class Inventory {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ nullable: false, type: 'bigint' })
-    @Type(() => Number)
-    price!: number;
-
-    @Column({ nullable: false, type: 'bigint' })
-    @Expose({ name: 'sub_total' })
-    @Type(() => Number)
-    subTotal!: number;
-
     @Column({ nullable: false })
-    @Type(() => Number)
-    qty!: number;
+    qty: number;
 
     /**
      * Relations
      */
-
-    @ManyToOne(() => Sale, (sale) => sale.saleItems, {
+    @OneToOne(() => Product, (product) => product.inventory, {
         nullable: false,
     })
-    sale!: Sale;
-
-    @ManyToOne(() => Product, (product) => product.saleItems, {
-        nullable: false,
-    })
+    @JoinColumn()
     product!: Product;
+
+    @OneToMany(
+        () => InventoryLedger,
+        (inventoryLedgers) => inventoryLedgers.inventory,
+        {
+            nullable: false,
+        },
+    )
+    @Expose({ name: 'inventory_ledger' })
+    inventoryLedgers!: InventoryLedger[];
 
     /**
      * Changelog
@@ -78,4 +63,5 @@ export default class SaleItem {
     @Column({ default: null, nullable: true })
     @Expose({ name: 'deleted_by' })
     deletedBy!: number;
+
 }
