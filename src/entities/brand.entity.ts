@@ -1,60 +1,37 @@
-import { Exclude, Expose } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import {
-  Column,
-  CreateDateColumn,
-  DeleteDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-  OneToOne,
+  CreateDateColumn,
+  Column,
   PrimaryGeneratedColumn,
+  OneToMany,
+  DeleteDateColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Product } from './product.entity';
 
-@Entity({ name: 'users' })
-export class User {
-  /**
-   * Columns
-   */
+@Entity({ name: 'brands' })
+export default class Brand {
   @PrimaryGeneratedColumn()
-  id: number;
+  id!: number;
 
-  @Column({ type: 'varchar', length: 30 })
-  name: string;
+  @Column({ nullable: false, unique: true })
+  code!: string;
 
-  @Column({ type: 'varchar', length: 15 })
-  username: string;
-
-  @Column({ type: 'varchar', length: 40 })
-  email: string;
-
-  @Column({ type: 'int' })
-  age: number;
-
-  @Column({ type: 'varchar' })
-  @Exclude()
-  password: string;
-
-  @Column({ type: 'enum', enum: ['m', 'f', 'u'] })
-  /**
-   * m - male
-   * f - female
-   * u - unspecified
-   */
-  gender: string;
+  @Column({ nullable: false })
+  name!: string;
 
   /**
    * Relations
    */
-
-
+  @OneToMany(() => Product, (products) => products.uom, {
+    nullable: false,
+  })
+  products!: Product[];
 
   /**
    * Changelog
    */
-
-
   @CreateDateColumn({ type: 'timestamp' })
   @Expose({ name: 'created_at' })
   createdAt!: Date;

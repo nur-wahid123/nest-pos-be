@@ -4,17 +4,14 @@ import {
     CreateDateColumn,
     Column,
     PrimaryGeneratedColumn,
-    ManyToOne,
     OneToMany,
     DeleteDateColumn,
     UpdateDateColumn,
 } from 'typeorm';
-import { Product } from './product.entity';
-import { City } from './city.entity';
-import { Purchase } from './purchase.entity';
+import { Supplier } from './supplier.entity';
 
-@Entity({ name: 'suppliers' })
-export class Supplier {
+@Entity({ name: 'cities' })
+export class City {
     @PrimaryGeneratedColumn()
     id!: number;
 
@@ -24,34 +21,23 @@ export class Supplier {
     @Column({ nullable: false })
     name!: string;
 
-    @Column({ nullable: true })
-    email!: string;
+    @Column({ nullable: false })
+    island!: string;
 
-    @Column({ nullable: true })
-    phone!: string;
+    @Column({ nullable: false })
+    province!: string;
 
-    @Column({ nullable: true, type: 'text' })
-    address!: string;
+    @Column({ nullable: false })
+    capital!: string;
 
     /**
      * Relations
      */
 
-    @ManyToOne(() => City, (city) => city.suppliers, {
+    @OneToMany(() => Supplier, (suppliers) => suppliers.city, {
         nullable: true,
     })
-    city: City;
-
-    @OneToMany(() => Product, (products) => products.supplier, {
-        nullable: true,
-    })
-    products!: Product[];
-
-    @OneToMany(() => Purchase, (purchase) => purchase.supplier, {
-        nullable: true,
-    })
-    purchases!: Purchase[];
-
+    suppliers!: Supplier[];
 
     /**
      * Changelog

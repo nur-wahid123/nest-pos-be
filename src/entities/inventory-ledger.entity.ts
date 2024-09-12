@@ -1,57 +1,39 @@
-import { Expose } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 import {
     Entity,
     CreateDateColumn,
     Column,
     PrimaryGeneratedColumn,
-    ManyToOne,
-    OneToMany,
     DeleteDateColumn,
     UpdateDateColumn,
+    ManyToOne,
 } from 'typeorm';
-import { Product } from './product.entity';
-import { City } from './city.entity';
-import { Purchase } from './purchase.entity';
+import { Inventory } from './inventory.entity';
 
-@Entity({ name: 'suppliers' })
-export class Supplier {
+
+@Entity({ name: 'inventory_ledger' })
+export default class InventoryLedger {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ nullable: false, unique: true })
-    code!: string;
+    @Column({ nullable: false })
+    qty!: number;
 
     @Column({ nullable: false })
-    name!: string;
+    @Expose({ name: 'qty_before_update' })
+    qtyBeforeUpdate!: number;
 
-    @Column({ nullable: true })
-    email!: string;
-
-    @Column({ nullable: true })
-    phone!: string;
-
-    @Column({ nullable: true, type: 'text' })
-    address!: string;
+    @Column({ nullable: false })
+    @Expose({ name: 'qty_after_update' })
+    qtyAfterUpdate!: number;
 
     /**
      * Relations
      */
-
-    @ManyToOne(() => City, (city) => city.suppliers, {
-        nullable: true,
+    @ManyToOne(() => Inventory, (inventory) => inventory.inventoryLedgers, {
+        nullable: false,
     })
-    city: City;
-
-    @OneToMany(() => Product, (products) => products.supplier, {
-        nullable: true,
-    })
-    products!: Product[];
-
-    @OneToMany(() => Purchase, (purchase) => purchase.supplier, {
-        nullable: true,
-    })
-    purchases!: Purchase[];
-
+    inventory!: Inventory;
 
     /**
      * Changelog

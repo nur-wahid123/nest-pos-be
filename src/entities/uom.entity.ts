@@ -1,57 +1,31 @@
-import { Expose } from 'class-transformer';
+import { Exclude, Expose } from 'class-transformer';
 import {
     Entity,
     CreateDateColumn,
     Column,
     PrimaryGeneratedColumn,
-    ManyToOne,
     OneToMany,
     DeleteDateColumn,
     UpdateDateColumn,
 } from 'typeorm';
 import { Product } from './product.entity';
-import { City } from './city.entity';
-import { Purchase } from './purchase.entity';
 
-@Entity({ name: 'suppliers' })
-export class Supplier {
+@Entity({ name: 'uoms' })
+export class Uom {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ nullable: false, unique: true })
-    code!: string;
-
     @Column({ nullable: false })
     name!: string;
-
-    @Column({ nullable: true })
-    email!: string;
-
-    @Column({ nullable: true })
-    phone!: string;
-
-    @Column({ nullable: true, type: 'text' })
-    address!: string;
 
     /**
      * Relations
      */
 
-    @ManyToOne(() => City, (city) => city.suppliers, {
-        nullable: true,
-    })
-    city: City;
-
-    @OneToMany(() => Product, (products) => products.supplier, {
-        nullable: true,
+    @OneToMany(() => Product, (products) => products.uom, {
+        nullable: false,
     })
     products!: Product[];
-
-    @OneToMany(() => Purchase, (purchase) => purchase.supplier, {
-        nullable: true,
-    })
-    purchases!: Purchase[];
-
 
     /**
      * Changelog

@@ -2,7 +2,7 @@ import { Expose, Type } from 'class-transformer';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany, OneToOne } from 'typeorm';
 import SaleItem from './sale-item.entity';
 import { Payment } from './payment.entity';
-@Entity()
+@Entity({ name: 'sales' })
 export class Sale {
     /**
    * Columns

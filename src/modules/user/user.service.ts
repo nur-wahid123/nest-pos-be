@@ -29,7 +29,7 @@ export class UserService {
    */
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
-  ) {}
+  ) { }
 
   /**
    * this is function is used to create User in User Entity.
@@ -96,15 +96,8 @@ export class UserService {
    * @param updateUserDto this is partial type of createUserDto.
    * @returns promise of udpate user
    */
-  updateUser(id: number, updateUserDto: UpdateUserDto): Promise<User> {
-    const user: User = new User();
-    user.name = updateUserDto.name;
-    user.age = updateUserDto.age;
-    user.email = updateUserDto.email;
-    user.username = updateUserDto.username;
-    user.password = updateUserDto.password;
-    user.id = id;
-    return this.userRepository.save(user);
+  updateUser(id: number, updateUserDto: UpdateUserDto) {
+    return { msg: 'missing data' }
   }
 
   /**
