@@ -1,3 +1,4 @@
+import { Field, InputType } from '@nestjs/graphql';
 import {
   IsAlphanumeric,
   IsEmail,
@@ -8,11 +9,13 @@ import {
   Matches,
   MinLength,
 } from 'class-validator';
+import { Gender } from 'src/entities/user.entity';
 
 const passwordRegEx =
   /^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,20}$/;
 
 export class CreateUserDto {
+
   @IsString()
   @MinLength(2, { message: 'Name must have atleast 2 characters.' })
   @IsNotEmpty()
@@ -33,8 +36,8 @@ export class CreateUserDto {
   age: number;
 
   @IsString()
-  @IsEnum(['f', 'm', 'u'])
-  gender: string;
+  @IsEnum(Gender)
+  gender: Gender;
 
   @IsNotEmpty()
   @Matches(passwordRegEx, {

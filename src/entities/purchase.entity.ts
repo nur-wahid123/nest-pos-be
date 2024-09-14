@@ -15,7 +15,7 @@ import { PurchaseItem } from './purchase-item.entity';
 import { Supplier } from './supplier.entity';
 import { Payment } from './payment.entity';
 
-enum PaymentStatus {
+export enum PaymentStatus {
   UNPAID = 'unpaid',
   PAID = 'paid',
 }
@@ -34,10 +34,6 @@ export class Purchase {
   @Column({ nullable: true, type: 'date' })
   date!: Date;
 
-  @Column({ nullable: true, type: 'date' })
-  @Expose({ name: 'due_date' })
-  dueDate!: Date;
-
   @Column({ nullable: false, type: 'bigint' })
   @Type(() => Number)
   total!: number;
@@ -54,6 +50,7 @@ export class Purchase {
   /**
    * Relations
    */
+
   @OneToMany(() => PurchaseItem, (purchaseItems) => purchaseItems.purchase, {
     nullable: false,
   })
@@ -71,8 +68,9 @@ export class Purchase {
 
 
   /**
-   * Changelog
-   */
+ * Changelog
+ */
+
   @CreateDateColumn({ type: 'timestamp' })
   @Expose({ name: 'created_at' })
   createdAt!: Date;
@@ -91,7 +89,7 @@ export class Purchase {
 
   /**
    * Soft deletion
-   */
+  */
   @DeleteDateColumn({
     type: 'timestamp',
     default: null,

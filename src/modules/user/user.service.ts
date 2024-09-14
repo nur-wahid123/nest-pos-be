@@ -5,9 +5,19 @@ import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { genSalt, hash } from 'bcrypt';
 import { User } from 'src/entities/user.entity';
+import { ResponseMessage } from 'src/common/response/ResponseMessage.util';
+import { UserRepository } from 'src/repositories/user.repository';
 
 @Injectable()
 export class UserService {
+  /**
+   * Here, we have used data mapper approch for this tutorial that is why we
+   * injecting repository here. Another approch can be Active records.
+   */
+  constructor(
+    private readonly userRepository: UserRepository,
+  ) { }
+
   async isUsernameAndEmailExist(
     username: string,
     email: string,
@@ -23,13 +33,6 @@ export class UserService {
     if (isEmailExists && isUsernameExists) return true;
     return false;
   }
-  /**
-   * Here, we have used data mapper approch for this tutorial that is why we
-   * injecting repository here. Another approch can be Active records.
-   */
-  constructor(
-    @InjectRepository(User) private readonly userRepository: Repository<User>,
-  ) { }
 
   /**
    * this is function is used to create User in User Entity.
@@ -97,7 +100,7 @@ export class UserService {
    * @returns promise of udpate user
    */
   updateUser(id: number, updateUserDto: UpdateUserDto) {
-    return { msg: 'missing data' }
+    return new ResponseMessage('Okay')
   }
 
   /**

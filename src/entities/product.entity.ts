@@ -39,13 +39,10 @@ export class Product {
     @Type(() => Number)
     sellPrice!: number;
 
-    @Column({ nullable: true, default: 1 })
-    @Type(() => Number)
-    min!: number;
-
     /**
      * Relations
      */
+
     @ManyToOne(() => Uom, (uoms) => uoms.products, {
         nullable: false,
     })
@@ -77,7 +74,7 @@ export class Product {
 
     @OneToMany(() => PurchaseItem, (purchaseItem) => purchaseItem.product, { nullable: false })
     @Expose({ name: 'purchase_items' })
-    purchaseItems!: PurchaseItem
+    purchaseItems!: PurchaseItem[]
 
     /**
      * Changelog
@@ -100,7 +97,8 @@ export class Product {
 
     /**
      * Soft deletion
-     */
+    */
+
     @DeleteDateColumn({
         type: 'timestamp',
         default: null,

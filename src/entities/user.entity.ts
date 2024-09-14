@@ -4,13 +4,16 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
-  JoinTable,
-  ManyToMany,
-  OneToMany,
-  OneToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { Field, Int, ObjectType } from '@nestjs/graphql';
+
+export enum Gender {
+  FEMALE = 'female',
+  MALE = 'male',
+  UNSPECIFIED = 'unspecified'
+}
 
 @Entity({ name: 'users' })
 export class User {
@@ -36,13 +39,13 @@ export class User {
   @Exclude()
   password: string;
 
-  @Column({ type: 'enum', enum: ['m', 'f', 'u'] })
+  @Column({ type: 'enum', enum: Gender })
   /**
    * m - male
    * f - female
    * u - unspecified
    */
-  gender: string;
+  gender: Gender;
 
   /**
    * Relations
