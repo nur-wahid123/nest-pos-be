@@ -6,6 +6,11 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { UomsModule } from './modules/master/uoms/uoms.module';
+import { UomsService } from './modules/master/uoms/uoms.service';
+import { UserService } from './modules/user/user.service';
+import { UomRepository } from './repositories/uom.repository';
+import { UserRepository } from './repositories/user.repository';
 
 @Module({
   imports: [
@@ -22,12 +27,13 @@ import { AuthModule } from './modules/auth/auth.module';
       database: process.env.DB_NAME,
       synchronize: true,
       logging: true,
-      namingStrategy:new SnakeNamingStrategy()
+      namingStrategy: new SnakeNamingStrategy()
     }),
+
     UserModule,
     AuthModule,
+    UomsModule,
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  providers: [UomsService, UserService, UomRepository, UserRepository, AppService]
 })
-export class AppModule {}
+export class AppModule { }
