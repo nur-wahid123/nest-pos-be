@@ -1,6 +1,6 @@
-import { Injectable } from '@nestjs/common';
-import { CreateUomInput } from './dto/create-uom.input';
-import { UpdateUomInput } from './dto/update-uom.input';
+import { BadRequestException, Injectable } from '@nestjs/common';
+import { CreateUomDto } from './dto/create-uom.dto';
+import { UpdateUomInput } from './dto/update-uom.dto';
 import { UomRepository } from 'src/repositories/uom.repository';
 import { Uom } from 'src/entities/uom.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,10 +12,12 @@ export class UomsService {
   async init() {
     const uom = [
       {
-        name: 'pieces',
+        name: 'pcs',
+        description: 'Pieces'
       },
       {
         name: 'unit',
+        description: "Unit"
       },
     ];
     if ((await this.uomRepository.find()).length < 1) {
@@ -29,8 +31,23 @@ export class UomsService {
     console.log('uoms created!!');
   }
 
-  create(createUomInput: CreateUomInput) {
-    return 'This action adds a new uom';
+  async create(createUomDto: CreateUomDto) {
+
+    const uomsName = await this.uomRepository.findOneBy({ name: createUomDto.name })
+    if (uomsName) {
+      throw new BadRequestException(`Unit is Exist name : ${uomsName.name}`)
+    }
+    const uomsDesc = await this.uomRepository.findOneBy({ description: createUomDto.description })
+    console.log(uomsDesc);
+    if (uomsDesc) {
+      throw new BadRequestException(`Description is Exist with name : ${uomsDesc.name}`)
+    }
+    this.uomRepository
+      .createQueryBuilder()
+      .insert()
+      .into(Uom)
+      .values(createUomDto)
+      .execute();
   }
 
   findAll() {
