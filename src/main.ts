@@ -1,15 +1,12 @@
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
-import { UserService } from './modules/user/user.service';
-import { UomsService } from './modules/master/uoms/uoms.service';
-import { registerEnumType } from '@nestjs/graphql';
-import { Gender } from './entities/user.entity';
-import { PaymentStatus } from './entities/purchase.entity';
 import { AppService } from './app.service';
+import { HttpExceptionFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create(AppModule, { logger: ['error', 'warn', 'log'] });
+  app.useGlobalFilters(new HttpExceptionFilter());
   const port: number = +process.env.APP_PORT || 3000
   const corsDev: string[] = process?.env?.CORS_DEV?.split(',') ?? ['null'];
   const corsStg: string[] = process?.env?.CORS_STG?.split(',') ?? ['null'];

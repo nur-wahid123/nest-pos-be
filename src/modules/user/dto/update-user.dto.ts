@@ -1,6 +1,5 @@
 import { PartialType } from '@nestjs/mapped-types';
 import { CreateUserDto } from './create-user.dto';
-import { Field, InputType } from '@nestjs/graphql';
 import { IsAlphanumeric, IsEmail, IsEnum, IsInt, IsNotEmpty, IsString, MinLength } from 'class-validator';
 import { Gender } from 'src/entities/user.entity';
 
