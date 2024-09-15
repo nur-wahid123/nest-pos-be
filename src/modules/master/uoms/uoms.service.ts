@@ -1,6 +1,6 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { CreateUomDto } from './dto/create-uom.dto';
-import { UpdateUomInput } from './dto/update-uom.dto';
+import { UpdateUomDto } from './dto/update-uom.dto';
 import { UomRepository } from 'src/repositories/uom.repository';
 import { Uom } from 'src/entities/uom.entity';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -58,8 +58,14 @@ export class UomsService {
     return `This action returns a #${id} uom`;
   }
 
-  update(id: number, updateUomInput: UpdateUomInput) {
-    return `This action updates a #${id} uom`;
+  async update(updateUomDto: UpdateUomDto) {
+    const uomsName = await this.uomRepository.findOneBy({ name: updateUomDto.beforeName })
+    if (!uomsName) {
+      throw new BadRequestException(`Unit does not exist`)
+    }
+    uomsName.name = updateUomDto.name
+    uomsName.description = updateUomDto.description
+    return await this.uomRepository.save(uomsName)
   }
 
   remove(id: number) {
