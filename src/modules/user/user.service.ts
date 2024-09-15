@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -24,11 +24,11 @@ export class UserService {
   ): Promise<boolean> {
     const isUsernameExists = await this.isUsernameExists(username);
     if (isUsernameExists) {
-      throw new BadRequestException('Username already in used2');
+      throw new ForbiddenException(['Username already in used2']);
     }
     const isEmailExists = await this.isEmailExists(email);
     if (isEmailExists) {
-      throw new BadRequestException('Email already in used');
+      throw new BadRequestException(['Email already in used']);
     }
     if (isEmailExists && isUsernameExists) return true;
     return false;
@@ -45,11 +45,11 @@ export class UserService {
     user.name = createUserDto.name;
     user.age = createUserDto.age;
     if (await this.isUsernameExists(createUserDto.username)) {
-      throw new Error('Username Sudah digunakan');
+      throw new BadRequestException('Username Sudah digunakan');
     }
     user.username = createUserDto.username;
     if (await this.isEmailExists(createUserDto.email)) {
-      throw new Error('Email Sudah digunakan');
+      throw new BadRequestException('Email Sudah digunakan');
     }
     user.email = createUserDto.email;
     const salt = await genSalt(10);
@@ -80,7 +80,10 @@ export class UserService {
   }
 
   async findByUsername(username: string): Promise<User> {
-    return this.userRepository.findOneBy({ username });
+    return this.userRepository.createQueryBuilder('user')
+      .select(['user.id', 'user.name', 'user.gender', 'user.username', 'user.age', 'user.email', 'user.password'])
+      .where('user.username = :username', { username })
+      .getOne();
   }
 
   /**

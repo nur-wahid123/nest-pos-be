@@ -15,9 +15,6 @@ export class City {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ nullable: false, unique: true })
-    code!: string;
-
     @Column({ nullable: false })
     name!: string;
 

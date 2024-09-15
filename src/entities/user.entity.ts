@@ -7,7 +7,6 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { Field, Int, ObjectType } from '@nestjs/graphql';
 
 export enum Gender {
   FEMALE = 'female',

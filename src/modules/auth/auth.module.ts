@@ -8,6 +8,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from 'src/entities/user.entity';
 import { UserRepository } from 'src/repositories/user.repository';
 import HashPassword from 'src/common/utils/hash-password.util';
+import { AuthController } from './auth.controller';
 
 @Module({
   providers: [AuthService, JwtStrategy, UserService, HashPassword, UserRepository],
@@ -18,5 +19,6 @@ import HashPassword from 'src/common/utils/hash-password.util';
     }),
     UserModule,
   ],
+  controllers: [AuthController]
 })
 export class AuthModule { }

@@ -15,18 +15,13 @@ export class AuthService {
     private readonly hashPassword: HashPassword
   ) { }
   register(createUserDto: CreateUserDto): Promise<User> {
-    this.usersService.isUsernameAndEmailExist(
-      createUserDto.username,
-      createUserDto.email,
-    );
     return this.usersService.createUser(createUserDto);
   }
 
   async validateUser(userLoginDto: UserLoginDto): Promise<User> {
     const user: User = await this.usersService.findByUsername(userLoginDto.username);
-    console.log(this.hashPassword.compare(userLoginDto.password, user.password));
 
-    if (user && await this.hashPassword.compare(userLoginDto.password, user.password)) {
+    if (userLoginDto !== undefined && user && await this.hashPassword.compare(userLoginDto.password, user.password)) {
       const result = user;
       delete result.password
       return result;
@@ -40,9 +35,9 @@ export class AuthService {
       throw new ForbiddenException('Username Or Password are incorrect')
     }
 
-    this.validateUser(dto)
+    const payload = await this.validateUser(dto)
 
-    const token = this.getToken(user);
+    const token = this.getToken(payload);
 
     return token;
   }

@@ -11,6 +11,7 @@ import { UomsService } from './modules/master/uoms/uoms.service';
 import { UserService } from './modules/user/user.service';
 import { UomRepository } from './repositories/uom.repository';
 import { UserRepository } from './repositories/user.repository';
+import { CitiesModule } from './modules/master/cities/cities.module';
 
 @Module({
   imports: [
@@ -33,6 +34,7 @@ import { UserRepository } from './repositories/user.repository';
     UserModule,
     AuthModule,
     UomsModule,
+    CitiesModule
   ],
   providers: [UomsService, UserService, UomRepository, UserRepository, AppService]
 })
