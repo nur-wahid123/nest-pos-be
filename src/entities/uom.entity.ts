@@ -18,6 +18,9 @@ export class Uom {
     @Column({ nullable: false })
     name!: string;
 
+    @Column({ nullable: true })
+    description!: string;
+
     /**
      * Relations
      */
