@@ -7,5 +7,4 @@ export class UomRepository extends Repository<Uom> {
     constructor(private dataSource: DataSource) {
         super(Uom, dataSource.createEntityManager());
     }
-
 }

@@ -3,7 +3,6 @@ import { CreateUomDto } from './dto/create-uom.dto';
 import { UpdateUomDto } from './dto/update-uom.dto';
 import { UomRepository } from 'src/repositories/uom.repository';
 import { Uom } from 'src/entities/uom.entity';
-import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class UomsService {
@@ -31,23 +30,30 @@ export class UomsService {
     console.log('uoms created!!');
   }
 
-  async create(createUomDto: CreateUomDto) {
+  async create(createUomDto: CreateUomDto, userId: number): Promise<Uom> {
 
     const uomsName = await this.uomRepository.findOneBy({ name: createUomDto.name })
     if (uomsName) {
       throw new BadRequestException(`Unit is Exist name : ${uomsName.name}`)
     }
     const uomsDesc = await this.uomRepository.findOneBy({ description: createUomDto.description })
-    console.log(uomsDesc);
     if (uomsDesc) {
       throw new BadRequestException(`Description is Exist with name : ${uomsDesc.name}`)
     }
-    this.uomRepository
-      .createQueryBuilder()
-      .insert()
-      .into(Uom)
-      .values(createUomDto)
-      .execute();
+    const uomDeleted = await this.uomRepository.findOne({ where: { name: createUomDto.name }, withDeleted: true })
+    if (uomDeleted) {
+      uomDeleted.deletedAt = null
+      uomDeleted.deletedBy = null
+      uomDeleted.description = createUomDto.description
+      uomDeleted.updatedBy = userId
+      return this.uomRepository.save(uomDeleted)
+    }
+    const newUom = new Uom()
+    newUom.name = createUomDto.name
+    newUom.description = createUomDto.description
+    newUom.createdBy = userId
+    return this.uomRepository
+      .save(newUom)
   }
 
   findAll() {
@@ -58,17 +64,23 @@ export class UomsService {
     return `This action returns a #${id} uom`;
   }
 
-  async update(updateUomDto: UpdateUomDto) {
+  async update(updateUomDto: UpdateUomDto, userId: number) {
     const uomsName = await this.uomRepository.findOneBy({ name: updateUomDto.beforeName })
     if (!uomsName) {
       throw new BadRequestException(`Unit does not exist`)
     }
     uomsName.name = updateUomDto.name
     uomsName.description = updateUomDto.description
+    uomsName.updatedBy = userId
     return await this.uomRepository.save(uomsName)
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} uom`;
+  async remove(id: number, userId: number) {
+    const uom = await this.uomRepository.findOne({ where: { id } })
+    if (uom) {
+      uom.deletedBy = userId
+      return await this.uomRepository.softDelete(uom);
+    }
+    throw new BadRequestException('Unit does not exists')
   }
 }
