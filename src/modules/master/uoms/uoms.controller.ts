@@ -22,13 +22,11 @@ export class UomsController {
 
     @Post()
     createUom(@Body() createUomDto: CreateUomDto, @Payload() payload: JwtPayload) {
-        // return "ha"
         return this.uomsService.create(createUomDto, payload.sub)
     }
 
     @Put()
     updateUom(@Body() updateUomDto: UpdateUomDto, @Payload() payload: JwtPayload) {
-        // return "ha"
         return this.uomsService.update(updateUomDto, payload.sub)
     }
 
