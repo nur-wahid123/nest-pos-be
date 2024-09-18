@@ -16,6 +16,7 @@ import { SupplierModule } from './modules/master/supplier/supplier.module';
 import { BrandsModule } from './modules/master/brands/brands.module';
 import { CategoriesModule } from './modules/master/categories/categories.module';
 import { ProductsModule } from './modules/master/products/products.module';
+import { PurchasesModule } from './modules/purchases/purchases.module';
 
 @Module({
   imports: [
@@ -42,7 +43,8 @@ import { ProductsModule } from './modules/master/products/products.module';
     SupplierModule,
     BrandsModule,
     CategoriesModule,
-    ProductsModule
+    ProductsModule,
+    PurchasesModule
   ],
   providers: [UomsService, UserService, UomRepository, UserRepository, AppService]
 })
