@@ -15,6 +15,7 @@ import { CitiesModule } from './modules/master/cities/cities.module';
 import { SupplierModule } from './modules/master/supplier/supplier.module';
 import { BrandsModule } from './modules/master/brands/brands.module';
 import { CategoriesModule } from './modules/master/categories/categories.module';
+import { ProductsModule } from './modules/master/products/products.module';
 
 @Module({
   imports: [
@@ -40,7 +41,8 @@ import { CategoriesModule } from './modules/master/categories/categories.module'
     CitiesModule,
     SupplierModule,
     BrandsModule,
-    CategoriesModule
+    CategoriesModule,
+    ProductsModule
   ],
   providers: [UomsService, UserService, UomRepository, UserRepository, AppService]
 })
