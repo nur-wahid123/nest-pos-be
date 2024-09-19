@@ -1,4 +1,4 @@
-FROM node:20
+FROM node:20-alpine
 
 WORKDIR /usr/src/app
 
@@ -12,6 +12,6 @@ COPY .env ./
 
 RUN npm run build
 
-EXPOSE 3500
+EXPOSE 3100
 
 CMD [ "npm", "run", "start:prod" ]
