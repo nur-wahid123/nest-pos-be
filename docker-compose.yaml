@@ -6,7 +6,11 @@ services:
       POSTGRES_PASSWORD : root
       POSTGRES_USER : postgres
       POSTGRES_DB : nest_pos_be
-  app:
-    image: nestjs-app
     ports:
-      - 3500:3100
+      - 5555:5432
+  app:
+     image: nestjs-app
+     ports:
+      - 3100:3100
+     depends_on:
+      - db
