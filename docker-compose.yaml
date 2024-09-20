@@ -4,3 +4,5 @@ services:
      image: nest-app
      ports:
       - 3100:3100
+     networks:
+      - pos-app
