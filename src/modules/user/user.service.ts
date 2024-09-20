@@ -7,6 +7,7 @@ import { genSalt, hash } from 'bcrypt';
 import { User } from 'src/entities/user.entity';
 import { ResponseMessage } from 'src/common/response/ResponseMessage.util';
 import { UserRepository } from 'src/repositories/user.repository';
+import HashPassword from 'src/common/utils/hash-password.util';
 
 @Injectable()
 export class UserService {
@@ -16,7 +17,20 @@ export class UserService {
    */
   constructor(
     private readonly userRepository: UserRepository,
+    private readonly hashPassword: HashPassword,
   ) { }
+
+  async init() {
+    const user = new CreateUserDto();
+    user.username = 'superadmin';
+    user.name = 'super admin';
+    user.password = await this.hashPassword.generate('password12345');
+    const username = await this.userRepository.findOneBy({ username: user.username });
+    if (username === null) {
+      await this.userRepository.createUser(user);
+    }
+    console.log('superadmin created!!');
+  }
 
   async isUsernameAndEmailExist(
     username: string,

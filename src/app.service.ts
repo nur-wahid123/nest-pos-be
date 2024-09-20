@@ -12,6 +12,7 @@ export class AppService {
 
   init() {
     this.uomService.init()
+    this.userService.init()
   }
 
   getHello(): string {
