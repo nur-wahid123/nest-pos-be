@@ -5,5 +5,3 @@ services:
      container_name: nest
      ports:
       - 3100:3100
-     networks:
-      - pos-app
