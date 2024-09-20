@@ -17,6 +17,7 @@ import { BrandsModule } from './modules/master/brands/brands.module';
 import { CategoriesModule } from './modules/master/categories/categories.module';
 import { ProductsModule } from './modules/master/products/products.module';
 import { PurchasesModule } from './modules/purchases/purchases.module';
+import HashPassword from './common/utils/hash-password.util';
 
 @Module({
   imports: [
@@ -46,6 +47,6 @@ import { PurchasesModule } from './modules/purchases/purchases.module';
     ProductsModule,
     PurchasesModule
   ],
-  providers: [UomsService, UserService, UomRepository, UserRepository, AppService]
+  providers: [UomsService, HashPassword, UserService, UomRepository, UserRepository, AppService]
 })
 export class AppModule { }
