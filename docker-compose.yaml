@@ -7,6 +7,6 @@ services:
      networks:
       - pos-app
 
-  networks:
-    pos-app:
-      driver: bridge
+networks:
+  pos-app:
+    driver: bridge
