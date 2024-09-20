@@ -18,3 +18,5 @@ services:
       POSTGRES_PASSWORD: root
       POSTGRES_DB: nest_pos_be
     container_name: psql
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
