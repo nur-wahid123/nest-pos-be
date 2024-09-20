@@ -6,3 +6,7 @@ services:
       - 3100:3100
      networks:
       - pos-app
+
+  networks:
+    pos-app:
+      driver: bridge
