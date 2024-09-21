@@ -4,7 +4,7 @@ pipeline {
     environment {
         // Access Jenkins credentials (e.g., secret environment variables)
         DB_USERNAME = credentials('db_username')
-        DB_HOST = credentials('db')
+        DB_HOST = credentials('db_host')
         DB_NAME = credentials('db_name')
         DB_LOG = credentials('db_log')
         DB_PORT = credentials('db_port')
