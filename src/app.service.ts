@@ -15,7 +15,7 @@ export class AppService {
     this.userService.init()
   }
 
-  getHello(): string {
-    return 'Hello Worldse!';
+  getHello() {
+    return { msg: 'Hello Worldse!' };
   }
 }

@@ -47,6 +47,7 @@ import HashPassword from './common/utils/hash-password.util';
     ProductsModule,
     PurchasesModule
   ],
+  controllers: [AppController],
   providers: [UomsService, HashPassword, UserService, UomRepository, UserRepository, AppService]
 })
 export class AppModule { }
