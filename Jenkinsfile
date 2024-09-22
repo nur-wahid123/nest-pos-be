@@ -1,18 +1,6 @@
 pipeline {
     agent any
 
-    environment {
-        // Access Jenkins credentials (e.g., secret environment variables)
-        DB_USERNAME = credentials('db_username')
-        DB_HOST = credentials('db_host')
-        DB_NAME = credentials('db_name')
-        DB_LOG = credentials('db_log')
-        DB_PORT = credentials('db_port')
-        APP_SECRET = credentials('app_secret')
-        APP_PORT = credentials('app_port')
-        DB_PASSWORD = credentials('db_pass')
-        USER_KEY_SECRET = credentials('user_key_secret')
-    }
     
     stages {
         stage('Checkout') {
@@ -22,32 +10,28 @@ pipeline {
             }
         }
         
-        
-        stage('Create .env File') {
+        stage('Use Secret File') {
             steps {
-                script {
-                    // Create .env file with the credentials and other environment variables
-                    writeFile file: '.env', text: """
-                        DB_USERNAME =${DB_USERNAME}
-                        DB_HOST = ${DB_HOST}
-                        DB_NAME = ${DB_NAME}
-                        DB_LOG = ${DB_LOG}
-                        DB_PORT = ${DB_PORT}
-                        APP_SECRET = ${APP_SECRET}
-                        APP_PORT = ${APP_PORT}
-                        DB_PASSWORD = ${DB-PASSWORD}
-                        USER_KEY_SECRET = ${USER_KEY_SECRET}
-                    """
+                withCredentials([file(credentialsId: 'env_file', variable: 'ENV_FILE')]) {
+
+                        // Remove any existing .env file
+                        sh 'rm -f .env'
+
+                        // Use absolute paths for copying the file
+                        sh "cp $ENV_FILE '$WORKSPACE/.env'"
                 }
             }
         }
+        
 
         stage('Build') {
             steps {
                 // Add build steps here (e.g., running tests, building artifacts, etc.)
                 echo 'Building...'
                 sh 'sudo docker ps'
-                sh 'sudo docker-compose up -d --build'
+                sh 'sudo docker build -t nest-app .'
+                sh 'sudo docker rm nest -f'
+                sh 'sudo docker run --name nest -p 3100:3100 --restart unless-stopped --network pos-app -d nest-app'
             }
         }
 
