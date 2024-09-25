@@ -12,13 +12,13 @@ async function bootstrap() {
   const port: number = +process.env.APP_PORT || 3000
   const appService = app.get(AppService);
   app.use(cookieParser());
-  // const corsDev: string[] = process?.env?.CORS_DEV?.split(',') ?? ['null'];
-  // const corsStg: string[] = process?.env?.CORS_STG?.split(',') ?? ['null'];
-  // app.enableCors({
-  //   origin: [...corsDev, ...corsStg],
-  //   methods: ['GET', 'POST', 'PATCH', 'DELETE', 'CONNECT', 'OPTIONS'],
-  //   credentials: true,
-  // });
+  const corsDev: string[] = process?.env?.CORS_DEV?.split(',') ?? ['null'];
+  const corsStg: string[] = process?.env?.CORS_STG?.split(',') ?? ['null'];
+  app.enableCors({
+    origin: [...corsDev, ...corsStg],
+    methods: ['GET', 'POST', 'PATCH', 'DELETE', 'CONNECT', 'OPTIONS'],
+    credentials: true,
+  });
   appService.init()
   await app.listen(port, () => {
     console.log("listening to port : " + port);

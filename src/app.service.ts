@@ -12,9 +12,10 @@ export class AppService {
 
   init() {
     this.uomService.init()
+    this.userService.init()
   }
 
-  getHello(): string {
-    return 'Hello World!';
+  getHello() {
+    return { msg: 'Hello Worldse!' };
   }
 }

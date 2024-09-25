@@ -31,7 +31,7 @@ export class Payment {
     @Type(() => Number)
     total!: number;
 
-    @Column({ nullable: false, type: 'double precision', default: 0 })
+    @Column({ nullable: true, type: 'double precision', default: 0 })
     @Type(() => Number)
     paid!: number;
 
