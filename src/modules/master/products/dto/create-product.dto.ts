@@ -1,5 +1,5 @@
 import { Expose, Type } from "class-transformer";
-import { IsNotEmpty, IsNumber, IsOptional, IsString, Min } from "class-validator";
+import { IsNotEmpty, IsNumber, IsString, Min } from "class-validator";
 
 export class CreateProductDto {
     @IsNotEmpty()
@@ -29,10 +29,10 @@ export class CreateProductDto {
     @Expose({ name: 'uom_id' })
     uomId!: number
 
-    @IsOptional()
+    @IsNotEmpty()
     @IsNumber()
     @Expose({ name: 'supplier_id' })
-    supplierId?: number
+    supplierId!: number
 
     @IsNotEmpty()
     @IsNumber()

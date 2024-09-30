@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Injectable } from "@nestjs/common";
 import Brand from "src/entities/brand.entity";
 import Category from "src/entities/category.entity";
 import { Product } from "src/entities/product.entity";
@@ -13,22 +13,18 @@ export class ProductRepository extends Repository<Product> {
         super(Product, dataSource.createEntityManager())
     }
 
-    async saveProduct(
-        product: Product
+    async createProduct(
+        createDto: CreateProductDto,
+        category: Category,
+        brand: Brand,
+        uom: Uom,
+        userId: number,
+        supplier?: Supplier
     ): Promise<Product> {
-        const queryRunner = this.dataSource.createQueryRunner()
-        await queryRunner.connect()
-        try {
-            await queryRunner.startTransaction()
-            await queryRunner.manager.save(product, { chunk: 1000 })
-            await queryRunner.commitTransaction()
-            return product
-        } catch (error) {
-            await queryRunner.rollbackTransaction()
-            console.log(error);
-            throw new InternalServerErrorException()
-        } finally {
-            await queryRunner.release()
-        }
+        const ett = this.dataSource.createEntityManager()
+        const product = ett.create(Product, {
+            ...createDto, supplier, brand, category, uom, createdBy: userId
+        })
+        return await ett.save(product)
     }
 }

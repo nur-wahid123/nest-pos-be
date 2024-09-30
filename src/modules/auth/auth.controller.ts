@@ -2,7 +2,6 @@ import {
   Body,
   ClassSerializerInterceptor,
   Controller,
-  Delete,
   Get,
   HttpCode,
   HttpStatus,
@@ -39,22 +38,17 @@ export class AuthController {
   }
 
   @Post('register')
-  register(@Body() createUserDto: CreateUserDto) {
-    try {
-      return this.authService.register(createUserDto);
-    } catch (error) {
-      console.log("auth-c");
-
-    }
+  @HttpCode(HttpStatus.OK)
+  register(@Body() createUserDto: CreateUserDto): Promise<User> {
+    return this.authService.register(createUserDto);
   }
-
   @UseGuards(JwtAuthGuard)
   @Get('profile')
   getProfile(@Payload() payload: JwtPayload) {
     return payload;
   }
 
-  @Delete('logout')
+  @Get('logout')
   logout(@Res() res: Response) {
     res.clearCookie('jwt');
     return res.send({ message: 'Logout Successfull' });

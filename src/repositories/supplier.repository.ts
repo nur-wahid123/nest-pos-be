@@ -14,7 +14,7 @@ export class SupplierRepository extends Repository<Supplier> {
 
     async batchCreate(suppliers: Supplier[]): Promise<Supplier[]> {
         const queryRunner = this.dataSource.createQueryRunner()
-        await queryRunner.connect()
+        queryRunner.connect()
         try {
             await queryRunner.startTransaction()
             await queryRunner.manager.save(suppliers, { chunk: 1000 })
@@ -73,20 +73,7 @@ export class SupplierRepository extends Repository<Supplier> {
         });
     }
 
-    async updateSuplier(supplier: Supplier): Promise<Supplier> {
-        const queryRunner = this.dataSource.createQueryRunner()
-        await queryRunner.connect()
-        try {
-            await queryRunner.startTransaction()
-            await queryRunner.manager.save(supplier)
-            await queryRunner.commitTransaction()
-            return supplier
-        } catch (error) {
-            await queryRunner.rollbackTransaction()
-            console.log(error);
-            throw new InternalServerErrorException()
-        } finally {
-            await queryRunner.release()
-        }
+    updateSupplier(id: number, updateDto: UpdateSupplierDto, userId: number) {
+
     }
 }

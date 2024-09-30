@@ -14,8 +14,11 @@ import {
 import { PurchaseItem } from './purchase-item.entity';
 import { Supplier } from './supplier.entity';
 import { Payment } from './payment.entity';
-import InventoryLedger from './inventory-ledger.entity';
-import { PaymentStatus } from 'src/common/enums/payment-status.enum';
+
+export enum PaymentStatus {
+  UNPAID = 'unpaid',
+  PAID = 'paid',
+}
 
 @Entity({ name: 'purchases' })
 export class Purchase {
@@ -59,11 +62,9 @@ export class Purchase {
   })
   supplier!: Supplier;
 
-  @OneToMany(() => Payment, (payment) => payment.purchase, { nullable: true })
-  payments!: Payment[]
-
-  @OneToMany(() => InventoryLedger, (inventoryLedger) => inventoryLedger.purchase, { nullable: true })
-  inventoryLedgers: InventoryLedger[]
+  @OneToOne(() => Payment, (payment) => payment.purchase, { nullable: true })
+  @JoinColumn()
+  payment!: Payment
 
 
   /**

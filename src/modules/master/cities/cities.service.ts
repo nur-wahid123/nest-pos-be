@@ -1,25 +1,25 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { CityRepository } from 'src/repositories/city.repository';
 import { CreateCityDto } from './dto/create-city.dto';
 import { City } from 'src/entities/city.entity';
-import { ProvinceRepository } from 'src/repositories/province.repository';
-import { InitCityDto } from './dto/init-city.dto';
+import { DataSource } from 'typeorm';
 
 @Injectable()
 export class CitiesService {
-    constructor(
-        private readonly cityRepository: CityRepository
-        , private readonly provinceRepository: ProvinceRepository
-    ) { }
+    constructor(private readonly cityRepository: CityRepository, private readonly dataSource: DataSource) { }
 
-    async init() {
-        const city = await this.cityRepository.find()
-        if (city.length > 0) {
-            return city
-        }
+    init() {
         const indonesia = require('indonesia-cities-regencies')
-        const cities: InitCityDto[] = indonesia.getAll()
-        return this.cityRepository.initCreate(cities)
+        const cities: CreateCityDto[] = indonesia.getAll()
+        const newCities = cities.map((v) => {
+            const nwCt = new City()
+            nwCt.capital = v?.capital
+            nwCt.province = v?.province
+            nwCt.name = v?.name
+            nwCt.island = v?.island
+            return nwCt
+        })
+        return this.cityRepository.batchCreate(newCities)
     }
 
     findAll() {
@@ -27,35 +27,32 @@ export class CitiesService {
     }
 
     async create(createDto: CreateCityDto, userId: number) {
-        const { name, capital, provinceId } = createDto
         const checkExistance = await this.cityRepository.findOne({
             where: {
-                name: name
+                name: createDto.name
             }
         })
         if (checkExistance) {
             throw new BadRequestException('The Cities is exist with name : ' + checkExistance.name)
         }
-        const province = await this.provinceRepository.findOneBy({ id: provinceId })
-        if (!province) throw new NotFoundException('province not found')
         const checkDeleted = await this.cityRepository.findOne({
             where: {
-                name: name
+                name: createDto.name
             }, withDeleted: true
         })
-
         if (checkDeleted) {
             checkDeleted.deletedAt = null
             checkDeleted.deletedBy = null
-            checkDeleted.updatedBy = userId
-            checkDeleted.capital = capital
-            checkDeleted.province = province
+            checkDeleted.island = createDto.island
+            checkDeleted.capital = createDto.capital
+            checkDeleted.province = createDto.province
             return this.cityRepository.save(checkDeleted)
         }
         const newCity = new City()
-        newCity.name = name
-        newCity.capital = capital
-        newCity.province = province
+        newCity.name = createDto.name
+        newCity.island = createDto.island
+        newCity.capital = createDto.capital
+        newCity.province = createDto.province
         newCity.createdBy = userId
         return this.cityRepository.save(newCity)
     }
