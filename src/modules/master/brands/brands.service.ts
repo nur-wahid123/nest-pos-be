@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import Brand from 'src/entities/brand.entity';
@@ -10,11 +10,7 @@ export class BrandsService {
   constructor(private readonly brandRepository: BrandRepository) { }
 
   create(createBrandDto: CreateBrandDto, userId: number): Promise<Brand> {
-    const newBrand = new Brand()
-    newBrand.code = createBrandDto?.code
-    newBrand.name = createBrandDto?.name
-    newBrand.createdBy = userId
-    return this.brandRepository.save(newBrand)
+    return this.brandRepository.createBrand(createBrandDto, userId)
   }
 
   findAll(): Promise<Brand[]> {

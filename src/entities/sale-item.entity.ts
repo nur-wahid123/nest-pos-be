@@ -45,6 +45,8 @@ export default class SaleItem {
     })
     product!: Product;
 
+
+
     /**
      * Changelog
      */

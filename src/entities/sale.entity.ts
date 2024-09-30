@@ -2,6 +2,7 @@ import { Expose, Type } from 'class-transformer';
 import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateColumn, DeleteDateColumn, OneToMany, OneToOne } from 'typeorm';
 import SaleItem from './sale-item.entity';
 import { Payment } from './payment.entity';
+import InventoryLedger from './inventory-ledger.entity';
 @Entity({ name: 'sales' })
 export class Sale {
     /**
@@ -34,8 +35,11 @@ export class Sale {
     @Expose({ name: 'sale_items' })
     saleItems: SaleItem[];
 
-    @OneToOne(() => Payment, (payment) => payment.sale)
-    payment: Payment
+    @OneToMany(() => Payment, (payment) => payment.sale, { nullable: true })
+    payments: Payment[]
+
+    @OneToMany(() => InventoryLedger, (inventoryLedger) => inventoryLedger.sale, { nullable: true })
+    inventoryLedgers: InventoryLedger[]
 
     /**
      * Changelog

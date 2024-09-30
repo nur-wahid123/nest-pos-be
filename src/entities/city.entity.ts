@@ -7,8 +7,10 @@ import {
     OneToMany,
     DeleteDateColumn,
     UpdateDateColumn,
+    ManyToOne,
 } from 'typeorm';
 import { Supplier } from './supplier.entity';
+import { Province } from './province.entity';
 
 @Entity({ name: 'cities' })
 export class City {
@@ -18,18 +20,15 @@ export class City {
     @Column({ nullable: false })
     name!: string;
 
-    @Column({ nullable: false })
-    island!: string;
-
-    @Column({ nullable: false })
-    province!: string;
-
-    @Column({ nullable: false })
+    @Column({ nullable: true })
     capital!: string;
 
     /**
      * Relations
-     */
+    */
+
+    @ManyToOne(() => Province, (province) => province.cities)
+    province!: Province;
 
     @OneToMany(() => Supplier, (suppliers) => suppliers.city, {
         nullable: true,
