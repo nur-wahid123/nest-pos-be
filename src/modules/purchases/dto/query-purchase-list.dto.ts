@@ -1,12 +1,11 @@
-import { Expose, Type } from 'class-transformer';
+import { Expose } from 'class-transformer';
 import {
   IsDateString,
   IsEnum,
-  IsNumber,
   IsOptional,
   IsString,
 } from 'class-validator';
-import { PaymentStatus } from 'src/entities/purchase.entity';
+import { PaymentStatus } from 'src/common/enums/payment-status.enum';
 
 export class QueryPurchaseListDto {
 

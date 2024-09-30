@@ -27,25 +27,15 @@ export class CreatePurchaseDto {
 export class CreatePurchaseItemDto {
     @IsNotEmpty()
     @IsNumber()
-    product_id: number;
+    product_id!: number;
 
     @IsNotEmpty()
     @IsNumber()
     @Min(1)
-    qty: number;
+    qty!: number;
 
     @IsNotEmpty()
     @IsNumber()
     @Min(0)
-    buy_price: number;
-
-    @IsNotEmpty()
-    @IsNumber()
-    @Min(0)
-    discount_in_percent: number;
-
-    @IsNotEmpty()
-    @IsNumber()
-    @Min(0)
-    discount_in_value: number;
+    buy_price!: number;
 }

@@ -54,16 +54,6 @@ export class PurchaseRepository extends Repository<Purchase> {
             await queryRunner.manager.save(purchase);
             const purchaseItems = this.createChild(purchase, child, userId);
             await queryRunner.manager.save(purchaseItems);
-            const paymentCode = await autoGenerateCodeBank(purchase.date, queryRunner.manager, 'PB')
-            const payment = new Payment()
-            payment.purchase = purchase
-            payment.code = paymentCode
-            payment.createdBy = userId
-            payment.date = purchase.date
-            payment.note = ""
-            payment.total = purchase.total
-            payment.paid = 0
-            await queryRunner.manager.save(payment);
             await queryRunner.commitTransaction();
 
             return purchase
@@ -101,6 +91,7 @@ export class PurchaseRepository extends Repository<Purchase> {
         const query = this.dataSource
             .createQueryBuilder(Purchase, 'purchase')
             .leftJoinAndSelect('purchase.supplier', 'supplier')
+            .leftJoinAndSelect('purchase.payments', 'payments')
         query.where((qb) => {
             search &&
                 qb.andWhere(
