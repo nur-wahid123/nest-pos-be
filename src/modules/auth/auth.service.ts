@@ -15,13 +15,7 @@ export class AuthService {
     private readonly hashPassword: HashPassword
   ) { }
   register(createUserDto: CreateUserDto): Promise<User> {
-    try {
-
-      return this.usersService.createUser(createUserDto);
-    } catch (error) {
-      console.log('auth-s');
-
-    }
+    return this.usersService.createUser(createUserDto);
   }
 
   async validateUser(userLoginDto: UserLoginDto): Promise<User> {
@@ -43,7 +37,7 @@ export class AuthService {
 
     const payload = await this.validateUser(dto)
 
-    const token = await this.getToken(payload);
+    const token = this.getToken(payload);
 
     return token;
   }
@@ -56,7 +50,6 @@ export class AuthService {
     };
     const token = await this.jwtService.signAsync(payload, {
       secret: process.env.USER_KEY_SECRET,
-      expiresIn: '1d'
     });
     return { access_token: token };
   }

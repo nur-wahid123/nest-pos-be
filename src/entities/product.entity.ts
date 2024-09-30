@@ -64,7 +64,7 @@ export class Product {
     supplier!: Supplier;
 
     @OneToMany(() => SaleItem, (saleItems) => saleItems.product, {
-        nullable: true,
+        nullable: false,
     })
     @Expose({ name: 'sale_items' })
     saleItems!: SaleItem[];
@@ -72,7 +72,7 @@ export class Product {
     @OneToOne(() => Inventory, (inventory) => inventory.product, { nullable: true })
     inventory!: Inventory
 
-    @OneToMany(() => PurchaseItem, (purchaseItem) => purchaseItem.product, { nullable: true })
+    @OneToMany(() => PurchaseItem, (purchaseItem) => purchaseItem.product, { nullable: false })
     @Expose({ name: 'purchase_items' })
     purchaseItems!: PurchaseItem[]
 
