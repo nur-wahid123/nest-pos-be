@@ -1,43 +1,12 @@
 import { Expose } from 'class-transformer';
 import {
-    Entity,
     CreateDateColumn,
     Column,
-    PrimaryGeneratedColumn,
-    OneToMany,
     DeleteDateColumn,
     UpdateDateColumn,
-    ManyToOne,
 } from 'typeorm';
-import { Supplier } from './supplier.entity';
-import { Province } from './province.entity';
 
-@Entity({ name: 'cities' })
-export class City {
-    @PrimaryGeneratedColumn()
-    id!: number;
-
-    @Column({ nullable: false })
-    name!: string;
-
-    @Column({ nullable: true })
-    capital!: string;
-
-    /**
-     * Relations
-    */
-
-    @ManyToOne(() => Province, (province) => province.cities)
-    province!: Province;
-
-    @OneToMany(() => Supplier, (suppliers) => suppliers.city, {
-        nullable: true,
-    })
-    suppliers!: Supplier[];
-
-    /**
-     * Changelog
-     */
+export default class CommonBaseEntity {
     @CreateDateColumn({ type: 'timestamp' })
     @Expose({ name: 'created_at' })
     createdAt!: Date;

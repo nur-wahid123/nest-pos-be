@@ -6,9 +6,10 @@ import { PurchaseItemRepository } from 'src/repositories/purchase-item.repositor
 import { SupplierRepository } from 'src/repositories/supplier.repository';
 import { ProductRepository } from 'src/repositories/product.repository';
 import { UserRepository } from 'src/repositories/user.repository';
+import { PaymentRepository } from 'src/repositories/payment.repository';
 
 @Module({
   controllers: [PurchasesController],
-  providers: [PurchasesService, UserRepository, SupplierRepository, ProductRepository, PurchaseRepository, PurchaseItemRepository],
+  providers: [PaymentRepository, PurchasesService, UserRepository, SupplierRepository, ProductRepository, PurchaseRepository, PurchaseItemRepository],
 })
 export class PurchasesModule { }

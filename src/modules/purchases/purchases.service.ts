@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, NotFoundException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { PurchaseRepository } from 'src/repositories/purchase.repository';
 import { CreatePurchaseDto, CreatePurchaseItemDto } from './dto/create-purchase.dto';
 import { SupplierRepository } from 'src/repositories/supplier.repository';
@@ -12,6 +12,9 @@ import { QueryPurchaseDateRangeDto } from './dto/query-purchase-date-range.dto';
 import { QueryPurchaseListDto } from './dto/query-purchase-list.dto';
 import { PageMetaDto } from 'src/common/dto/page-meta.dto';
 import { PageDto } from 'src/common/dto/page.dto';
+import { CreatePaymentDto } from './dto/create-payment.dto';
+import { PaymentRepository } from 'src/repositories/payment.repository';
+import { PaymentStatus } from 'src/common/enums/payment-status.enum';
 
 @Injectable()
 export class PurchasesService {
@@ -19,15 +22,17 @@ export class PurchasesService {
         , private readonly supplierRepository: SupplierRepository
         , private readonly productRepository: ProductRepository
         , private readonly userRepository: UserRepository
+        , private readonly paymentRepository: PaymentRepository
     ) { }
     findAll() {
-        this.purchaseRepo.find({ relations: { supplier: true, payment: true, purchaseItems: true } })
+        this.purchaseRepo.find({ relations: { supplier: true, payments: true, purchaseItems: true } })
     }
 
     async create(
         createPurchaseDto: CreatePurchaseDto,
         userId: number
     ): Promise<GetPurchaseWithUserDto> {
+
         const code = await this.purchaseRepo.autoGenerateCode(
             createPurchaseDto.date,
         );
@@ -53,6 +58,7 @@ export class PurchasesService {
             userId,
         );
         return await this.findOne(result.id)
+
     }
 
     private reduceDublicateProduct(
@@ -75,10 +81,11 @@ export class PurchasesService {
     ): Promise<PurchaseItem[]> {
         //purchaseItems
         const productIds = data.map((item) => item.product_id);
-        const products = await this.productRepository.findBy({ id: In([productIds]) });
+        const products = await this.productRepository.findBy({ id: In(productIds) });
+        console.log(products.length, productIds.length);
 
         if (products.length !== productIds.length) {
-            throw new BadRequestException(['One or more products not found']);
+            throw new BadRequestException('One or more products not found');
         }
         return data.map((v) => {
             const { qty, buy_price } = v;
@@ -118,5 +125,27 @@ export class PurchasesService {
         const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
 
         return new PageDto(entities, pageMetaDto);
+    }
+
+    async createPayment(paymentDto: CreatePaymentDto, userId: number) {
+        return this.paymentRepository.pay(paymentDto, userId)
+    }
+
+    async needToPay(purchaseCode: string): Promise<number> {
+        const purchase = await this.purchaseRepo.findOne(
+            {
+                where:
+                {
+                    code:
+                        purchaseCode
+                }
+                , relations:
+                {
+                    payments: true,
+                    purchaseItems: true
+                }
+            })
+        if (purchase.paymentStatus === PaymentStatus.PAID) throw new BadRequestException('purchase already paid')
+        return this.paymentRepository.calculateNeedToPay(purchase)
     }
 }

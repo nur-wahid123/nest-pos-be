@@ -8,7 +8,7 @@ export class Inventory {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ nullable: false })
+    @Column({ nullable: false, default: 0 })
     qty: number;
 
     /**

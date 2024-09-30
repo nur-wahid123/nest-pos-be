@@ -19,24 +19,25 @@ export class ProductsService {
     , private readonly supplierRepo: SupplierRepository) { }
 
   async create(createProductDto: CreateProductDto, userId: number): Promise<Product> {
-    const checkCode = await this.productRepository.findOneBy({ code: createProductDto.code })
+    let { brandId, buyPrice, categoryId, code, name, sellPrice, uomId, supplierId } = createProductDto
+    const checkCode = await this.productRepository.findOneBy({ code: code })
     if (checkCode) throw new BadRequestException('code already exists')
-    const category = await this.categoryRepository.findOneBy({ id: createProductDto.categoryId })
+    const category = await this.categoryRepository.findOneBy({ id: categoryId })
     if (!category) throw new NotFoundException('category not found')
-    const brand = await this.brandRepository.findOneBy({ id: createProductDto.brandId })
+    const brand = await this.brandRepository.findOneBy({ id: brandId })
     if (!brand) throw new NotFoundException('brand not found')
-    const uom = await this.uomRepo.findOneBy({ id: createProductDto.uomId })
+    const uom = await this.uomRepo.findOneBy({ id: uomId })
     if (!uom) throw new NotFoundException('Unit not found')
     let supplier: Supplier
-    if (createProductDto.supplierId) {
+    if (supplierId) {
       supplier = await this.supplierRepo.findById(
-        createProductDto.supplierId,
+        supplierId,
       );
       if (!supplier) throw new NotFoundException('supplier not found');
     }
-    createProductDto.name = createProductDto?.name?.replace(/\s+/g, ' ').trim();
+    name = createProductDto?.name?.replace(/\s+/g, ' ').trim();
 
-    const deletedProduct = await this.productRepository.findOne({ where: { code: createProductDto.code }, withDeleted: true })
+    const deletedProduct = await this.productRepository.findOne({ where: { code: code }, withDeleted: true })
     if (deletedProduct) {
       deletedProduct.deletedAt = null
       deletedProduct.deletedBy = null
@@ -44,9 +45,22 @@ export class ProductsService {
       deletedProduct.brand = brand
       deletedProduct.uom = uom
       deletedProduct.supplier = supplier
-      return this.productRepository.save(deletedProduct)
+      deletedProduct.updatedBy = userId
+      return this.productRepository.saveProduct(deletedProduct)
     }
-    return this.productRepository.createProduct(createProductDto, category, brand, uom, userId, supplier)
+    const product = new Product()
+    product.category = category
+    product.brand = brand
+    product.uom = uom
+    product.createdBy = userId
+    product.buyPrice = buyPrice
+    product.sellPrice = sellPrice
+    product.name = name
+    product.code = code
+    if (supplierId) {
+      product.supplier = supplier
+    }
+    return this.productRepository.saveProduct(product)
   }
 
   findAll(): Promise<Product[]> {

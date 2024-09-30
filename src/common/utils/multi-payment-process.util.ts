@@ -1,10 +1,6 @@
-import { BadRequestException } from '@nestjs/common';
-
-import { EntityManager, In, QueryRunner } from 'typeorm';
+import { EntityManager } from 'typeorm';
 import {
-  codeFormater,
   codeFormaterWithOutLocation,
-  increaseSequenceVal,
 } from './auto-generate-code.util';
 import { Payment } from 'src/entities/payment.entity';
 
