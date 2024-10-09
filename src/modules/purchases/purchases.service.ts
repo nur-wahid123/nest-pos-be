@@ -128,7 +128,7 @@ export class PurchasesService {
     }
 
     async createPayment(paymentDto: CreatePaymentDto, userId: number) {
-        return this.paymentRepository.pay(paymentDto, userId)
+        return this.paymentRepository.payPurchase(paymentDto, userId)
     }
 
     async needToPay(purchaseCode: string): Promise<number> {
@@ -146,6 +146,6 @@ export class PurchasesService {
                 }
             })
         if (purchase.paymentStatus === PaymentStatus.PAID) throw new BadRequestException('purchase already paid')
-        return this.paymentRepository.calculateNeedToPay(purchase)
+        return this.paymentRepository.calculatePurchaseNeedToPay(purchase)
     }
 }

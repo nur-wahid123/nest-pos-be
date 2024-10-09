@@ -10,5 +10,4 @@ import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 export class PaymentsController {
   constructor(private readonly paymentsService: PaymentsService) { }
 
-
 }

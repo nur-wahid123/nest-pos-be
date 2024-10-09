@@ -23,6 +23,7 @@ import { CitiesService } from './modules/master/cities/cities.service';
 import { CityRepository } from './repositories/city.repository';
 import { ProvinceRepository } from './repositories/province.repository';
 import { IslandRepository } from './repositories/island.repository';
+import { SalesModule } from './modules/sales/sales.module';
 
 @Module({
   imports: [
@@ -37,7 +38,7 @@ import { IslandRepository } from './repositories/island.repository';
       username: process.env.DB_USERNAME,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       database: process.env.DB_NAME,
-      synchronize: true,
+      synchronize: process.env.DB_LOG == 'true' ? true : false,
       logging: true,
       namingStrategy: new SnakeNamingStrategy()
     }),
@@ -50,7 +51,8 @@ import { IslandRepository } from './repositories/island.repository';
     BrandsModule,
     CategoriesModule,
     ProductsModule,
-    PurchasesModule
+    PurchasesModule,
+    SalesModule
   ],
   controllers: [AppController],
   providers: [

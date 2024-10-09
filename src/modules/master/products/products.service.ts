@@ -8,6 +8,9 @@ import { SupplierRepository } from 'src/repositories/supplier.repository';
 import { UomRepository } from 'src/repositories/uom.repository';
 import { Supplier } from 'src/entities/supplier.entity';
 import { Product } from 'src/entities/product.entity';
+import { QueryListDto } from '../categories/dto/query-list.dto';
+import { Like } from 'typeorm';
+import { QueryProductListDto } from './dto/query-product-list.dto';
 
 @Injectable()
 export class ProductsService {
@@ -17,6 +20,10 @@ export class ProductsService {
     , private readonly brandRepository: BrandRepository
     , private readonly uomRepo: UomRepository
     , private readonly supplierRepo: SupplierRepository) { }
+
+  init() {
+    return this.productRepository.init()
+  }
 
   async create(createProductDto: CreateProductDto, userId: number): Promise<Product> {
     let { brandId, buyPrice, categoryId, code, name, sellPrice, uomId, supplierId } = createProductDto
@@ -63,8 +70,8 @@ export class ProductsService {
     return this.productRepository.saveProduct(product)
   }
 
-  findAll(): Promise<Product[]> {
-    return this.productRepository.find();
+  findAll(query: QueryProductListDto): Promise<Product[]> {
+    return this.productRepository.findProducts(query)
   }
 
   findOne(id: number): Promise<Product> {

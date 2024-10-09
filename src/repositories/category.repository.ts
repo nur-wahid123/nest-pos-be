@@ -1,12 +1,26 @@
 import { Injectable } from "@nestjs/common";
 import { codeFormater } from "src/common/utils/auto-generate-code.util";
 import Category from "src/entities/category.entity";
+import { QueryListDto } from "src/modules/master/categories/dto/query-list.dto";
 import { DataSource, Repository } from "typeorm";
 
 @Injectable()
 export class CategoryRepository extends Repository<Category> {
     constructor(private readonly dataSource: DataSource) {
         super(Category, dataSource.createEntityManager())
+    }
+
+    findCategories(query: QueryListDto): Promise<Category[]> {
+        const { search } = query
+        const queryBuilder = this.createQueryBuilder('category')
+            .orderBy('category.name', 'ASC')
+        if (search) {
+            queryBuilder.where('lower(category.name) like lower(:search)', {
+                search: `%${search}%`,
+            });
+        }
+
+        return queryBuilder.getMany();
     }
 
     async autoGenerateCode(): Promise<string> {
