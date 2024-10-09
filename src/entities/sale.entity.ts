@@ -3,6 +3,7 @@ import { Entity, Column, PrimaryGeneratedColumn, CreateDateColumn, UpdateDateCol
 import SaleItem from './sale-item.entity';
 import { Payment } from './payment.entity';
 import InventoryLedger from './inventory-ledger.entity';
+import { PaymentStatus } from 'src/common/enums/payment-status.enum';
 @Entity({ name: 'sales' })
 export class Sale {
     /**
@@ -18,12 +19,20 @@ export class Sale {
     @Column({ type: 'date' })
     date!: Date;
 
-    @Column({ type: 'text' })
-    note!: string
+    @Column({ type: 'date' })
+    @Expose({ name: 'due_date' })
+    dueDate!: Date;
+
+    @Column({ type: 'text', nullable: true })
+    note?: string
 
     @Column({ type: 'bigint', nullable: false })
     @Type(() => Number)
     total!: number
+
+    @Column({ enum: PaymentStatus, default: PaymentStatus.UNPAID })
+    @Expose({ name: 'payment_status' })
+    paymentStatus!: PaymentStatus
 
     /**
      * Relations

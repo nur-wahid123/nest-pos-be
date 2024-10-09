@@ -9,15 +9,13 @@ export const codeFormater = async (
   if (secondPrefix === 'SP' || secondPrefix === 'SL' || secondPrefix === 'CU') {
     formatedDate = newdate.toISOString().slice(0, 4).replace(/-/g, '');
   }
-  let number: number;
+  let uuid: string;
   if (!currentCode) {
-    number = 1;
+    uuid = crypto.randomUUID();
   } else {
-    number = parseInt(currentCode.slice(-4), 10) + 1;
+    uuid = crypto.randomUUID();
   }
-  //generate 4 digit number
-  const formattedNumber = number.toString().padStart(4, '0');
-  return `${fistPrefix}/${secondPrefix}${formatedDate}${formattedNumber}`;
+  return `${fistPrefix}/${secondPrefix}${formatedDate}/${uuid.slice(0, 8)}`;
 };
 export const codeFormaterWithOutLocation = async (
   secondPrefix: string,
@@ -29,16 +27,11 @@ export const codeFormaterWithOutLocation = async (
   if (secondPrefix === 'SP' || secondPrefix === 'SL' || secondPrefix === 'CU') {
     formatedDate = newdate.toISOString().slice(0, 4).replace(/-/g, '');
   }
-  let number: number;
-  if (!currentCode) {
-    number = 1;
-  } else {
-    number = parseInt(currentCode.slice(-4), 10) + 1;
-  }
-  //generate 4 digit number
-  const formattedNumber = number.toString().padStart(4, '0');
-  return `${secondPrefix}${formatedDate}${formattedNumber}`;
+  let uuid: string;
+  uuid = crypto.randomUUID().slice(0, 8);
+  return `${secondPrefix}${formatedDate}${uuid}`;
 };
+
 
 export const journalCodeFormater = (
   secondPrefix: string,
