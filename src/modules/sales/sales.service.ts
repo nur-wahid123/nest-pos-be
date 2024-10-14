@@ -7,6 +7,7 @@ import { In } from 'typeorm';
 import { PaymentStatus } from 'src/common/enums/payment-status.enum';
 import { PaymentRepository } from 'src/repositories/payment.repository';
 import { CreateSalePaymentDto } from './dto/create-payment.dto';
+import { QuerySaleDto } from './dto/query-sale.dto';
 
 @Injectable()
 export class SalesService {
@@ -16,7 +17,12 @@ export class SalesService {
         private readonly paymentRepository: PaymentRepository
     ) { }
 
+    findAll(query: QuerySaleDto) {
+        return this.saleRepository.findSales(query)
+    }
+
     async createPayment(createSalePaymentDto: CreateSalePaymentDto, userId: number) {
+        if (createSalePaymentDto.paid <= 0) throw new BadRequestException('invalid payment amount')
         return this.paymentRepository.paySale(createSalePaymentDto, userId)
     }
 
@@ -93,7 +99,7 @@ export class SalesService {
         return saleItems;
     }
 
-    async needToPay(saleCode: string): Promise<number> {
+    async needToPay(saleCode: string): Promise<{ needToPay: number, lateFees: number }> {
         const sale = await this.saleRepository.findOne(
             {
                 where:
@@ -105,6 +111,11 @@ export class SalesService {
                 {
                     payments: true,
                     saleItems: true
+                },
+                order: {
+                    payments: {
+                        id: 'DESC'
+                    }
                 }
             })
         if (sale.paymentStatus === PaymentStatus.PAID) throw new BadRequestException('purchase already paid')

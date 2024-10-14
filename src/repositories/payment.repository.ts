@@ -53,10 +53,12 @@ export class PaymentRepository extends Repository<Payment> {
             })
         if (sale.paymentStatus === PaymentStatus.PAID) throw new BadRequestException('purchase already paid')
         const needToPay = await this.calculateSaleNeedToPay(sale)
-        if (Number(paid) > Number(needToPay)) throw new BadRequestException('The payment amount must not exceed the amount due')
+        if (Number(paid) > Number(needToPay.needToPay)) throw new BadRequestException('The payment amount must not exceed the amount due')
+        console.log(needToPay, paid);
+
         try {
             const payment = new Payment()
-            if (Number(needToPay) === Number(paid)) {
+            if (Number(needToPay.needToPay) === Number(paid)) {
                 sale.paymentStatus = PaymentStatus.PAID
                 sale.updatedBy = userId
                 payment.paymentType = PaymentType.PAIDOFF
@@ -180,12 +182,20 @@ export class PaymentRepository extends Repository<Payment> {
      * @param total The total amount of the sale
      * @returns The late fees amount
      */
-    private async checkLateFees(paymentDate: Date, dueDate: Date, total: number): Promise<number> {
-        const diffTime = Math.abs(paymentDate.getTime() - dueDate.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        const lateFeesPerWeek = total * 0.05
-        const weeks = Math.ceil(diffDays / 7)
-        return lateFeesPerWeek * weeks
+    private async checkLateFees(startDate: Date, dueDate: Date, total: number): Promise<number> {
+        try {
+            const today = new Date(startDate);
+            if (today < dueDate) return 0
+            const diffTime = Math.abs(today.getTime() - dueDate.getTime());
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            console.log(diffDays);
+            const lateFeesPerWeek = total * 0.05
+            const weeks = Math.ceil(diffDays / 7)
+            return lateFeesPerWeek * weeks
+        } catch (error) {
+            console.log(error);
+
+        }
     }
 
     /**
@@ -193,29 +203,38 @@ export class PaymentRepository extends Repository<Payment> {
      * @param sale The sale to calculate the amount for.
      * @returns The amount that still needs to be paid.
      */
-    async calculateSaleNeedToPay(sale: Sale): Promise<number> {
+    async calculateSaleNeedToPay(sale: Sale): Promise<{ needToPay: number, lateFees: number }> {
         let needToPay = sale.total;
+        let lateFees = 0
+
         for (let index = 0; index < sale.payments.length; index++) {
             const payment = sale.payments[index];
             needToPay = Number(needToPay) - Number(payment.paid);
         }
         if (sale.dueDate) {
-            const lateFees = await this.checkLateFees(sale.date, sale.dueDate, sale.total);
+            if (sale.payments.length > 0) {
+                const { date } = sale.payments[0]
+                lateFees = await this.checkLateFees(new Date(date), new Date(sale.dueDate), sale.total);
+            } else {
+                lateFees = await this.checkLateFees(new Date(), new Date(sale.dueDate), sale.total);
+            }
+
             needToPay = Number(needToPay) + Number(lateFees);
         }
-        return needToPay;
+        return { needToPay, lateFees };
     }    /**
      * Substract product to inventory
      * @param ettManager entity manager
      * @param saleItems sale items
      * @param userId user id
-     */    async substractProductToInventory(ettManager: EntityManager, saleItems: SaleItem[], userId: number) {
+     */
+    async substractProductToInventory(ettManager: EntityManager, saleItems: SaleItem[], userId: number) {
         saleItems.map(async (v) => {
-            let inventory = await ettManager.findOne(Inventory, { where: { product: v?.product } })
+            let inventory = await ettManager.findOne(Inventory, { where: { product: { id: v?.product.id } } })
 
             if (inventory) {
-                const inventoryLedger = ettManager.create(InventoryLedger, { inventory: inventory, qty: v?.qty, qtyBeforeUpdate: inventory.qty, qtyAfterUpdate: Number(v?.qty) + Number(inventory.qty), direction: 1, createdBy: userId, })
-                inventory.qty = Number(inventory.qty) + Number(v?.qty)
+                const inventoryLedger = ettManager.create(InventoryLedger, { sale: v?.sale, inventory: inventory, qty: v?.qty, qtyBeforeUpdate: inventory.qty, qtyAfterUpdate: Number(inventory.qty) - Number(v?.qty), direction: -1, createdBy: userId, })
+                inventory.qty = Number(inventory.qty) - Number(v?.qty)
                 await ettManager.save(inventory)
                 await ettManager.save(inventoryLedger)
             }
