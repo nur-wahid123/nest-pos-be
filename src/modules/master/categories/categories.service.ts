@@ -19,7 +19,8 @@ export class CategoriesService {
     return this.categoryRepository.save(newCategory)
   }
 
-  findAll(query: QueryListDto): Promise<Category[]> {
+  findAll(query: QueryListDto, isCasheer?: boolean): Promise<Category[]> {
+    if (isCasheer) return this.categoryRepository.findCategoriesCasheer(query)
     return this.categoryRepository.findCategories(query);
   }
 

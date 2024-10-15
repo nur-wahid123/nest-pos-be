@@ -222,12 +222,13 @@ export class PaymentRepository extends Repository<Payment> {
             needToPay = Number(needToPay) + Number(lateFees);
         }
         return { needToPay, lateFees };
-    }    /**
-     * Substract product to inventory
-     * @param ettManager entity manager
-     * @param saleItems sale items
-     * @param userId user id
-     */
+    }
+    /**
+    * Substract product to inventory
+    * @param ettManager entity manager
+    * @param saleItems sale items
+    * @param userId user id
+    */
     async substractProductToInventory(ettManager: EntityManager, saleItems: SaleItem[], userId: number) {
         saleItems.map(async (v) => {
             let inventory = await ettManager.findOne(Inventory, { where: { product: { id: v?.product.id } } })
@@ -248,10 +249,10 @@ export class PaymentRepository extends Repository<Payment> {
      */
     async addProductToInventory(ettManager: EntityManager, purchaseItems: PurchaseItem[], userId: number) {
         purchaseItems.map(async (v) => {
-            let inventory = await ettManager.findOne(Inventory, { where: { product: v?.product } })
+            let inventory = await ettManager.findOne(Inventory, { where: { product: { id: v?.product.id } } })
 
             if (!inventory) {
-                inventory = ettManager.create(Inventory, { product: v?.product, qty: v?.qty, createdBy: userId })
+                inventory = ettManager.create(Inventory, { product: { id: v?.product.id }, qty: v?.qty, createdBy: userId })
                 console.log(inventory, v);
                 await ettManager.save(inventory)
                 const inventoryLedger = ettManager.create(InventoryLedger, { purchase: v?.purchase, inventory: inventory, qty: v?.qty, qtyBeforeUpdate: 0, qtyAfterUpdate: v?.qty, direction: 1, createdBy: userId, })

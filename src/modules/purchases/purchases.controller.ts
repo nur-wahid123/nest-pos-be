@@ -32,7 +32,7 @@ export class PurchasesController {
     @Body() createPurchaseDto: CreatePurchaseDto,
     @Payload() payload: JwtPayload,
   ) {
-    return this.purchasesService.create(createPurchaseDto, payload.sub);
+    return this.purchasesService.create(createPurchaseDto, +payload.sub, +payload.merchantId);
   }
 
   @Post('payment')
@@ -59,7 +59,7 @@ export class PurchasesController {
     return this.purchasesService.needToPay(param.purchase_code)
   }
 
-  @Get()
+  @Get('list')
   /**
    * Find purchase orders matching the given criteria.
    * @param pageOptionsDto The page options. This should include the page number and the number of items per page.

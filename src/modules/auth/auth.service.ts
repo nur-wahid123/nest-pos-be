@@ -40,6 +40,8 @@ export class AuthService {
     if (!user) {
       throw new ForbiddenException('Username Or Password are incorrect')
     }
+    console.log(user);
+
 
     const payload = await this.validateUser(dto)
 
@@ -53,6 +55,7 @@ export class AuthService {
       username: user.username,
       sub: user.id,
       email: user.email,
+      merchantId: user.merchant.id
     };
     const token = await this.jwtService.signAsync(payload, {
       secret: process.env.USER_KEY_SECRET,

@@ -21,6 +21,10 @@ export class CategoriesController {
   findAll(@Query() query: QueryListDto) {
     return this.categoriesService.findAll(query);
   }
+  @Get('cashier')
+  findInCashier(@Query() query: QueryListDto) {
+    return this.categoriesService.findAll(query, true);
+  }
 
   @Get(':id')
   findOne(@Param('id') id: string) {

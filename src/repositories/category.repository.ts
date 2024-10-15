@@ -22,6 +22,25 @@ export class CategoryRepository extends Repository<Category> {
 
         return queryBuilder.getMany();
     }
+    findCategoriesCasheer(query: QueryListDto): Promise<Category[]> {
+        const { search } = query
+        const queryBuilder = this.createQueryBuilder('category')
+            .leftJoin('category.products', 'products')
+            .leftJoin('products.inventory', 'inventory')
+            .orderBy('category.name', 'ASC')
+        queryBuilder.where((qb) => {
+            if (search) {
+                qb.andWhere('lower(category.name) like lower(:search)'), {
+                    search: `%${search}%`,
+                }
+            }
+            qb.andWhere(`inventory.qty > 0`)
+        });
+        queryBuilder.groupBy('category.id')
+
+
+        return queryBuilder.getMany();
+    }
 
     async autoGenerateCode(): Promise<string> {
         const newDate = new Date();

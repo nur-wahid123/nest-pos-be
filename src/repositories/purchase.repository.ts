@@ -1,7 +1,8 @@
-import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { PageOptionsDto } from "src/common/dto/page-option.dto";
 import { codeFormater } from "src/common/utils/auto-generate-code.util";
 import { autoGenerateCodeBank } from "src/common/utils/multi-payment-process.util";
+import { Merchant } from "src/entities/merchant.entity";
 import { Payment } from "src/entities/payment.entity";
 import { PurchaseItem } from "src/entities/purchase-item.entity";
 import { Purchase } from "src/entities/purchase.entity";
@@ -39,10 +40,13 @@ export class PurchaseRepository extends Repository<Purchase> {
         supplier: Supplier,
         total: number,
         userId: number,
+        merchantId: number
     ): Promise<Purchase> {
         const queryRunner = this.dataSource.createQueryRunner();
         await queryRunner.connect();
         await queryRunner.startTransaction();
+        const merchant = await queryRunner.manager.findOne(Merchant, { where: { id: merchantId } });
+        if (!merchant) throw new NotFoundException('Merchant not found');
         try {
             const purchase = new Purchase();
             purchase.note = parent?.note;
@@ -51,6 +55,7 @@ export class PurchaseRepository extends Repository<Purchase> {
             purchase.createdBy = userId;
             purchase.total = total;
             purchase.supplier = supplier;
+            purchase.merchant = merchant
             await queryRunner.manager.save(purchase);
             const purchaseItems = this.createChild(purchase, child, userId);
             await queryRunner.manager.save(purchaseItems);
@@ -92,6 +97,8 @@ export class PurchaseRepository extends Repository<Purchase> {
             .createQueryBuilder(Purchase, 'purchase')
             .leftJoinAndSelect('purchase.supplier', 'supplier')
             .leftJoinAndSelect('purchase.payments', 'payments')
+            .leftJoinAndSelect('purchase.purchaseItems', 'purchaseItems')
+            .leftJoinAndSelect('purchaseItems.product', 'product')
         query.where((qb) => {
             search &&
                 qb.andWhere(

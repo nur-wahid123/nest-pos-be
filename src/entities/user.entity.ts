@@ -4,10 +4,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 import CommonBaseMerchantEntity from './base/base-merchant.entity';
+import { Merchant } from './merchant.entity';
 
 export enum Gender {
   FEMALE = 'female',
@@ -50,5 +52,8 @@ export class User extends CommonBaseMerchantEntity {
   /**
    * Relations
    */
+
+  @ManyToOne(() => Merchant)
+  merchant: Merchant;
 
 }

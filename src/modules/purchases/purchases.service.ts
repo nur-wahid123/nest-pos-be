@@ -30,7 +30,8 @@ export class PurchasesService {
 
     async create(
         createPurchaseDto: CreatePurchaseDto,
-        userId: number
+        userId: number,
+        merchantId: number,
     ): Promise<GetPurchaseWithUserDto> {
 
         const code = await this.purchaseRepo.autoGenerateCode(
@@ -56,6 +57,7 @@ export class PurchasesService {
             supplier,
             total,
             userId,
+            merchantId
         );
         return await this.findOne(result.id)
 
@@ -143,6 +145,13 @@ export class PurchasesService {
                 {
                     payments: true,
                     purchaseItems: true
+                },
+                order:
+                {
+                    payments:
+                    {
+                        id: 'DESC'
+                    }
                 }
             })
         if (purchase.paymentStatus === PaymentStatus.PAID) throw new BadRequestException('purchase already paid')
