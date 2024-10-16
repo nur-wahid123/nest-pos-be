@@ -11,6 +11,9 @@ import { Product } from 'src/entities/product.entity';
 import { QueryListDto } from '../categories/dto/query-list.dto';
 import { Like } from 'typeorm';
 import { QueryProductListDto } from './dto/query-product-list.dto';
+import { PageDto } from 'src/common/dto/page.dto';
+import { PageMetaDto } from 'src/common/dto/page-meta.dto';
+import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 
 @Injectable()
 export class ProductsService {
@@ -70,8 +73,11 @@ export class ProductsService {
     return this.productRepository.saveProduct(product)
   }
 
-  findAll(query: QueryProductListDto): Promise<Product[]> {
-    return this.productRepository.findProducts(query)
+  async findAll(query: QueryProductListDto, pageOptionsDto: PageOptionsDto) {
+    const [data, itemCount] = await this.productRepository.findProducts(query, pageOptionsDto)
+    // const itemCount = data.length
+    const pageMeta = new PageMetaDto({ pageOptionsDto, itemCount })
+    return new PageDto(data, pageMeta)
   }
 
   findOne(id: number): Promise<Product> {

@@ -92,7 +92,7 @@ export class PurchaseRepository extends Repository<Purchase> {
         queryparam?: QueryPurchaseListDto,
     ) {
         const { code, supplier, search } = queryparam;
-
+        const { take, skip, order } = pageOptionsDto
         const query = this.dataSource
             .createQueryBuilder(Purchase, 'purchase')
             .leftJoinAndSelect('purchase.supplier', 'supplier')
@@ -127,14 +127,11 @@ export class PurchaseRepository extends Repository<Purchase> {
                 this.applyTimeRange(qb, timeRange);
             }
         });
-        if (pageOptionsDto) {
-            this.applyPageOptions(
-                query,
-                pageOptionsDto,
-                'purchase.date',
-                'purchase.id',
-            );
+        if (take && skip) {
+            query.take(take);
+            query.skip(skip);
         }
+        query.orderBy('purchase.createdAt', 'DESC');
         return query;
     }
 

@@ -1,4 +1,5 @@
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
+import { PageOptionsDto } from "src/common/dto/page-option.dto";
 import Brand from "src/entities/brand.entity";
 import Category from "src/entities/category.entity";
 import { Product } from "src/entities/product.entity";
@@ -135,14 +136,22 @@ export class ProductRepository extends Repository<Product> {
         }
     }
 
-    async findProducts(query: QueryProductListDto) {
+    async findProducts(query: QueryProductListDto, pageOptions: PageOptionsDto) {
+        const { skip, take } = pageOptions
         const qb = this.dataSource.createQueryBuilder(Product, 'product')
         qb.leftJoinAndSelect('product.brand', 'brand')
         qb.leftJoinAndSelect('product.category', 'category')
         qb.leftJoinAndSelect('product.uom', 'uom')
         qb.leftJoinAndSelect('product.inventory', 'inventory')
+        console.log(take, skip);
+        if (skip && take) {
+
+            qb
+                .skip(skip)
+                .take(take)
+        }
         this.applyFilters(qb, query)
-        return await qb.getMany()
+        return await qb.getManyAndCount()
     }
 
     applyFilters(qb: SelectQueryBuilder<Product>, query: QueryProductListDto) {

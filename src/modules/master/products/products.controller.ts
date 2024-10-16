@@ -8,6 +8,7 @@ import { Product } from 'src/entities/product.entity';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { QueryListDto } from '../categories/dto/query-list.dto';
 import { QueryProductListDto } from './dto/query-product-list.dto';
+import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 
 @Controller('products')
 @UseGuards(JwtAuthGuard)
@@ -20,8 +21,8 @@ export class ProductsController {
   }
 
   @Get('all')
-  findAll(@Query() query: QueryProductListDto) {
-    return this.productsService.findAll(query);
+  findAll(@Query() query: QueryProductListDto, @Query() pageOptions: PageOptionsDto) {
+    return this.productsService.findAll(query, pageOptions);
   }
 
   @Get(':id')
