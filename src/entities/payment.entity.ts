@@ -13,9 +13,10 @@ import {
 import { Sale } from './sale.entity';
 import { Purchase } from './purchase.entity';
 import { PaymentType } from 'src/modules/payments/enum/payment-type.enum';
+import CommonBaseMerchantEntity from './base/base-merchant.entity';
 
 @Entity({ name: 'payments' })
-export class Payment {
+export class Payment extends CommonBaseMerchantEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
@@ -46,38 +47,4 @@ export class Payment {
 
     @ManyToOne(() => Purchase, (purchase) => purchase.payments, { nullable: true })
     purchase: Purchase;
-
-    /**
-     * Changelog
-     */
-    @CreateDateColumn({ type: 'timestamp' })
-    @Expose({ name: 'created_at' })
-    createdAt!: Date;
-
-    @Column({ nullable: true })
-    @Expose({ name: 'created_by' })
-    createdBy!: number;
-
-    @UpdateDateColumn({ nullable: true, type: 'timestamp' })
-    @Expose({ name: 'updated_at' })
-    updatedAt!: Date;
-
-    @Column({ nullable: true })
-    @Expose({ name: 'updated_by' })
-    updatedBy!: number;
-
-    /**
-     * Soft deletion
-     */
-    @DeleteDateColumn({
-        type: 'timestamp',
-        default: null,
-        nullable: true,
-    })
-    @Expose({ name: 'deleted_at' })
-    deletedAt!: Date;
-
-    @Column({ default: null, nullable: true })
-    @Expose({ name: 'deleted_by' })
-    deletedBy!: number;
 }

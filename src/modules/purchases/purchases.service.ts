@@ -15,6 +15,7 @@ import { PageDto } from 'src/common/dto/page.dto';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { PaymentRepository } from 'src/repositories/payment.repository';
 import { PaymentStatus } from 'src/common/enums/payment-status.enum';
+import { Purchase } from 'src/entities/purchase.entity';
 
 @Injectable()
 export class PurchasesService {
@@ -30,7 +31,8 @@ export class PurchasesService {
 
     async create(
         createPurchaseDto: CreatePurchaseDto,
-        userId: number
+        userId: number,
+        merchantId: number,
     ): Promise<GetPurchaseWithUserDto> {
 
         const code = await this.purchaseRepo.autoGenerateCode(
@@ -56,6 +58,7 @@ export class PurchasesService {
             supplier,
             total,
             userId,
+            merchantId
         );
         return await this.findOne(result.id)
 
@@ -115,13 +118,16 @@ export class PurchasesService {
         timeRange: QueryPurchaseDateRangeDto,
         query: QueryPurchaseListDto,
     ) {
-        const data = await this.purchaseRepo.findAll(
+        const data = this.purchaseRepo.findAll(
             pageOptionsDto,
             timeRange,
             query,
         );
+        // const [entities, itemCount] = await this.purchaseRepo.manager.findAndCount(
+        //     Purchase, { relations: { supplier: true, payments: true, purchaseItems: { product: true } } }
+        // )
         const itemCount = await data.getCount();
-        const { entities } = await data.getRawAndEntities();
+        const entities = await data.getMany();
         const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });
 
         return new PageDto(entities, pageMetaDto);
@@ -143,6 +149,13 @@ export class PurchasesService {
                 {
                     payments: true,
                     purchaseItems: true
+                },
+                order:
+                {
+                    payments:
+                    {
+                        id: 'DESC'
+                    }
                 }
             })
         if (purchase.paymentStatus === PaymentStatus.PAID) throw new BadRequestException('purchase already paid')

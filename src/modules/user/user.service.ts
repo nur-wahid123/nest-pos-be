@@ -101,7 +101,8 @@ export class UserService {
 
   async findByUsername(username: string): Promise<User> {
     return this.userRepository.createQueryBuilder('user')
-      .select(['user.id', 'user.name', 'user.gender', 'user.username', 'user.age', 'user.email', 'user.password'])
+      .leftJoin('user.merchant', 'merchant')
+      .addSelect(['user.id', 'merchant.id', 'user.name', 'user.gender', 'user.username', 'user.age', 'user.email', 'user.password'])
       .where('user.username = :username', { username })
       .getOne();
   }

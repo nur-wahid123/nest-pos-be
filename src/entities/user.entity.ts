@@ -4,9 +4,12 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import CommonBaseMerchantEntity from './base/base-merchant.entity';
+import { Merchant } from './merchant.entity';
 
 export enum Gender {
   FEMALE = 'female',
@@ -15,7 +18,7 @@ export enum Gender {
 }
 
 @Entity({ name: 'users' })
-export class User {
+export class User extends CommonBaseMerchantEntity {
   /**
    * Columns
    */
@@ -50,41 +53,7 @@ export class User {
    * Relations
    */
 
+  @ManyToOne(() => Merchant)
+  merchant: Merchant;
 
-
-  /**
-   * Changelog
-   */
-
-
-  @CreateDateColumn({ type: 'timestamp' })
-  @Expose({ name: 'created_at' })
-  createdAt!: Date;
-
-  @Column({ nullable: true })
-  @Expose({ name: 'created_by' })
-  createdBy!: number;
-
-  @UpdateDateColumn({ nullable: true, type: 'timestamp' })
-  @Expose({ name: 'updated_at' })
-  updatedAt!: Date;
-
-  @Column({ nullable: true })
-  @Expose({ name: 'updated_by' })
-  updatedBy!: number;
-
-  /**
-   * Soft deletion
-   */
-  @DeleteDateColumn({
-    type: 'timestamp',
-    default: null,
-    nullable: true,
-  })
-  @Expose({ name: 'deleted_at' })
-  deletedAt!: Date;
-
-  @Column({ default: null, nullable: true })
-  @Expose({ name: 'deleted_by' })
-  deletedBy!: number;
 }

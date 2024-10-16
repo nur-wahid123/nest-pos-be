@@ -48,19 +48,23 @@ export class PaymentRepository extends Repository<Payment> {
                 , relations:
                 {
                     payments: true,
-                    saleItems: { product: true }
+                    saleItems: { product: true, sale: true }
                 }
             })
         if (sale.paymentStatus === PaymentStatus.PAID) throw new BadRequestException('purchase already paid')
         const needToPay = await this.calculateSaleNeedToPay(sale)
-        if (Number(paid) > Number(needToPay)) throw new BadRequestException('The payment amount must not exceed the amount due')
+        if (Number(paid) > Number(needToPay.needToPay)) throw new BadRequestException('The payment amount must not exceed the amount due')
+        console.log(needToPay, paid);
+
         try {
             const payment = new Payment()
-            if (Number(needToPay) === Number(paid)) {
+            if (Number(needToPay.needToPay) === Number(paid)) {
                 sale.paymentStatus = PaymentStatus.PAID
                 sale.updatedBy = userId
                 payment.paymentType = PaymentType.PAIDOFF
-                await this.substractProductToInventory(queryRunner.manager, sale.saleItems, userId)
+                if (sale.payments.length === 0) {
+                    await this.substractProductToInventory(queryRunner.manager, sale.saleItems, userId)
+                }
             } else {
                 if (sale.paymentStatus === PaymentStatus.UNPAID) {
                     sale.paymentStatus = PaymentStatus.PARTIALPAID
@@ -104,8 +108,8 @@ export class PaymentRepository extends Repository<Payment> {
         const { paid, purchaseCode, note } = paymentDto
         const queryRunner = this.dataSource.createQueryRunner()
         await queryRunner.connect();
-
         await queryRunner.startTransaction();
+        if (paid <= 0) throw new BadRequestException('The payment amount must not be zero')
         const purchase = await queryRunner.manager.findOne(Purchase,
             {
                 where:
@@ -116,7 +120,7 @@ export class PaymentRepository extends Repository<Payment> {
                 , relations:
                 {
                     payments: true,
-                    purchaseItems: { product: true }
+                    purchaseItems: { product: true, purchase: true }
                 }
             })
         if (purchase.paymentStatus === PaymentStatus.PAID) throw new BadRequestException('purchase already paid')
@@ -128,7 +132,9 @@ export class PaymentRepository extends Repository<Payment> {
                 purchase.paymentStatus = PaymentStatus.PAID
                 purchase.updatedBy = userId
                 payment.paymentType = PaymentType.PAIDOFF
-                await this.addProductToInventory(queryRunner.manager, purchase.purchaseItems, userId)
+                if (purchase.payments.length === 0) {
+                    await this.addProductToInventory(queryRunner.manager, purchase.purchaseItems, userId)
+                }
             } else {
                 if (purchase.paymentStatus === PaymentStatus.UNPAID) {
                     purchase.paymentStatus = PaymentStatus.PARTIALPAID
@@ -180,12 +186,20 @@ export class PaymentRepository extends Repository<Payment> {
      * @param total The total amount of the sale
      * @returns The late fees amount
      */
-    private async checkLateFees(paymentDate: Date, dueDate: Date, total: number): Promise<number> {
-        const diffTime = Math.abs(paymentDate.getTime() - dueDate.getTime());
-        const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-        const lateFeesPerWeek = total * 0.05
-        const weeks = Math.ceil(diffDays / 7)
-        return lateFeesPerWeek * weeks
+    private async checkLateFees(startDate: Date, dueDate: Date, total: number): Promise<number> {
+        try {
+            const today = new Date(startDate);
+            if (today < dueDate) return 0
+            const diffTime = Math.abs(today.getTime() - dueDate.getTime());
+            const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+            console.log(diffDays);
+            const lateFeesPerWeek = total * 0.05
+            const weeks = Math.ceil(diffDays / 7)
+            return lateFeesPerWeek * weeks
+        } catch (error) {
+            console.log(error);
+
+        }
     }
 
     /**
@@ -193,31 +207,51 @@ export class PaymentRepository extends Repository<Payment> {
      * @param sale The sale to calculate the amount for.
      * @returns The amount that still needs to be paid.
      */
-    async calculateSaleNeedToPay(sale: Sale): Promise<number> {
+    async calculateSaleNeedToPay(sale: Sale): Promise<{ needToPay: number, lateFees: number }> {
         let needToPay = sale.total;
+        let lateFees = 0
+
         for (let index = 0; index < sale.payments.length; index++) {
             const payment = sale.payments[index];
             needToPay = Number(needToPay) - Number(payment.paid);
         }
         if (sale.dueDate) {
-            const lateFees = await this.checkLateFees(sale.date, sale.dueDate, sale.total);
+            if (sale.payments.length > 0) {
+                const { date } = sale.payments[0]
+                lateFees = await this.checkLateFees(new Date(date), new Date(sale.dueDate), sale.total);
+            } else {
+                lateFees = await this.checkLateFees(new Date(), new Date(sale.dueDate), sale.total);
+            }
+
             needToPay = Number(needToPay) + Number(lateFees);
         }
-        return needToPay;
-    }    /**
-     * Substract product to inventory
-     * @param ettManager entity manager
-     * @param saleItems sale items
-     * @param userId user id
-     */    async substractProductToInventory(ettManager: EntityManager, saleItems: SaleItem[], userId: number) {
+        return { needToPay, lateFees };
+    }
+    /**
+    * Substract product to inventory
+    * @param ettManager entity manager
+    * @param saleItems sale items
+    * @param userId user id
+    */
+    async substractProductToInventory(ettManager: EntityManager, saleItems: SaleItem[], userId: number) {
         saleItems.map(async (v) => {
-            let inventory = await ettManager.findOne(Inventory, { where: { product: v?.product } })
+            let inventory = await ettManager.findOne(Inventory, { where: { product: { id: v?.product.id } } })
 
             if (inventory) {
-                const inventoryLedger = ettManager.create(InventoryLedger, { inventory: inventory, qty: v?.qty, qtyBeforeUpdate: inventory.qty, qtyAfterUpdate: Number(v?.qty) + Number(inventory.qty), direction: 1, createdBy: userId, })
-                inventory.qty = Number(inventory.qty) + Number(v?.qty)
+                console.log(v?.sale);
+
+
+                const invLdgr = new InventoryLedger()
+                invLdgr.sale = v?.sale
+                invLdgr.inventory = inventory
+                invLdgr.qty = v?.qty
+                invLdgr.qtyBeforeUpdate = inventory.qty
+                invLdgr.qtyAfterUpdate = Number(inventory.qty) - Number(v?.qty)
+                invLdgr.direction = -1
+                invLdgr.createdBy = userId
+                inventory.qty = Number(inventory.qty) - Number(v?.qty)
                 await ettManager.save(inventory)
-                await ettManager.save(inventoryLedger)
+                await ettManager.save(invLdgr)
             }
         })
     }
@@ -229,16 +263,16 @@ export class PaymentRepository extends Repository<Payment> {
      */
     async addProductToInventory(ettManager: EntityManager, purchaseItems: PurchaseItem[], userId: number) {
         purchaseItems.map(async (v) => {
-            let inventory = await ettManager.findOne(Inventory, { where: { product: v?.product } })
+            let inventory = await ettManager.findOne(Inventory, { where: { product: { id: v?.product.id } } })
 
             if (!inventory) {
-                inventory = ettManager.create(Inventory, { product: v?.product, qty: v?.qty, createdBy: userId })
+                inventory = ettManager.create(Inventory, { product: { id: v?.product.id }, qty: v?.qty, createdBy: userId })
                 console.log(inventory, v);
                 await ettManager.save(inventory)
                 const inventoryLedger = ettManager.create(InventoryLedger, { purchase: v?.purchase, inventory: inventory, qty: v?.qty, qtyBeforeUpdate: 0, qtyAfterUpdate: v?.qty, direction: 1, createdBy: userId, })
                 await ettManager.save(inventoryLedger)
             } else {
-                const inventoryLedger = ettManager.create(InventoryLedger, { inventory: inventory, qty: v?.qty, qtyBeforeUpdate: inventory.qty, qtyAfterUpdate: Number(v?.qty) + Number(inventory.qty), direction: 1, createdBy: userId, })
+                const inventoryLedger = ettManager.create(InventoryLedger, { purchase: v?.purchase, inventory: inventory, qty: v?.qty, qtyBeforeUpdate: inventory.qty, qtyAfterUpdate: Number(v?.qty) + Number(inventory.qty), direction: 1, createdBy: userId, })
                 inventory.qty = Number(inventory.qty) + Number(v?.qty)
                 await ettManager.save(inventory)
                 await ettManager.save(inventoryLedger)

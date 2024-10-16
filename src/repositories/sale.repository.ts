@@ -4,12 +4,31 @@ import { Inventory } from "src/entities/inventory.entity";
 import SaleItem from "src/entities/sale-item.entity";
 import { Sale } from "src/entities/sale.entity";
 import { CreateSaleDto } from "src/modules/sales/dto/create-sale.dto";
-import { DataSource, EntityManager, Repository } from "typeorm";
+import { QuerySaleDto } from "src/modules/sales/dto/query-sale.dto";
+import { DataSource, EntityManager, Repository, SelectQueryBuilder } from "typeorm";
 
 @Injectable()
 export class SaleRepository extends Repository<Sale> {
     constructor(private readonly dataSource: DataSource) {
         super(Sale, dataSource.createEntityManager())
+    }
+
+    async findSales(filter: QuerySaleDto) {
+        const query = this.createQueryBuilder('sale')
+            .leftJoinAndSelect('sale.saleItems', 'saleItems')
+            .leftJoinAndSelect('saleItems.product', 'product')
+            .leftJoinAndSelect('sale.payments', 'payments')
+            .where((qb) => {
+                this.aplyFilters(qb, filter)
+            })
+            .orderBy('sale.createdAt', 'DESC')
+        return await query.getMany()
+    }
+
+    private aplyFilters(qb: SelectQueryBuilder<Sale>, query: QuerySaleDto) {
+        const { saleCode, search } = query
+        saleCode && qb.andWhere('sale.code = :saleCode', { saleCode })
+        search && qb.andWhere('lower(sale.code) like lower(:search)', { search: `%${search}%` })
     }
 
     private checkStock(saleItems: SaleItem[], manager: EntityManager) {
