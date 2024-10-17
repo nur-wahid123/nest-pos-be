@@ -14,7 +14,7 @@ import { Merchant } from './merchant.entity';
 export enum Gender {
   FEMALE = 'female',
   MALE = 'male',
-  UNSPECIFIED = 'unspecified'
+  UNSPECIFIED = 'unspecified',
 }
 
 @Entity({ name: 'users' })
@@ -55,5 +55,4 @@ export class User extends CommonBaseMerchantEntity {
 
   @ManyToOne(() => Merchant)
   merchant: Merchant;
-
 }

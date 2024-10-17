@@ -29,6 +29,4 @@ export default class Brand extends CommonBaseMerchantEntity {
     nullable: false,
   })
   products!: Product[];
-
-
 }

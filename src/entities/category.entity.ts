@@ -29,5 +29,4 @@ export default class Category extends CommonBaseMerchantEntity {
     nullable: false,
   })
   products!: Product[];
-
 }

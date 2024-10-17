@@ -9,7 +9,7 @@ describe('AuthService', () => {
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       providers: [AuthService],
-      imports:[UserModule]
+      imports: [UserModule],
     }).compile();
 
     service = module.get<AuthService>(AuthService);

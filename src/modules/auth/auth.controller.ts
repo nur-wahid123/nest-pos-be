@@ -30,7 +30,7 @@ import { HttpExceptionFilter } from 'src/common/filters/http-exception.filter';
 @UseFilters(HttpExceptionFilter)
 @UseInterceptors(new ResponseInterceptor(), ClassSerializerInterceptor)
 export class AuthController {
-  constructor(private readonly authService: AuthService) { }
+  constructor(private readonly authService: AuthService) {}
 
   @Post('login')
   @HttpCode(HttpStatus.OK)
@@ -43,8 +43,7 @@ export class AuthController {
     try {
       return this.authService.register(createUserDto);
     } catch (error) {
-      console.log("auth-c");
-
+      console.log('auth-c');
     }
   }
 

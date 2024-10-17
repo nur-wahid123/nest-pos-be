@@ -1,7 +1,5 @@
 import { EntityManager } from 'typeorm';
-import {
-  codeFormaterWithOutLocation,
-} from './auto-generate-code.util';
+import { codeFormaterWithOutLocation } from './auto-generate-code.util';
 import { Payment } from 'src/entities/payment.entity';
 
 export async function autoGenerateCodeBank(

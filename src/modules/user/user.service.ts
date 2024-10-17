@@ -1,4 +1,8 @@
-import { BadRequestException, ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
@@ -18,14 +22,16 @@ export class UserService {
   constructor(
     private readonly userRepository: UserRepository,
     private readonly hashPassword: HashPassword,
-  ) { }
+  ) {}
 
   async init() {
     const user = new User();
     user.username = 'superadmin';
     user.name = 'super admin';
     user.password = await this.hashPassword.generate('password12345');
-    const username = await this.userRepository.findOneBy({ username: user.username });
+    const username = await this.userRepository.findOneBy({
+      username: user.username,
+    });
     if (username === null) {
       await this.userRepository.createUser(user);
     }
@@ -56,7 +62,6 @@ export class UserService {
    */
   async createUser(createUserDto: CreateUserDto): Promise<User> {
     try {
-
       const user: User = new User();
       user.name = createUserDto.name;
       user.age = createUserDto.age;
@@ -74,7 +79,6 @@ export class UserService {
       return this.userRepository.createUser(user);
     } catch (error) {
       console.log('user-s');
-
     }
   }
 
@@ -100,9 +104,19 @@ export class UserService {
   }
 
   async findByUsername(username: string): Promise<User> {
-    return this.userRepository.createQueryBuilder('user')
+    return this.userRepository
+      .createQueryBuilder('user')
       .leftJoin('user.merchant', 'merchant')
-      .addSelect(['user.id', 'merchant.id', 'user.name', 'user.gender', 'user.username', 'user.age', 'user.email', 'user.password'])
+      .addSelect([
+        'user.id',
+        'merchant.id',
+        'user.name',
+        'user.gender',
+        'user.username',
+        'user.age',
+        'user.email',
+        'user.password',
+      ])
       .where('user.username = :username', { username })
       .getOne();
   }
@@ -124,7 +138,7 @@ export class UserService {
    * @returns promise of udpate user
    */
   updateUser(id: number, updateUserDto: UpdateUserDto) {
-    return new ResponseMessage('Okay')
+    return new ResponseMessage('Okay');
   }
 
   /**

@@ -1,7 +1,6 @@
-import { IsNotEmpty, IsString } from "class-validator";
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class CreateUomDto {
-
   @IsString()
   @IsNotEmpty()
   name: string;
@@ -9,5 +8,4 @@ export class CreateUomDto {
   @IsString()
   @IsNotEmpty()
   description: string;
-
 }

@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dto/create-category.dto';
 import { UpdateCategoryDto } from './dto/update-category.dto';
@@ -10,10 +20,13 @@ import { QueryListDto } from './dto/query-list.dto';
 @Controller('categories')
 @UseGuards(JwtAuthGuard)
 export class CategoriesController {
-  constructor(private readonly categoriesService: CategoriesService) { }
+  constructor(private readonly categoriesService: CategoriesService) {}
 
   @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto, @Payload() payload: JwtPayload) {
+  create(
+    @Body() createCategoryDto: CreateCategoryDto,
+    @Payload() payload: JwtPayload,
+  ) {
     return this.categoriesService.create(createCategoryDto, payload.sub);
   }
 
@@ -32,7 +45,11 @@ export class CategoriesController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateCategoryDto: UpdateCategoryDto, @Payload() payload: JwtPayload) {
+  update(
+    @Param('id') id: string,
+    @Body() updateCategoryDto: UpdateCategoryDto,
+    @Payload() payload: JwtPayload,
+  ) {
     return this.categoriesService.update(+id, updateCategoryDto, payload.sub);
   }
 

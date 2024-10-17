@@ -1,14 +1,14 @@
 import { Expose, Type } from 'class-transformer';
 import {
-    Entity,
-    CreateDateColumn,
-    Column,
-    PrimaryGeneratedColumn,
-    DeleteDateColumn,
-    UpdateDateColumn,
-    OneToMany,
-    ManyToOne,
-    OneToOne,
+  Entity,
+  CreateDateColumn,
+  Column,
+  PrimaryGeneratedColumn,
+  DeleteDateColumn,
+  UpdateDateColumn,
+  OneToMany,
+  ManyToOne,
+  OneToOne,
 } from 'typeorm';
 import { Sale } from './sale.entity';
 import { Purchase } from './purchase.entity';
@@ -17,34 +17,35 @@ import CommonBaseMerchantEntity from './base/base-merchant.entity';
 
 @Entity({ name: 'payments' })
 export class Payment extends CommonBaseMerchantEntity {
-    @PrimaryGeneratedColumn()
-    id!: number;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    @Column({ nullable: false, unique: true })
-    code!: string;
+  @Column({ nullable: false, unique: true })
+  code!: string;
 
-    @Column({ nullable: false, type: 'date' })
-    date!: Date;
+  @Column({ nullable: false, type: 'date' })
+  date!: Date;
 
-    @Column({ nullable: false, type: 'text', default: '-' })
-    note!: string;
+  @Column({ nullable: false, type: 'text', default: '-' })
+  note!: string;
 
-    @Column({ nullable: true, type: 'double precision', default: 0 })
-    @Type(() => Number)
-    paid!: number;
+  @Column({ nullable: true, type: 'double precision', default: 0 })
+  @Type(() => Number)
+  paid!: number;
 
-    @Column({ type: 'enum', enum: PaymentType, nullable: false })
-    @Expose({ name: "payment_type" })
-    paymentType!: PaymentType
+  @Column({ type: 'enum', enum: PaymentType, nullable: false })
+  @Expose({ name: 'payment_type' })
+  paymentType!: PaymentType;
 
+  /**
+   * Relations
+   */
 
-    /**
-     * Relations
-     */
+  @ManyToOne(() => Sale, (sale) => sale.payments, { nullable: true })
+  sale: Sale;
 
-    @ManyToOne(() => Sale, (sale) => sale.payments, { nullable: true })
-    sale: Sale;
-
-    @ManyToOne(() => Purchase, (purchase) => purchase.payments, { nullable: true })
-    purchase: Purchase;
+  @ManyToOne(() => Purchase, (purchase) => purchase.payments, {
+    nullable: true,
+  })
+  purchase: Purchase;
 }

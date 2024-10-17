@@ -20,7 +20,7 @@ import { ResponseInterceptor } from 'src/common/interceptors/response.intercepto
 @UseInterceptors(new ResponseInterceptor(), ClassSerializerInterceptor)
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) { }
+  constructor(private readonly userService: UserService) {}
 
   @Get()
   findAll() {

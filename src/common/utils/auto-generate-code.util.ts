@@ -32,7 +32,6 @@ export const codeFormaterWithOutLocation = async (
   return `${secondPrefix}${formatedDate}${uuid}`;
 };
 
-
 export const journalCodeFormater = (
   secondPrefix: string,
   period: string,

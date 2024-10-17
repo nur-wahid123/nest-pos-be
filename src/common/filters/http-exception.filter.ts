@@ -23,7 +23,10 @@ export class HttpExceptionFilter implements ExceptionFilter {
       const exceptionResponse = exception.getResponse();
 
       // If BadRequestException has array of messages
-      if (typeof exceptionResponse === 'object' && (exceptionResponse as any).message) {
+      if (
+        typeof exceptionResponse === 'object' &&
+        (exceptionResponse as any).message
+      ) {
         message = (exceptionResponse as any).message;
       } else {
         message = exception.message;

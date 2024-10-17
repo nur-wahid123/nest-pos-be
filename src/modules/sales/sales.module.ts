@@ -7,6 +7,11 @@ import { ProductRepository } from 'src/repositories/product.repository';
 
 @Module({
   controllers: [SalesController],
-  providers: [SalesService, PaymentRepository, SaleRepository, ProductRepository],
+  providers: [
+    SalesService,
+    PaymentRepository,
+    SaleRepository,
+    ProductRepository,
+  ],
 })
-export class SalesModule { }
+export class SalesModule {}

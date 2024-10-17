@@ -11,30 +11,31 @@ import { QuerySaleDto } from './dto/query-sale.dto';
 @UseGuards(JwtAuthGuard)
 @Controller('sales')
 export class SalesController {
-  constructor(private readonly salesService: SalesService) { }
+  constructor(private readonly salesService: SalesService) {}
 
   @Post('create')
-  create(@Body() createSaleDto: CreateSaleDto, @Payload() payload: JwtPayload): Promise<Sale> {
-    return this.salesService.create(createSaleDto, +payload.sub)
+  create(
+    @Body() createSaleDto: CreateSaleDto,
+    @Payload() payload: JwtPayload,
+  ): Promise<Sale> {
+    return this.salesService.create(createSaleDto, +payload.sub);
   }
 
   @Post('payment')
   payment(
     @Payload() payload: JwtPayload,
-    @Body() paymentDto: CreateSalePaymentDto
+    @Body() paymentDto: CreateSalePaymentDto,
   ) {
-    return this.salesService.createPayment(paymentDto, payload?.sub)
+    return this.salesService.createPayment(paymentDto, payload?.sub);
   }
-
 
   @Get('list')
   findAll(@Query() query: QuerySaleDto) {
-    return this.salesService.findAll(query)
+    return this.salesService.findAll(query);
   }
 
   @Get('need-to-pay')
   needToPay(@Query() param: { sale_code: string }) {
-    return this.salesService.needToPay(param?.sale_code)
+    return this.salesService.needToPay(param?.sale_code);
   }
-
 }

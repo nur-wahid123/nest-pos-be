@@ -1,4 +1,8 @@
-import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import Brand from 'src/entities/brand.entity';
@@ -6,11 +10,10 @@ import { BrandRepository } from 'src/repositories/brand.repository';
 
 @Injectable()
 export class BrandsService {
-
-  constructor(private readonly brandRepository: BrandRepository) { }
+  constructor(private readonly brandRepository: BrandRepository) {}
 
   create(createBrandDto: CreateBrandDto, userId: number): Promise<Brand> {
-    return this.brandRepository.createBrand(createBrandDto, userId)
+    return this.brandRepository.createBrand(createBrandDto, userId);
   }
 
   findAll(): Promise<Brand[]> {
@@ -21,19 +24,23 @@ export class BrandsService {
     return this.brandRepository.findOneBy({ id });
   }
 
-  async update(id: number, updateBrandDto: UpdateBrandDto, userId: number): Promise<Brand> {
+  async update(
+    id: number,
+    updateBrandDto: UpdateBrandDto,
+    userId: number,
+  ): Promise<Brand> {
     const brand = await this.brandRepository.findOneBy({ id });
-    if (!brand) throw new NotFoundException("Brand, not found")
-    brand.name = updateBrandDto?.name
-    brand.updatedBy = userId
-    return this.brandRepository.save(brand)
+    if (!brand) throw new NotFoundException('Brand, not found');
+    brand.name = updateBrandDto?.name;
+    brand.updatedBy = userId;
+    return this.brandRepository.save(brand);
   }
 
   async remove(id: number, userId: number) {
     const brand = await this.brandRepository.findOneBy({ id });
-    if (!brand) throw new NotFoundException("Brand, not found")
-    brand.deletedBy = userId
-    await this.brandRepository.save(brand)
+    if (!brand) throw new NotFoundException('Brand, not found');
+    brand.deletedBy = userId;
+    await this.brandRepository.save(brand);
     return this.brandRepository.softDelete(id);
   }
 }

@@ -7,4 +7,4 @@ import { BrandRepository } from 'src/repositories/brand.repository';
   controllers: [BrandsController],
   providers: [BrandsService, BrandRepository],
 })
-export class BrandsModule { }
+export class BrandsModule {}

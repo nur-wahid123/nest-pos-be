@@ -8,4 +8,4 @@ import { ProvinceRepository } from 'src/repositories/province.repository';
   controllers: [CitiesController],
   providers: [CitiesService, CityRepository, ProvinceRepository],
 })
-export class CitiesModule { }
+export class CitiesModule {}

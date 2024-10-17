@@ -5,6 +5,6 @@ import { UomsController } from './uoms.controller';
 
 @Module({
   providers: [UomsService, UomRepository],
-  controllers: [UomsController]
+  controllers: [UomsController],
 })
-export class UomsModule { }
+export class UomsModule {}

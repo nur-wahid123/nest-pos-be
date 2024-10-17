@@ -10,7 +10,7 @@ describe('AuthController', () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AuthController],
       providers: [AuthService],
-      imports:[UserModule]
+      imports: [UserModule],
     }).compile();
 
     controller = module.get<AuthController>(AuthController);

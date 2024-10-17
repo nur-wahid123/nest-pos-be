@@ -9,6 +9,13 @@ import { UomRepository } from 'src/repositories/uom.repository';
 
 @Module({
   controllers: [ProductsController],
-  providers: [ProductsService, ProductRepository, CategoryRepository, BrandRepository, SupplierRepository, UomRepository],
+  providers: [
+    ProductsService,
+    ProductRepository,
+    CategoryRepository,
+    BrandRepository,
+    SupplierRepository,
+    UomRepository,
+  ],
 })
-export class ProductsModule { }
+export class ProductsModule {}
