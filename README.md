@@ -56,4 +56,41 @@ This POS application allows merchants to easily manage their sales, customers, p
 1. **Clone the repository**
    ```bash
    git clone https://github.com/your-repo/pos-saas.git
-   cd pos-saas
+    cd pos-saas
+   ```
+
+2. **Install dependencies**
+
+   - For the backend:
+     ```bash
+     cd backend
+     npm install
+     ```
+
+   - For the frontend:
+     ```bash
+     cd ../frontend
+     npm install
+     ```
+
+3. **Environment Variables**
+
+   Ensure you have the required environment variables set up for both the frontend and backend. Create a `.env` file in both the backend and frontend directories, and configure it with the appropriate settings (e.g., database connection, API keys).
+
+4. **Database Setup**
+
+   If you're running PostgreSQL locally, create a new database for the backend and update the backend's `.env` file with the database connection details.
+
+   ```bash
+   # Example PostgreSQL command to create a database
+   psql -U postgres -c "CREATE DATABASE pos_saas_db;"
+   ```
+
+5. **Run Migrations**
+
+   Run the database migrations to set up the required tables and relationships.
+   ```bash
+   cd backend
+   npm run migration:run
+   ```
+
