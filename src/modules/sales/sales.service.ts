@@ -44,10 +44,8 @@ export class SalesService {
       (sum, saleItems) => sum + saleItems.subTotal,
       0,
     );
-    const code = await this.saleRepository.autoGenerateCode(createSaleDto.date);
 
     return await this.saleRepository.createSale(
-      code,
       createSaleDto,
       newSaleItems,
       total,

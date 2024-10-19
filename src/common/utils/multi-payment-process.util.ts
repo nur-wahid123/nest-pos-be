@@ -14,6 +14,7 @@ export async function autoGenerateCodeBank(
     .andWhere('payment.code ILIKE :code', {
       code: `${secondPrefix}%`,
     })
+    .setLock('pessimistic_write')
     .orderBy('payment.code', 'DESC')
     .useTransaction(true)
     .getOne();

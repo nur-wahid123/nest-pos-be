@@ -45,9 +45,7 @@ export class PurchasesService {
     userId: number,
     merchantId: number,
   ): Promise<GetPurchaseWithUserDto> {
-    const code = await this.purchaseRepo.autoGenerateCode(
-      createPurchaseDto.date,
-    );
+
     const supplier = await this.supplierRepository.findById(
       createPurchaseDto.supplierId,
     );
@@ -64,7 +62,6 @@ export class PurchasesService {
       0,
     );
     const result = await this.purchaseRepo.createPurchase(
-      code,
       createPurchaseDto,
       newPurchaseItems,
       supplier,

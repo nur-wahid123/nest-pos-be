@@ -14,7 +14,7 @@ import { Supplier } from 'src/entities/supplier.entity';
 import { CreatePurchaseDto } from 'src/modules/purchases/dto/create-purchase.dto';
 import { QueryPurchaseDateRangeDto } from 'src/modules/purchases/dto/query-purchase-date-range.dto';
 import { QueryPurchaseListDto } from 'src/modules/purchases/dto/query-purchase-list.dto';
-import { DataSource, Repository, SelectQueryBuilder } from 'typeorm';
+import { DataSource, Repository, SelectQueryBuilder,QueryRunner } from 'typeorm';
 
 @Injectable()
 export class PurchaseRepository extends Repository<Purchase> {
@@ -22,12 +22,13 @@ export class PurchaseRepository extends Repository<Purchase> {
     super(Purchase, dataSource.createEntityManager());
   }
 
-  async autoGenerateCode(date: Date): Promise<string> {
+  async autoGenerateCode(queryRunner: QueryRunner, date: Date): Promise<string> {
     const newDate = new Date(date).toDateString();
-    const lastRecord = await this.dataSource
+    const lastRecord = await queryRunner.manager
       .createQueryBuilder(Purchase, 'purchase')
       .where('purchase.date = :date', { date: newDate })
       .orderBy('purchase.createdAt', 'DESC')
+      .setLock('pessimistic_write')
       .getOne();
     return await codeFormater(
       'ET',
@@ -38,7 +39,6 @@ export class PurchaseRepository extends Repository<Purchase> {
   }
 
   async createPurchase(
-    code: string,
     parent: Omit<CreatePurchaseDto, 'purchaseItems'>,
     child: PurchaseItem[],
     supplier: Supplier,
@@ -53,6 +53,10 @@ export class PurchaseRepository extends Repository<Purchase> {
       where: { id: merchantId },
     });
     if (!merchant) throw new NotFoundException('Merchant not found');
+    const code = await this.autoGenerateCode(
+      queryRunner,
+      parent.date,
+    );
     try {
       const purchase = new Purchase();
       purchase.note = parent?.note;
