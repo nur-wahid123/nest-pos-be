@@ -12,8 +12,11 @@ import {
 } from 'typeorm';
 import { Sale } from './sale.entity';
 import { Purchase } from './purchase.entity';
+<<<<<<< HEAD
 import { PaymentType } from 'src/modules/payments/enum/payment-type.enum';
 import CommonBaseMerchantEntity from './base/base-merchant.entity';
+=======
+>>>>>>> master
 
 @Entity({ name: 'payments' })
 export class Payment extends CommonBaseMerchantEntity {
@@ -29,22 +32,22 @@ export class Payment extends CommonBaseMerchantEntity {
     @Column({ nullable: false, type: 'text', default: '-' })
     note!: string;
 
-    @Column({ nullable: true, type: 'double precision', default: 0 })
+    @Column({ nullable: false, type: 'double precision', default: 0 })
+    @Type(() => Number)
+    total!: number;
+
+    @Column({ nullable: false, type: 'double precision', default: 0 })
     @Type(() => Number)
     paid!: number;
-
-    @Column({ type: 'enum', enum: PaymentType, nullable: false })
-    @Expose({ name: "payment_type" })
-    paymentType!: PaymentType
 
 
     /**
      * Relations
      */
 
-    @ManyToOne(() => Sale, (sale) => sale.payments, { nullable: true })
+    @OneToOne(() => Sale, (sale) => sale.payment, { nullable: true })
     sale: Sale;
 
-    @ManyToOne(() => Purchase, (purchase) => purchase.payments, { nullable: true })
+    @OneToOne(() => Purchase, (purchase) => purchase.payment, { nullable: true })
     purchase: Purchase;
 }

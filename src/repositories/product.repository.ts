@@ -1,5 +1,9 @@
+<<<<<<< HEAD
 import { Injectable, InternalServerErrorException } from "@nestjs/common";
 import { PageOptionsDto } from "src/common/dto/page-option.dto";
+=======
+import { Injectable } from "@nestjs/common";
+>>>>>>> master
 import Brand from "src/entities/brand.entity";
 import Category from "src/entities/category.entity";
 import { Product } from "src/entities/product.entity";
@@ -15,6 +19,7 @@ export class ProductRepository extends Repository<Product> {
         super(Product, dataSource.createEntityManager())
     }
 
+<<<<<<< HEAD
     async init() {
         const response = await fetch('https://dummyjson.com/products?limit=194')
         const { products } = await response.json()
@@ -119,21 +124,21 @@ export class ProductRepository extends Repository<Product> {
     }
     async saveProduct(
         product: Product
+=======
+    async createProduct(
+        createDto: CreateProductDto,
+        category: Category,
+        brand: Brand,
+        uom: Uom,
+        userId: number,
+        supplier?: Supplier
+>>>>>>> master
     ): Promise<Product> {
-        const queryRunner = this.dataSource.createQueryRunner()
-        await queryRunner.connect()
-        try {
-            await queryRunner.startTransaction()
-            await queryRunner.manager.save(product, { chunk: 1000 })
-            await queryRunner.commitTransaction()
-            return product
-        } catch (error) {
-            await queryRunner.rollbackTransaction()
-            console.log(error);
-            throw new InternalServerErrorException()
-        } finally {
-            await queryRunner.release()
-        }
+        const ett = this.dataSource.createEntityManager()
+        const product = ett.create(Product, {
+            ...createDto, supplier, brand, category, uom, createdBy: userId
+        })
+        return await ett.save(product)
     }
 
     async findProducts(query: QueryProductListDto, pageOptions: PageOptionsDto) {

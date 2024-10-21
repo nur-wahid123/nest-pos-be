@@ -1,17 +1,23 @@
+<<<<<<< HEAD
 import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
+=======
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+>>>>>>> master
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
 import { Payload } from 'src/common/decorators/payload.decorator';
 import { JwtPayload } from 'src/modules/auth/jwt-payload.interface';
 import { Product } from 'src/entities/product.entity';
+<<<<<<< HEAD
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { QueryListDto } from '../categories/dto/query-list.dto';
 import { QueryProductListDto } from './dto/query-product-list.dto';
 import { PageOptionsDto } from 'src/common/dto/page-option.dto';
+=======
+>>>>>>> master
 
 @Controller('products')
-@UseGuards(JwtAuthGuard)
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) { }
 

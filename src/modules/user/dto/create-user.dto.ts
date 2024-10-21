@@ -1,13 +1,17 @@
 import {
+  IsAlphanumeric,
   IsEmail,
   IsEnum,
+  IsInt,
   IsNotEmpty,
-  IsNumber,
   IsString,
-  IsStrongPassword,
+  Matches,
   MinLength,
 } from 'class-validator';
 import { Gender } from 'src/entities/user.entity';
+
+const passwordRegEx =
+  /^(?=.*[a-z])(?=.*[A-Z])(?=.*d)(?=.*[@$!%*?&])[A-Za-zd@$!%*?&]{8,20}$/;
 
 export class CreateUserDto {
 
@@ -18,29 +22,29 @@ export class CreateUserDto {
 
   @IsNotEmpty()
   @MinLength(3, { message: 'Username must have atleast 3 characters.' })
-  @IsString()
+  @IsAlphanumeric(null, {
+    message: 'Username does not allow other than alpha numeric chars.',
+  })
   username: string;
 
   @IsNotEmpty()
-  @IsEmail()
+  @IsEmail(null, { message: 'Please provide valid Email.' })
   email: string;
 
-  @IsNotEmpty()
-  @IsNumber()
+  @IsInt()
   age: number;
 
-  @IsNotEmpty()
   @IsString()
   @IsEnum(Gender)
   gender: Gender;
 
   @IsNotEmpty()
-  @IsStrongPassword({
-    minLength: 8,
-    minNumbers: 1,
-    minLowercase: 0,
-    minSymbols: 0,
-    minUppercase: 0
+  @Matches(passwordRegEx, {
+    message: `Password must contain Minimum 8 and maximum 20 characters, 
+        at least one uppercase letter, 
+        one lowercase letter, 
+        one number and 
+        one special character`,
   })
   password: string;
 }

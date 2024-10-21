@@ -1,13 +1,11 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
 import { SupplierService } from './supplier.service';
 import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
 import { Payload } from 'src/common/decorators/payload.decorator';
 import { JwtPayload } from 'src/modules/auth/jwt-payload.interface';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
-@Controller('suppliers')
-@UseGuards(JwtAuthGuard)
+@Controller('supplier')
 export class SupplierController {
   constructor(private readonly supplierService: SupplierService) { }
 

@@ -9,7 +9,7 @@ export class Inventory extends CommonBaseMerchantEntity {
     @PrimaryGeneratedColumn()
     id!: number;
 
-    @Column({ nullable: false, default: 0 })
+    @Column({ nullable: false })
     qty: number;
 
     /**

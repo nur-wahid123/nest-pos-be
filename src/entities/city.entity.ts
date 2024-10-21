@@ -7,11 +7,13 @@ import {
     OneToMany,
     DeleteDateColumn,
     UpdateDateColumn,
-    ManyToOne,
 } from 'typeorm';
 import { Supplier } from './supplier.entity';
+<<<<<<< HEAD
 import { Province } from './province.entity';
 import CommonBaseEntity from './base/base.entity';
+=======
+>>>>>>> master
 
 @Entity({ name: 'cities' })
 export class City extends CommonBaseEntity {
@@ -21,15 +23,18 @@ export class City extends CommonBaseEntity {
     @Column({ nullable: false })
     name!: string;
 
-    @Column({ nullable: true })
+    @Column({ nullable: false })
+    island!: string;
+
+    @Column({ nullable: false })
+    province!: string;
+
+    @Column({ nullable: false })
     capital!: string;
 
     /**
      * Relations
-    */
-
-    @ManyToOne(() => Province, (province) => province.cities)
-    province!: Province;
+     */
 
     @OneToMany(() => Supplier, (suppliers) => suppliers.city, {
         nullable: true,

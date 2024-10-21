@@ -15,7 +15,4 @@ describe('PurchasesService', () => {
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
-
-  it('should return object of purchase', () => {
-  })
 });

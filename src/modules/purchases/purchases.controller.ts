@@ -1,17 +1,9 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get } from '@nestjs/common';
 import { PurchasesService } from './purchases.service';
-import { Payload } from 'src/common/decorators/payload.decorator';
-import { JwtPayload } from '../auth/jwt-payload.interface';
-import { CreatePurchaseDto } from './dto/create-purchase.dto';
-import { PageOptionsDto } from 'src/common/dto/page-option.dto';
-import { QueryPurchaseListDto } from './dto/query-purchase-list.dto';
-import { QueryPurchaseDateRangeDto } from './dto/query-purchase-date-range.dto';
-import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { CreatePaymentDto } from './dto/create-payment.dto';
 
 @Controller('purchases')
-@UseGuards(JwtAuthGuard)
 export class PurchasesController {
+<<<<<<< HEAD
   /**
    * The constructor for the PurchasesController.
    * @param purchasesService The purchases service, which is responsible for performing
@@ -73,5 +65,13 @@ export class PurchasesController {
     @Query() query: QueryPurchaseListDto,
   ) {
     return this.purchasesService.find(pageOptionsDto, timeRange, query)
+=======
+  constructor(private readonly purchasesService: PurchasesService) {
+  }
+
+  @Get()
+  findAll() {
+    return this.purchasesService.findAll()
+>>>>>>> master
   }
 }

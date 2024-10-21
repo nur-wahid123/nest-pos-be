@@ -1,5 +1,6 @@
-import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PurchaseRepository } from 'src/repositories/purchase.repository';
+<<<<<<< HEAD
 import { CreatePurchaseDto, CreatePurchaseItemDto } from './dto/create-purchase.dto';
 import { SupplierRepository } from 'src/repositories/supplier.repository';
 import { PurchaseItem } from 'src/entities/purchase-item.entity';
@@ -16,16 +17,14 @@ import { CreatePaymentDto } from './dto/create-payment.dto';
 import { PaymentRepository } from 'src/repositories/payment.repository';
 import { PaymentStatus } from 'src/common/enums/payment-status.enum';
 import { Purchase } from 'src/entities/purchase.entity';
+=======
+>>>>>>> master
 
 @Injectable()
 export class PurchasesService {
-    constructor(private readonly purchaseRepo: PurchaseRepository
-        , private readonly supplierRepository: SupplierRepository
-        , private readonly productRepository: ProductRepository
-        , private readonly userRepository: UserRepository
-        , private readonly paymentRepository: PaymentRepository
-    ) { }
+    constructor(private readonly purchaseRepo: PurchaseRepository) { }
     findAll() {
+<<<<<<< HEAD
         this.purchaseRepo.find({ relations: { supplier: true, payments: true, purchaseItems: true } })
     }
 
@@ -160,5 +159,8 @@ export class PurchasesService {
             })
         if (purchase.paymentStatus === PaymentStatus.PAID) throw new BadRequestException('purchase already paid')
         return this.paymentRepository.calculatePurchaseNeedToPay(purchase)
+=======
+        this.purchaseRepo.find({ relations: { supplier: true, payment: true, purchaseItems: true } })
+>>>>>>> master
     }
 }
