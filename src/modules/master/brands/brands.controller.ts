@@ -1,11 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards } from '@nestjs/common';
 import { BrandsService } from './brands.service';
 import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import { Payload } from 'src/common/decorators/payload.decorator';
 import { JwtPayload } from 'src/modules/auth/jwt-payload.interface';
+import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 
 @Controller('brands')
+@UseGuards(JwtAuthGuard)
 export class BrandsController {
   constructor(private readonly brandsService: BrandsService) { }
 

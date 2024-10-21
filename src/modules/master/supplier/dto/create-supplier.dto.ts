@@ -1,3 +1,4 @@
+import { Expose } from "class-transformer"
 import { IsEmail, IsNotEmpty, IsNumber, IsString } from "class-validator"
 
 export class CreateSupplierDto {
@@ -21,5 +22,6 @@ export class CreateSupplierDto {
 
     @IsNumber()
     @IsNotEmpty()
-    city!: number
+    @Expose({ name: 'city_id' })
+    cityId!: number
 }

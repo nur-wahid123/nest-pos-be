@@ -21,7 +21,7 @@ export class UserService {
   ) { }
 
   async init() {
-    const user = new CreateUserDto();
+    const user = new User();
     user.username = 'superadmin';
     user.name = 'super admin';
     user.password = await this.hashPassword.generate('password12345');
@@ -55,21 +55,27 @@ export class UserService {
    * @returns promise of user
    */
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    const user: User = new User();
-    user.name = createUserDto.name;
-    user.age = createUserDto.age;
-    if (await this.isUsernameExists(createUserDto.username)) {
-      throw new BadRequestException('Username Sudah digunakan');
+    try {
+
+      const user: User = new User();
+      user.name = createUserDto.name;
+      user.age = createUserDto.age;
+      if (await this.isUsernameExists(createUserDto.username)) {
+        throw new BadRequestException('Username Sudah digunakan');
+      }
+      user.username = createUserDto.username;
+      if (await this.isEmailExists(createUserDto.email)) {
+        throw new BadRequestException('Email Sudah digunakan');
+      }
+      user.email = createUserDto.email;
+      const salt = await genSalt(10);
+      user.password = await hash(createUserDto.password, salt);
+      user.gender = createUserDto.gender;
+      return this.userRepository.createUser(user);
+    } catch (error) {
+      console.log('user-s');
+
     }
-    user.username = createUserDto.username;
-    if (await this.isEmailExists(createUserDto.email)) {
-      throw new BadRequestException('Email Sudah digunakan');
-    }
-    user.email = createUserDto.email;
-    const salt = await genSalt(10);
-    user.password = await hash(createUserDto.password, salt);
-    user.gender = createUserDto.gender;
-    return this.userRepository.save(user);
   }
 
   async isUsernameExists(username: string): Promise<boolean> {

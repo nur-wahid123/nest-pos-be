@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 import { Injectable, InternalServerErrorException, NotFoundException } from "@nestjs/common";
 import { PageOptionsDto } from "src/common/dto/page-option.dto";
 import { codeFormater } from "src/common/utils/auto-generate-code.util";
@@ -6,18 +5,18 @@ import { autoGenerateCodeBank } from "src/common/utils/multi-payment-process.uti
 import { Merchant } from "src/entities/merchant.entity";
 import { Payment } from "src/entities/payment.entity";
 import { PurchaseItem } from "src/entities/purchase-item.entity";
-=======
-import { Injectable } from "@nestjs/common";
->>>>>>> master
 import { Purchase } from "src/entities/purchase.entity";
-import { DataSource, Repository } from "typeorm";
+import { Supplier } from "src/entities/supplier.entity";
+import { CreatePurchaseDto } from "src/modules/purchases/dto/create-purchase.dto";
+import { QueryPurchaseDateRangeDto } from "src/modules/purchases/dto/query-purchase-date-range.dto";
+import { QueryPurchaseListDto } from "src/modules/purchases/dto/query-purchase-list.dto";
+import { DataSource, Repository, SelectQueryBuilder } from "typeorm";
 
 @Injectable()
 export class PurchaseRepository extends Repository<Purchase> {
     constructor(private readonly dataSource: DataSource) {
         super(Purchase, dataSource.createEntityManager())
     }
-<<<<<<< HEAD
 
     async autoGenerateCode(date: Date): Promise<string> {
         const newDate = new Date(date).toDateString();
@@ -162,6 +161,4 @@ export class PurchaseRepository extends Repository<Purchase> {
         take && query.limit(take);
     }
 
-=======
->>>>>>> master
 }

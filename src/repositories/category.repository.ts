@@ -50,7 +50,7 @@ export class CategoryRepository extends Repository<Category> {
                 year: newDate.getFullYear(),
             })
             .andWhere('category.code like :pref', {
-                pref: 'ET/SP%',
+                pref: 'ET/CA%',
             })
             .orderBy('category.code', 'DESC')
             .getOne();

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
@@ -55,6 +55,21 @@ import { SalesModule } from './modules/sales/sales.module';
     SalesModule
   ],
   controllers: [AppController],
-  providers: [UomsService, HashPassword, UserService, UomRepository, UserRepository, AppService]
+  providers: [
+    UomsService,
+    HashPassword,
+    UserService,
+    UomRepository,
+    CityRepository,
+    UserRepository,
+    AppService,
+    CitiesService,
+    ProvinceRepository,
+    IslandRepository
+  ]
 })
-export class AppModule { }
+export class AppModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}

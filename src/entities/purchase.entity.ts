@@ -14,17 +14,9 @@ import {
 import { PurchaseItem } from './purchase-item.entity';
 import { Supplier } from './supplier.entity';
 import { Payment } from './payment.entity';
-<<<<<<< HEAD
 import InventoryLedger from './inventory-ledger.entity';
 import { PaymentStatus } from 'src/common/enums/payment-status.enum';
 import CommonBaseMerchantEntity from './base/base-merchant.entity';
-=======
-
-export enum PaymentStatus {
-  UNPAID = 'unpaid',
-  PAID = 'paid',
-}
->>>>>>> master
 
 @Entity({ name: 'purchases' })
 export class Purchase extends CommonBaseMerchantEntity {
@@ -68,9 +60,11 @@ export class Purchase extends CommonBaseMerchantEntity {
   })
   supplier!: Supplier;
 
-  @OneToOne(() => Payment, (payment) => payment.purchase, { nullable: true })
-  @JoinColumn()
-  payment!: Payment
+  @OneToMany(() => Payment, (payment) => payment.purchase, { nullable: true })
+  payments!: Payment[]
+
+  @OneToMany(() => InventoryLedger, (inventoryLedger) => inventoryLedger.purchase, { nullable: true })
+  inventoryLedgers: InventoryLedger[]
 
 
 }
