@@ -33,11 +33,10 @@ export class CategoryRepository extends Repository<Category> {
     queryBuilder.where((qb) => {
       if (search) {
         console.log('oi');
-        
-        qb.andWhere('lower(category.name) like lower(:search)',
-          {
-            search: `%${search}%`,
-          });
+
+        qb.andWhere('lower(category.name) like lower(:search)', {
+          search: `%${search}%`,
+        });
       }
       qb.andWhere(`inventory.qty > 0`);
     });

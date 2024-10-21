@@ -45,7 +45,6 @@ export class PurchasesService {
     userId: number,
     merchantId: number,
   ): Promise<GetPurchaseWithUserDto> {
-
     const supplier = await this.supplierRepository.findById(
       createPurchaseDto.supplierId,
     );

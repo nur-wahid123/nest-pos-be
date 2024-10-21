@@ -57,7 +57,10 @@ export class SaleRepository extends Repository<Sale> {
     return correct;
   }
 
-  async autoGenerateCode(queryRunner: QueryRunner, date: Date): Promise<string> {
+  async autoGenerateCode(
+    queryRunner: QueryRunner,
+    date: Date,
+  ): Promise<string> {
     const newDate = new Date(date).toDateString();
     const lastRecord = await this.queryRunner.manager
       .createQueryBuilder(Sale, 'sale')
@@ -84,7 +87,7 @@ export class SaleRepository extends Repository<Sale> {
     await queryRunner.startTransaction();
     const isCorrect = this.checkStock(child, queryRunner.manager);
     if (!isCorrect) throw new BadRequestException('Stock not enough');
-    const code = await this.autoGenerateCode(queryRunner,parent.date);
+    const code = await this.autoGenerateCode(queryRunner, parent.date);
 
     try {
       const sale = new Sale();

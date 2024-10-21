@@ -9,6 +9,10 @@ import { SupplierRepository } from 'src/repositories/supplier.repository';
 import { CityRepository } from 'src/repositories/city.repository';
 import { City } from 'src/entities/city.entity';
 import { Supplier } from 'src/entities/supplier.entity';
+import { FilterDto } from 'src/common/dto/filter.dto';
+import { PageOptionsDto } from 'src/common/dto/page-option.dto';
+import { PageMetaDto } from 'src/common/dto/page-meta.dto';
+import { PageDto } from 'src/common/dto/page.dto';
 
 @Injectable()
 export class SupplierService {
@@ -22,7 +26,6 @@ export class SupplierService {
     userId: number,
   ): Promise<Supplier> {
     //generate code
-    const code = await this.supplierRepository.autoGenerateCode();
     const { cityId } = createSupplierDto;
 
     //check city
@@ -30,15 +33,20 @@ export class SupplierService {
     if (!city) throw new BadRequestException(['city not found']);
 
     return await this.supplierRepository.createSupplier(
-      code,
       createSupplierDto,
       city,
       userId,
     );
   }
 
-  findAll(): Promise<Supplier[]> {
-    return this.supplierRepository.find({ relations: { city: true } });
+  async findAll(
+    filter:FilterDto,
+    pageOptionsDto: PageOptionsDto,
+  ) {
+    const [entities, itemCount]= await this.supplierRepository.findAll(filter,pageOptionsDto);
+
+    const pageMetaDto = new PageMetaDto({ pageOptionsDto, itemCount });
+    return new PageDto(entities, pageMetaDto);
   }
 
   findOne(id: number): Promise<Supplier> {

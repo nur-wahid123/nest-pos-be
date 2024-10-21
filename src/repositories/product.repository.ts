@@ -138,28 +138,47 @@ export class ProductRepository extends Repository<Product> {
     }
   }
 
-  async findProducts(query: QueryProductListDto, pageOptions: PageOptionsDto) {
+  async findProducts(filter: QueryProductListDto, pageOptions: PageOptionsDto) {
     const { skip, take } = pageOptions;
-    const qb = this.dataSource.createQueryBuilder(Product, 'product');
-    qb.leftJoinAndSelect('product.brand', 'brand');
-    qb.leftJoinAndSelect('product.category', 'category');
-    qb.leftJoinAndSelect('product.uom', 'uom');
-    qb.leftJoinAndSelect('product.inventory', 'inventory');
+    const query = this.dataSource.createQueryBuilder(Product, 'product')
+      .leftJoin('product.brand', 'brand')
+      .leftJoin('product.category', 'category')
+      .leftJoin('product.uom', 'uom')
+      .leftJoin('product.inventory', 'inventory')
+      .addSelect([
+        'brand.id',
+        'brand.code',
+        'brand.name',
+        'category.id',
+        'category.code',
+        'category.name',
+        'uom.id',
+        'uom.name',
+        'uom.description',
+        'inventory.qty',
+      ])
+      .where((qb) => {
+        this.applyFilters(qb, filter);
+      });
+  
     console.log(take, skip);
-    if (skip && take) {
-      qb.skip(skip).take(take);
+  
+    // Properly check for skip and take values
+    if (skip !== undefined && take !== undefined) {
+      query.offset(skip).limit(take);
     }
-    this.applyFilters(qb, query);
-    return await qb.getManyAndCount();
+  
+    return await query.getManyAndCount();
   }
-
+  
   applyFilters(qb: SelectQueryBuilder<Product>, query: QueryProductListDto) {
     const { categoryId, search, code } = query;
+  
     if (categoryId) {
       qb.andWhere('category.id = :categoryId', { categoryId });
     }
     if (search) {
-      qb.andWhere('lower(product.name) like lower(:search)', {
+      qb.andWhere('lower(product.name) like lower(:search) or lower(product.code) like lower(:search) or lower(brand.name) like lower(:search)', {
         search: `%${search}%`,
       });
     }
@@ -169,4 +188,5 @@ export class ProductRepository extends Repository<Product> {
       });
     }
   }
+  
 }

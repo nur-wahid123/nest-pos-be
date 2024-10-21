@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   UseGuards,
+  Query,
 } from '@nestjs/common';
 import { SupplierService } from './supplier.service';
 import { CreateSupplierDto } from './dto/create-supplier.dto';
@@ -14,6 +15,8 @@ import { UpdateSupplierDto } from './dto/update-supplier.dto';
 import { Payload } from 'src/common/decorators/payload.decorator';
 import { JwtPayload } from 'src/modules/auth/jwt-payload.interface';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
+import { FilterDto } from 'src/common/dto/filter.dto';
+import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 
 @Controller('suppliers')
 @UseGuards(JwtAuthGuard)
@@ -28,9 +31,9 @@ export class SupplierController {
     return this.supplierService.create(createSupplierDto, payload.sub);
   }
 
-  @Get()
-  findAll() {
-    return this.supplierService.findAll();
+  @Get('list')
+  findAll(@Query() filter:FilterDto,@Query() pageOptionsDto: PageOptionsDto) {
+    return this.supplierService.findAll(filter, pageOptionsDto);
   }
 
   @Get(':id')

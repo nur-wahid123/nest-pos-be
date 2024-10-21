@@ -1,10 +1,12 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { FilterDto } from 'src/common/dto/filter.dto';
+import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 import { codeFormater } from 'src/common/utils/auto-generate-code.util';
 import { City } from 'src/entities/city.entity';
 import { Supplier } from 'src/entities/supplier.entity';
 import { CreateSupplierDto } from 'src/modules/master/supplier/dto/create-supplier.dto';
 import { UpdateSupplierDto } from 'src/modules/master/supplier/dto/update-supplier.dto';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, QueryRunner, Repository, SelectQueryBuilder } from 'typeorm';
 
 @Injectable()
 export class SupplierRepository extends Repository<Supplier> {
@@ -29,9 +31,9 @@ export class SupplierRepository extends Repository<Supplier> {
     }
   }
 
-  async autoGenerateCode(): Promise<string> {
+  async autoGenerateCode(queryRunner: QueryRunner): Promise<string> {
     const newDate = new Date();
-    const lastRecord = await this.dataSource
+    const lastRecord = await queryRunner.manager
       .createQueryBuilder(Supplier, 'supplier')
       .where(`EXTRACT(YEAR FROM supplier.createdAt) = :year`, {
         year: newDate.getFullYear(),
@@ -40,6 +42,7 @@ export class SupplierRepository extends Repository<Supplier> {
         pref: 'ET/SP%',
       })
       .orderBy('supplier.code', 'DESC')
+      .setLock('pessimistic_write')
       .getOne();
     return await codeFormater(
       'ET',
@@ -50,19 +53,56 @@ export class SupplierRepository extends Repository<Supplier> {
   }
 
   async createSupplier(
-    code: string,
     createSupplierDto: CreateSupplierDto,
     city: City,
     userId: number,
   ): Promise<Supplier> {
-    const ett = this.dataSource.createEntityManager();
-    const supplier = ett.create(Supplier, {
-      ...createSupplierDto,
-      code,
-      createdBy: userId,
-      city,
-    });
-    return await ett.save(supplier);
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+
+      const code = await this.autoGenerateCode(queryRunner);
+      const newSupplier = new Supplier();
+      const splr = Object.assign(newSupplier, createSupplierDto);
+      splr.code = code;
+      splr.createdBy = userId;
+      splr.city = city;
+      await queryRunner.manager.save(splr);
+      await queryRunner.commitTransaction();
+      return splr;
+    } catch (error) {
+      console.log(error);
+      await queryRunner.rollbackTransaction();
+      throw new InternalServerErrorException("Internal Server Error");
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
+  async findAll(filter: FilterDto, pageOptionsDto: PageOptionsDto) {
+    const { take, skip, order } = pageOptionsDto
+    const query = this.dataSource.createQueryBuilder(Supplier, 'supplier')
+      .where((qb) => {
+        this.applyFilters(qb, filter);
+      });
+    order &&
+      query.orderBy('supplier.name', order);
+    take && query.limit(take);
+    skip && query.offset(skip);
+    return await query.getManyAndCount();
+  }
+
+  private applyFilters(qb: SelectQueryBuilder<Supplier>, query: FilterDto) {
+    const { code, search } = query;
+    code &&
+      qb.andWhere(`(lower(supplier.code) like lower(:code) )`, {
+        code: `%${code}%`,
+      });
+    search &&
+      qb.andWhere(`(lower(supplier.name) like lower(:search) )`, {
+        search: `%${search}%`,
+      });
   }
 
   findById(id: number): Promise<Supplier> {
