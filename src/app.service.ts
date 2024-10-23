@@ -18,6 +18,6 @@ export class AppService {
   }
 
   getHello() {
-    return { msg: 'Hello Worldse!' };
+    return 'Hello Worldse!';
   }
 }

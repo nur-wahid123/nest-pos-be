@@ -5,6 +5,6 @@ import { DataSource, Repository } from 'typeorm';
 @Injectable()
 export class ProvinceRepository extends Repository<Province> {
   constructor(private readonly dataSource: DataSource) {
-    super(Province, dataSource.createEntityManager());
+    super(Province, dataSource.manager);
   }
 }

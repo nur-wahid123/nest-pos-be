@@ -6,7 +6,7 @@ import { DataSource, Repository } from 'typeorm';
 @Injectable()
 export class UserRepository extends Repository<User> {
   constructor(private dataSource: DataSource) {
-    super(User, dataSource.createEntityManager());
+    super(User, dataSource.manager);
   }
 
   async createUser(user: User): Promise<User> {

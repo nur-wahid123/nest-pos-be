@@ -7,6 +7,10 @@ import { CreateBrandDto } from './dto/create-brand.dto';
 import { UpdateBrandDto } from './dto/update-brand.dto';
 import Brand from 'src/entities/brand.entity';
 import { BrandRepository } from 'src/repositories/brand.repository';
+import { FilterDto } from 'src/common/dto/filter.dto';
+import { PageOptionsDto } from 'src/common/dto/page-option.dto';
+import { PageMetaDto } from 'src/common/dto/page-meta.dto';
+import { PageDto } from 'src/common/dto/page.dto';
 
 @Injectable()
 export class BrandsService {
@@ -16,8 +20,11 @@ export class BrandsService {
     return this.brandRepository.createBrand(createBrandDto, userId);
   }
 
-  findAll(): Promise<Brand[]> {
-    return this.brandRepository.find();
+  async findAll(query:FilterDto, pageOptionsDto:PageOptionsDto) {
+     const [data,itemCount] = await this.brandRepository.findBrands(query,pageOptionsDto);
+     
+     const pageMetaDto = new PageMetaDto({pageOptionsDto,itemCount})
+     return new PageDto(data,pageMetaDto)
   }
 
   findOne(id: number): Promise<Brand> {

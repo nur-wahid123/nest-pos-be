@@ -8,7 +8,7 @@ import { DataSource, Repository } from 'typeorm';
 @Injectable()
 export class CityRepository extends Repository<City> {
   constructor(private datasource: DataSource) {
-    super(City, datasource.createEntityManager());
+    super(City, datasource.manager);
   }
 
   async initCreate(cities: InitCityDto[]): Promise<City[]> {

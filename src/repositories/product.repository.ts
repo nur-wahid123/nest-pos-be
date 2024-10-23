@@ -160,33 +160,37 @@ export class ProductRepository extends Repository<Product> {
       .where((qb) => {
         this.applyFilters(qb, filter);
       });
-  
+
     console.log(take, skip);
-  
+
     // Properly check for skip and take values
     if (skip !== undefined && take !== undefined) {
       query.offset(skip).limit(take);
     }
-  
+
     return await query.getManyAndCount();
   }
-  
+
   applyFilters(qb: SelectQueryBuilder<Product>, query: QueryProductListDto) {
     const { categoryId, search, code } = query;
-  
+
     if (categoryId) {
       qb.andWhere('category.id = :categoryId', { categoryId });
     }
     if (search) {
-      qb.andWhere('lower(product.name) like lower(:search) or lower(product.code) like lower(:search) or lower(brand.name) like lower(:search)', {
+      qb.andWhere(`(
+        lower(product.name) like lower(:search) or 
+        lower(product.code) like lower(:search) or 
+        lower(brand.name) like lower(:search)
+        )`, {
         search: `%${search}%`,
       });
     }
     if (code) {
-      qb.andWhere('lower(product.code) like lower(:code)', {
+      qb.andWhere('(lower(product.code) like lower(:code))', {
         code: `%${code}%`,
       });
     }
   }
-  
+
 }
