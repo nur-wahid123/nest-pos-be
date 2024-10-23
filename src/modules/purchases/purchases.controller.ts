@@ -17,9 +17,7 @@ export class PurchasesController {
    * @param purchasesService The purchases service, which is responsible for performing
    * operations on purchases.
    */
-  constructor(private readonly purchasesService: PurchasesService
-  ) {
-  }
+  constructor(private readonly purchasesService: PurchasesService) {}
 
   @Post('create')
   /**
@@ -32,7 +30,11 @@ export class PurchasesController {
     @Body() createPurchaseDto: CreatePurchaseDto,
     @Payload() payload: JwtPayload,
   ) {
-    return this.purchasesService.create(createPurchaseDto, +payload.sub, +payload.merchantId);
+    return this.purchasesService.create(
+      createPurchaseDto,
+      +payload.sub,
+      +payload.merchantId,
+    );
   }
 
   @Post('payment')
@@ -44,9 +46,9 @@ export class PurchasesController {
    */
   payment(
     @Payload() payload: JwtPayload,
-    @Body() paymentDto: CreatePaymentDto
+    @Body() paymentDto: CreatePaymentDto,
   ) {
-    return this.purchasesService.createPayment(paymentDto, payload?.sub)
+    return this.purchasesService.createPayment(paymentDto, payload?.sub);
   }
 
   @Get('need-to-pay')
@@ -56,7 +58,7 @@ export class PurchasesController {
    * @returns The amount left to pay
    */
   needToPay(@Query() param: { purchase_code: string }) {
-    return this.purchasesService.needToPay(param.purchase_code)
+    return this.purchasesService.needToPay(param.purchase_code);
   }
 
   @Get('list')
@@ -72,6 +74,6 @@ export class PurchasesController {
     @Query() timeRange: QueryPurchaseDateRangeDto,
     @Query() query: QueryPurchaseListDto,
   ) {
-    return this.purchasesService.find(pageOptionsDto, timeRange, query)
+    return this.purchasesService.find(pageOptionsDto, timeRange, query);
   }
 }

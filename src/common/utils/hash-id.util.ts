@@ -1,5 +1,5 @@
-import { Injectable } from "@nestjs/common";
-import Hashids from "hashids";
+import { Injectable } from '@nestjs/common';
+import Hashids from 'hashids';
 
 @Injectable()
 export class HashId extends Hashids {

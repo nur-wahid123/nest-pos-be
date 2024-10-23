@@ -5,8 +5,5 @@ import { PurchaseRepository } from 'src/repositories/purchase.repository';
 
 @Injectable()
 export class PaymentsService {
-    constructor(
-        private readonly peymentRepository: PaymentRepository
-    ) { }
-
+  constructor(private readonly peymentRepository: PaymentRepository) {}
 }

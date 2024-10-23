@@ -9,13 +9,7 @@ export const codeFormater = async (
   if (secondPrefix === 'SP' || secondPrefix === 'SL' || secondPrefix === 'CU') {
     formatedDate = newdate.toISOString().slice(0, 4).replace(/-/g, '');
   }
-  let uuid: string;
-  if (!currentCode) {
-    uuid = crypto.randomUUID();
-  } else {
-    uuid = crypto.randomUUID();
-  }
-  return `${fistPrefix}/${secondPrefix}${formatedDate}/${uuid.slice(0, 8)}`;
+  return `${fistPrefix}/${secondPrefix}${formatedDate}/${currentCode + 1}`;
 };
 export const codeFormaterWithOutLocation = async (
   secondPrefix: string,
@@ -27,11 +21,8 @@ export const codeFormaterWithOutLocation = async (
   if (secondPrefix === 'SP' || secondPrefix === 'SL' || secondPrefix === 'CU') {
     formatedDate = newdate.toISOString().slice(0, 4).replace(/-/g, '');
   }
-  let uuid: string;
-  uuid = crypto.randomUUID().slice(0, 8);
-  return `${secondPrefix}${formatedDate}${uuid}`;
+  return `${secondPrefix}${formatedDate}${currentCode + 1}`;
 };
-
 
 export const journalCodeFormater = (
   secondPrefix: string,

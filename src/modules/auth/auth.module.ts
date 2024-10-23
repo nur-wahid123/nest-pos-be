@@ -11,7 +11,13 @@ import HashPassword from 'src/common/utils/hash-password.util';
 import { AuthController } from './auth.controller';
 
 @Module({
-  providers: [AuthService, JwtStrategy, UserService, HashPassword, UserRepository],
+  providers: [
+    AuthService,
+    JwtStrategy,
+    UserService,
+    HashPassword,
+    UserRepository,
+  ],
   imports: [
     JwtModule.register({
       secret: process.env.USER_KEY_SECRET,
@@ -19,6 +25,6 @@ import { AuthController } from './auth.controller';
     }),
     UserModule,
   ],
-  controllers: [AuthController]
+  controllers: [AuthController],
 })
-export class AuthModule { }
+export class AuthModule {}

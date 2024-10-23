@@ -1,4 +1,4 @@
 export enum PaymentType {
-    PAIDOFF = 'paid-off',
-    PARTIAL = 'partial'
+  PAIDOFF = 'paid-off',
+  PARTIAL = 'partial',
 }

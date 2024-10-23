@@ -1,4 +1,14 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  UseGuards,
+  Query,
+} from '@nestjs/common';
 import { ProductsService } from './products.service';
 import { CreateProductDto } from './dto/create-product.dto';
 import { UpdateProductDto } from './dto/update-product.dto';
@@ -13,15 +23,21 @@ import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 @Controller('products')
 @UseGuards(JwtAuthGuard)
 export class ProductsController {
-  constructor(private readonly productsService: ProductsService) { }
+  constructor(private readonly productsService: ProductsService) {}
 
   @Post()
-  create(@Body() createProductDto: CreateProductDto, @Payload() payload: JwtPayload): Promise<Product> {
+  create(
+    @Body() createProductDto: CreateProductDto,
+    @Payload() payload: JwtPayload,
+  ): Promise<Product> {
     return this.productsService.create(createProductDto, payload.sub);
   }
 
   @Get('all')
-  findAll(@Query() query: QueryProductListDto, @Query() pageOptions: PageOptionsDto) {
+  findAll(
+    @Query() query: QueryProductListDto,
+    @Query() pageOptions: PageOptionsDto,
+  ) {
     return this.productsService.findAll(query, pageOptions);
   }
 
@@ -38,7 +54,11 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto, @Payload() payload: JwtPayload) {
+  update(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+    @Payload() payload: JwtPayload,
+  ) {
     return this.productsService.update(+id, updateProductDto, payload.sub);
   }
 

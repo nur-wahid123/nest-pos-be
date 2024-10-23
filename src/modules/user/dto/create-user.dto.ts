@@ -10,7 +10,6 @@ import {
 import { Gender } from 'src/entities/user.entity';
 
 export class CreateUserDto {
-
   @IsString()
   @MinLength(2, { message: 'Name must have atleast 2 characters.' })
   @IsNotEmpty()
@@ -40,7 +39,7 @@ export class CreateUserDto {
     minNumbers: 1,
     minLowercase: 0,
     minSymbols: 0,
-    minUppercase: 0
+    minUppercase: 0,
   })
   password: string;
 }

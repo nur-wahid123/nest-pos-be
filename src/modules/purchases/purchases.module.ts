@@ -10,6 +10,14 @@ import { PaymentRepository } from 'src/repositories/payment.repository';
 
 @Module({
   controllers: [PurchasesController],
-  providers: [PaymentRepository, PurchasesService, UserRepository, SupplierRepository, ProductRepository, PurchaseRepository, PurchaseItemRepository],
+  providers: [
+    PaymentRepository,
+    PurchasesService,
+    UserRepository,
+    SupplierRepository,
+    ProductRepository,
+    PurchaseRepository,
+    PurchaseItemRepository,
+  ],
 })
-export class PurchasesModule { }
+export class PurchasesModule {}

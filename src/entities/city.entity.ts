@@ -1,13 +1,13 @@
 import { Expose } from 'class-transformer';
 import {
-    Entity,
-    CreateDateColumn,
-    Column,
-    PrimaryGeneratedColumn,
-    OneToMany,
-    DeleteDateColumn,
-    UpdateDateColumn,
-    ManyToOne,
+  Entity,
+  CreateDateColumn,
+  Column,
+  PrimaryGeneratedColumn,
+  OneToMany,
+  DeleteDateColumn,
+  UpdateDateColumn,
+  ManyToOne,
 } from 'typeorm';
 import { Supplier } from './supplier.entity';
 import { Province } from './province.entity';
@@ -15,25 +15,24 @@ import CommonBaseEntity from './base/base.entity';
 
 @Entity({ name: 'cities' })
 export class City extends CommonBaseEntity {
-    @PrimaryGeneratedColumn()
-    id!: number;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    @Column({ nullable: false })
-    name!: string;
+  @Column({ nullable: false })
+  name!: string;
 
-    @Column({ nullable: true })
-    capital!: string;
+  @Column({ nullable: true })
+  capital!: string;
 
-    /**
-     * Relations
-    */
+  /**
+   * Relations
+   */
 
-    @ManyToOne(() => Province, (province) => province.cities)
-    province!: Province;
+  @ManyToOne(() => Province, (province) => province.cities)
+  province!: Province;
 
-    @OneToMany(() => Supplier, (suppliers) => suppliers.city, {
-        nullable: true,
-    })
-    suppliers!: Supplier[];
-
+  @OneToMany(() => Supplier, (suppliers) => suppliers.city, {
+    nullable: true,
+  })
+  suppliers!: Supplier[];
 }

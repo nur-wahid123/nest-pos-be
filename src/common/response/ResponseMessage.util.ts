@@ -1,8 +1,7 @@
-
 export class ResponseMessage {
-    msg: string;
+  msg: string;
 
-    constructor(msg: string) {
-        this.msg = msg
-    }
+  constructor(msg: string) {
+    this.msg = msg;
+  }
 }

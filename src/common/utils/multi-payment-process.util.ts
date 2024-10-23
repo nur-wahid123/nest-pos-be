@@ -1,7 +1,5 @@
 import { EntityManager } from 'typeorm';
-import {
-  codeFormaterWithOutLocation,
-} from './auto-generate-code.util';
+import { codeFormaterWithOutLocation } from './auto-generate-code.util';
 import { Payment } from 'src/entities/payment.entity';
 
 export async function autoGenerateCodeBank(
@@ -16,6 +14,7 @@ export async function autoGenerateCodeBank(
     .andWhere('payment.code ILIKE :code', {
       code: `${secondPrefix}%`,
     })
+    .setLock('pessimistic_write')
     .orderBy('payment.code', 'DESC')
     .useTransaction(true)
     .getOne();

@@ -8,4 +8,4 @@ import HashPassword from 'src/common/utils/hash-password.util';
   providers: [UserService, UserRepository, HashPassword],
   controllers: [UserController],
 })
-export class UserModule { }
+export class UserModule {}

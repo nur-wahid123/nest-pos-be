@@ -1,14 +1,8 @@
 import { Expose } from 'class-transformer';
-import {
-  IsDateString,
-  IsEnum,
-  IsOptional,
-  IsString,
-} from 'class-validator';
+import { IsDateString, IsEnum, IsOptional, IsString } from 'class-validator';
 import { PaymentStatus } from 'src/common/enums/payment-status.enum';
 
 export class QueryPurchaseListDto {
-
   @IsOptional()
   @IsString()
   search?: string;

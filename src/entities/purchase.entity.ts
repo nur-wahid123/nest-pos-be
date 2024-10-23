@@ -61,10 +61,12 @@ export class Purchase extends CommonBaseMerchantEntity {
   supplier!: Supplier;
 
   @OneToMany(() => Payment, (payment) => payment.purchase, { nullable: true })
-  payments!: Payment[]
+  payments!: Payment[];
 
-  @OneToMany(() => InventoryLedger, (inventoryLedger) => inventoryLedger.purchase, { nullable: true })
-  inventoryLedgers: InventoryLedger[]
-
-
+  @OneToMany(
+    () => InventoryLedger,
+    (inventoryLedger) => inventoryLedger.purchase,
+    { nullable: true },
+  )
+  inventoryLedgers: InventoryLedger[];
 }

@@ -45,5 +45,4 @@ export class PurchaseItem extends CommonBaseMerchantEntity {
     nullable: false,
   })
   product!: Product;
-
 }

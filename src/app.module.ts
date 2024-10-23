@@ -40,7 +40,7 @@ import { SalesModule } from './modules/sales/sales.module';
       database: process.env.DB_NAME,
       synchronize: process.env.DB_LOG == 'true' ? true : false,
       logging: true,
-      namingStrategy: new SnakeNamingStrategy()
+      namingStrategy: new SnakeNamingStrategy(),
     }),
 
     UserModule,
@@ -52,7 +52,7 @@ import { SalesModule } from './modules/sales/sales.module';
     CategoriesModule,
     ProductsModule,
     PurchasesModule,
-    SalesModule
+    SalesModule,
   ],
   controllers: [AppController],
   providers: [
@@ -65,8 +65,8 @@ import { SalesModule } from './modules/sales/sales.module';
     AppService,
     CitiesService,
     ProvinceRepository,
-    IslandRepository
-  ]
+    IslandRepository,
+  ],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {

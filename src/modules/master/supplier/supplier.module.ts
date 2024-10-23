@@ -8,4 +8,4 @@ import { CityRepository } from 'src/repositories/city.repository';
   controllers: [SupplierController],
   providers: [SupplierService, SupplierRepository, CityRepository],
 })
-export class SupplierModule { }
+export class SupplierModule {}

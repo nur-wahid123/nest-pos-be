@@ -16,7 +16,7 @@ export class PageOptionsDto {
   @IsInt()
   @Min(1)
   @IsOptional()
-  page?: number = 1;
+  page?: number;
 
   @Type(() => Number)
   @IsInt()
@@ -26,6 +26,6 @@ export class PageOptionsDto {
   take?: number = 10;
 
   get skip(): number {
-    return (this.page) * this.take;
+    return (this.page - 1) * this.take;
   }
 }
