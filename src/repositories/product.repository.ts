@@ -164,7 +164,7 @@ export class ProductRepository extends Repository<Product> {
     console.log(take, skip);
 
     // Properly check for skip and take values
-    if (skip !== undefined && take !== undefined) {
+    if (typeof skip === 'number' && typeof take === 'number' && !Number.isNaN(take) && !Number.isNaN(skip)) {
       query.offset(skip).limit(take);
     }
 
