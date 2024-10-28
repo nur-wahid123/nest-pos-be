@@ -38,6 +38,7 @@ export class PurchaseItem extends CommonBaseMerchantEntity {
 
   @ManyToOne(() => Purchase, (purchase) => purchase.purchaseItems, {
     nullable: false,
+    lazy: true,
   })
   purchase!: Purchase;
 

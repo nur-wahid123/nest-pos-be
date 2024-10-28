@@ -90,36 +90,6 @@ export class ProductRepository extends Repository<Product> {
     } finally {
       await queryRunner.release();
     }
-    // if (Array.isArray(products) && products.length > 0) {
-    //     const newProducts = products.map(async product => {
-    //         console.log(product);
-    //         // return { msg: 'success' }
-    //         const newProduct = new Product()
-    //         newProduct.code = product.id.toString()
-    //         newProduct.name = product.title
-
-    //         const existedBrand = await this.dataSource.getRepository(Brand)
-    //             .findOne({ where: { code: product.brand } })
-    //         newProduct.brand = existedBrand || new Brand()
-    //         newProduct.brand.code = product.brand
-    //         newProduct.brand.name = product.brand
-
-    //         const existedCategory = await this.dataSource.getRepository(Category)
-    //             .findOne({ where: { code: product.category } })
-    //         newProduct.category = existedCategory || new Category()
-    //         newProduct.category.code = product.category
-    //         newProduct.category.name = product.category
-
-    //         const existedUom = await this.dataSource.getRepository(Uom)
-    //             .findOne({ where: { name: product.unit } })
-    //         newProduct.uom = existedUom || new Uom()
-    //         newProduct.uom.name = product.unit
-
-    //         newProduct.buyPrice = product.price
-    //         // console.log();
-
-    //     })
-    // }
   }
   async saveProduct(product: Product): Promise<Product> {
     const queryRunner = this.dataSource.createQueryRunner();

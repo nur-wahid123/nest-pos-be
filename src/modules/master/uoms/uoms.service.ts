@@ -3,6 +3,10 @@ import { CreateUomDto } from './dto/create-uom.dto';
 import { UpdateUomDto } from './dto/update-uom.dto';
 import { UomRepository } from 'src/repositories/uom.repository';
 import { Uom } from 'src/entities/uom.entity';
+import { FilterDto } from 'src/common/dto/filter.dto';
+import { PageOptionsDto } from 'src/common/dto/page-option.dto';
+import { PageMetaDto } from 'src/common/dto/page-meta.dto';
+import { PageDto } from 'src/common/dto/page.dto';
 
 @Injectable()
 export class UomsService {
@@ -63,8 +67,11 @@ export class UomsService {
     return this.uomRepository.save(newUom);
   }
 
-  findAll() {
-    return this.uomRepository.find();
+  async findAll(query:FilterDto, pageOptionsDto:PageOptionsDto) {
+    const [data,itemCount] = await this.uomRepository.findUoms(query,pageOptionsDto);
+     
+    const pageMetaDto = new PageMetaDto({pageOptionsDto,itemCount})
+    return new PageDto(data,pageMetaDto)
   }
 
   findOne(id: number) {

@@ -27,7 +27,7 @@ export class BrandRepository extends Repository<Brand> {
       });
       
       console.log(skip,take);
-      if (skip !== undefined && take) {
+      if (skip !== undefined && take && !Number.isNaN(take) && !Number.isNaN(skip)) {
       query.offset(skip).limit(take)
     }
 

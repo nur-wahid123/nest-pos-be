@@ -7,6 +7,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   UseGuards,
   UseInterceptors,
 } from '@nestjs/common';
@@ -17,6 +18,8 @@ import { UpdateUomDto } from './dto/update-uom.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { Payload } from 'src/common/decorators/payload.decorator';
 import { JwtPayload } from 'src/modules/auth/jwt-payload.interface';
+import { FilterDto } from 'src/common/dto/filter.dto';
+import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 
 @Controller('uoms')
 @UseGuards(JwtAuthGuard)
@@ -24,9 +27,9 @@ import { JwtPayload } from 'src/modules/auth/jwt-payload.interface';
 export class UomsController {
   constructor(private readonly uomsService: UomsService) {}
 
-  @Get()
-  findAll() {
-    return this.uomsService.findAll();
+  @Get('list')
+  findAll(@Query() query:FilterDto,@Query() pageOptionsDto:PageOptionsDto) {
+    return this.uomsService.findAll(query,pageOptionsDto);
   }
 
   @Post()

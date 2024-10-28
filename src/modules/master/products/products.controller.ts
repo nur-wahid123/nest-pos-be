@@ -25,7 +25,7 @@ import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Post()
+  @Post('create')
   create(
     @Body() createProductDto: CreateProductDto,
     @Payload() payload: JwtPayload,
@@ -41,7 +41,7 @@ export class ProductsController {
     return this.productsService.findAll(query, pageOptions);
   }
 
-  @Get(':id')
+  @Get('find/:id')
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(+id);
   }
@@ -53,7 +53,7 @@ export class ProductsController {
     return this.productsService.init();
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
@@ -62,7 +62,7 @@ export class ProductsController {
     return this.productsService.update(+id, updateProductDto, payload.sub);
   }
 
-  @Delete(':id')
+  @Delete('delete/:id')
   remove(@Param('id') id: string, @Payload() payload: JwtPayload) {
     return this.productsService.remove(+id, payload.sub);
   }
