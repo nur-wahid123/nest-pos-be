@@ -7,6 +7,8 @@ import { CreateSalePaymentDto } from './dto/create-payment.dto';
 import { Sale } from 'src/entities/sale.entity';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { QuerySaleDto } from './dto/query-sale.dto';
+import { PageOptionsDto } from 'src/common/dto/page-option.dto';
+import { QueryDateRangeDto } from 'src/common/dto/query-purchase-date-range.dto';
 
 @UseGuards(JwtAuthGuard)
 @Controller('sales')
@@ -30,8 +32,8 @@ export class SalesController {
   }
 
   @Get('list')
-  findAll(@Query() query: QuerySaleDto) {
-    return this.salesService.findAll(query);
+  findAll(@Query() query: QuerySaleDto,@Query() dateRange:QueryDateRangeDto,@Query() pageOptionsDto:PageOptionsDto) {
+    return this.salesService.findAll(query,dateRange,pageOptionsDto);
   }
 
   @Get('need-to-pay')

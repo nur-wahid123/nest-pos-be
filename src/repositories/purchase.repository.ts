@@ -12,7 +12,7 @@ import { PurchaseItem } from 'src/entities/purchase-item.entity';
 import { Purchase } from 'src/entities/purchase.entity';
 import { Supplier } from 'src/entities/supplier.entity';
 import { CreatePurchaseDto } from 'src/modules/purchases/dto/create-purchase.dto';
-import { QueryPurchaseDateRangeDto } from 'src/modules/purchases/dto/query-purchase-date-range.dto';
+import { QueryDateRangeDto } from 'src/common/dto/query-purchase-date-range.dto';
 import { QueryPurchaseListDto } from 'src/modules/purchases/dto/query-purchase-list.dto';
 import {
   DataSource,
@@ -102,11 +102,11 @@ export class PurchaseRepository extends Repository<Purchase> {
 
   findAll(
     pageOptionsDto: PageOptionsDto,
-    timeRange?: QueryPurchaseDateRangeDto,
+    timeRange?: QueryDateRangeDto,
     queryparam?: QueryPurchaseListDto,
   ) {
     const { code, supplier, search } = queryparam;
-    const { take, skip, order } = pageOptionsDto;
+    const { take,page, skip, order } = pageOptionsDto;
     const query = this.dataSource
       .createQueryBuilder(Purchase, 'purchase')
       .leftJoinAndSelect('purchase.supplier', 'supplier')
@@ -141,17 +141,21 @@ export class PurchaseRepository extends Repository<Purchase> {
         this.applyTimeRange(qb, timeRange);
       }
     });
-    if (take && skip) {
+    if (page && skip) {
       query.take(take);
       query.skip(skip);
     }
-    query.orderBy('purchase.createdAt', 'DESC');
+    if(order){
+      query.orderBy('purchase.createdAt', order);
+    }else{
+      query.orderBy('purchase.createdAt', 'DESC');
+    }
     return query;
   }
 
   private applyTimeRange(
     query: SelectQueryBuilder<Purchase>,
-    timeRange: QueryPurchaseDateRangeDto,
+    timeRange: QueryDateRangeDto,
   ) {
     const { startDate, finishDate } = timeRange;
 

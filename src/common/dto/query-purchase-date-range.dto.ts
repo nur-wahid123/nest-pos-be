@@ -1,7 +1,7 @@
 import { Expose } from 'class-transformer';
 import { IsDateString, IsOptional } from 'class-validator';
 
-export class QueryPurchaseDateRangeDto {
+export class QueryDateRangeDto {
   @IsOptional()
   @IsDateString()
   @Expose({ name: 'finish_date' })

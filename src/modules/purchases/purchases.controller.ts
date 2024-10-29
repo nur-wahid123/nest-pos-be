@@ -5,7 +5,7 @@ import { JwtPayload } from '../auth/jwt-payload.interface';
 import { CreatePurchaseDto } from './dto/create-purchase.dto';
 import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 import { QueryPurchaseListDto } from './dto/query-purchase-list.dto';
-import { QueryPurchaseDateRangeDto } from './dto/query-purchase-date-range.dto';
+import { QueryDateRangeDto } from '../../common/dto/query-purchase-date-range.dto';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 
@@ -71,7 +71,7 @@ export class PurchasesController {
    */
   find(
     @Query() pageOptionsDto: PageOptionsDto,
-    @Query() timeRange: QueryPurchaseDateRangeDto,
+    @Query() timeRange: QueryDateRangeDto,
     @Query() query: QueryPurchaseListDto,
   ) {
     return this.purchasesService.find(pageOptionsDto, timeRange, query);

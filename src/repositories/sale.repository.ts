@@ -3,6 +3,8 @@ import {
   Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
+import { PageOptionsDto } from 'src/common/dto/page-option.dto';
+import { QueryDateRangeDto } from 'src/common/dto/query-purchase-date-range.dto';
 import { codeFormater } from 'src/common/utils/auto-generate-code.util';
 import { Inventory } from 'src/entities/inventory.entity';
 import SaleItem from 'src/entities/sale-item.entity';
@@ -23,16 +25,25 @@ export class SaleRepository extends Repository<Sale> {
     super(Sale, dataSource.createEntityManager());
   }
 
-  async findSales(filter: QuerySaleDto) {
+  async findSales(filter: QuerySaleDto,dateRange:QueryDateRangeDto,pageOptionsDto:PageOptionsDto) {
+    const {finishDate,startDate} = dateRange
+    const {page,order,take,skip} = pageOptionsDto
     const query = this.createQueryBuilder('sale')
       .leftJoinAndSelect('sale.saleItems', 'saleItems')
       .leftJoinAndSelect('saleItems.product', 'product')
       .leftJoinAndSelect('sale.payments', 'payments')
       .where((qb) => {
         this.aplyFilters(qb, filter);
+        if(startDate && finishDate){
+          qb.andWhere(`DATE(sale.createdAt) between :startDate and :finishDate`,{startDate,finishDate})
+        }
       })
       .orderBy('sale.createdAt', 'DESC');
-    return await query.getMany();
+    if(page && take){
+      query.offset(skip).limit(take)
+    }
+    query.orderBy('sale.createdAt', order)
+    return await query.getManyAndCount();
   }
 
   private aplyFilters(qb: SelectQueryBuilder<Sale>, query: QuerySaleDto) {
@@ -62,7 +73,7 @@ export class SaleRepository extends Repository<Sale> {
     date: Date,
   ): Promise<string> {
     const newDate = new Date(date).toDateString();
-    const lastRecord = await this.queryRunner.manager
+    const lastRecord = await queryRunner.manager
       .createQueryBuilder(Sale, 'sale')
       .where('sale.date = :date', { date: newDate })
       .orderBy('sale.createdAt', 'DESC')

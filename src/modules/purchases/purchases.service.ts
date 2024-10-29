@@ -16,7 +16,7 @@ import { In } from 'typeorm';
 import { GetPurchaseWithUserDto } from './dto/get-purchase-with-user.dto';
 import { UserRepository } from 'src/repositories/user.repository';
 import { PageOptionsDto } from 'src/common/dto/page-option.dto';
-import { QueryPurchaseDateRangeDto } from './dto/query-purchase-date-range.dto';
+import { QueryDateRangeDto } from '../../common/dto/query-purchase-date-range.dto';
 import { QueryPurchaseListDto } from './dto/query-purchase-list.dto';
 import { PageMetaDto } from 'src/common/dto/page-meta.dto';
 import { PageDto } from 'src/common/dto/page.dto';
@@ -127,13 +127,10 @@ export class PurchasesService {
 
   async find(
     pageOptionsDto: PageOptionsDto,
-    timeRange: QueryPurchaseDateRangeDto,
+    timeRange: QueryDateRangeDto,
     query: QueryPurchaseListDto,
   ) {
     const data = this.purchaseRepo.findAll(pageOptionsDto, timeRange, query);
-    // const [entities, itemCount] = await this.purchaseRepo.manager.findAndCount(
-    //     Purchase, { relations: { supplier: true, payments: true, purchaseItems: { product: true } } }
-    // )
     const itemCount = await data.getCount();
     const entities = await data.getMany();
     const pageMetaDto = new PageMetaDto({ itemCount, pageOptionsDto });

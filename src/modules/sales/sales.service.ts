@@ -1,6 +1,7 @@
 import {
   BadRequestException,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
 } from '@nestjs/common';
 import { SaleRepository } from 'src/repositories/sale.repository';
@@ -12,6 +13,10 @@ import { PaymentStatus } from 'src/common/enums/payment-status.enum';
 import { PaymentRepository } from 'src/repositories/payment.repository';
 import { CreateSalePaymentDto } from './dto/create-payment.dto';
 import { QuerySaleDto } from './dto/query-sale.dto';
+import { QueryDateRangeDto } from 'src/common/dto/query-purchase-date-range.dto';
+import { PageOptionsDto } from 'src/common/dto/page-option.dto';
+import { PageMetaDto } from 'src/common/dto/page-meta.dto';
+import { PageDto } from 'src/common/dto/page.dto';
 
 @Injectable()
 export class SalesService {
@@ -19,10 +24,12 @@ export class SalesService {
     private readonly saleRepository: SaleRepository,
     private readonly productRepository: ProductRepository,
     private readonly paymentRepository: PaymentRepository,
-  ) {}
+  ) { }
 
-  findAll(query: QuerySaleDto) {
-    return this.saleRepository.findSales(query);
+  async findAll(query: QuerySaleDto,dateRange:QueryDateRangeDto,pageOptionsDto:PageOptionsDto) {
+    const [data,itemCount] = await this.saleRepository.findSales(query,dateRange,pageOptionsDto);
+    const pageMeta = new PageMetaDto({ pageOptionsDto, itemCount });
+    return new PageDto(data, pageMeta);
   }
 
   async createPayment(
@@ -35,22 +42,28 @@ export class SalesService {
   }
 
   async create(createSaleDto: CreateSaleDto, userId: number) {
-    const reducedSaleItems = this.reduceDublicateProduct(
-      createSaleDto.saleItems,
-    );
-    const newSaleItems = await this.mapSaleItems(reducedSaleItems, userId);
+    try {
 
-    const total = newSaleItems.reduce(
-      (sum, saleItems) => sum + saleItems.subTotal,
-      0,
-    );
+      const reducedSaleItems = this.reduceDublicateProduct(
+        createSaleDto.saleItems,
+      );
+      const newSaleItems = await this.mapSaleItems(reducedSaleItems, userId);
 
-    return await this.saleRepository.createSale(
-      createSaleDto,
-      newSaleItems,
-      total,
-      userId,
-    );
+      const total = newSaleItems.reduce(
+        (sum, saleItems) => sum + saleItems.subTotal,
+        0,
+      );
+
+      return await this.saleRepository.createSale(
+        createSaleDto,
+        newSaleItems,
+        total,
+        userId,
+      );
+    } catch (error) {
+      console.log(error);
+      throw new InternalServerErrorException('Internal Server error')
+    }
   }
 
   private reduceDublicateProduct(
