@@ -26,6 +26,8 @@ async function bootstrap() {
     new Logger('WEB').log(`http://localhost:${port}`);
     new Logger('CORS-DEV').log(`${corsDev}`);
     new Logger('CORS-STG').log(`${corsStg}`);
+    console.log('Halobro');
+    
   });
 }
 bootstrap();
