@@ -33,15 +33,13 @@ jobs:
           SSH_PRIVATE_KEY: ${{ secrets.VM_SSH_KEY }}
           HOST: ${{ secrets.VM_HOST }}  # Update with your VM IP
           USER: ${{ secrets.VM_USERNAME }}
-          ENV_FILE_CONTENT: ${{ secrets.ENV_FILE_CONTENT }}
         run: |
           echo "${SSH_PRIVATE_KEY}" > /tmp/vm_key
           chmod 600 /tmp/vm_key
 
           ssh -o StrictHostKeyChecking=no -i /tmp/vm_key $USER@$HOST << 'EOF'
-            echo "$ENV_FILE_CONTENT" > ~/nest/.env
             docker pull indrafajar/nest-pos-be:latest
             docker stop mynest || true
             docker rm mynest || true
-            docker run -d --name mynest --env-file ~/nest/.env --restart unless-stopped --network pos-app -p 3000:3000 indrafajar/nest-pos-be:latest
+            docker run -d --name mynest --env-file ~/nest-pos-be/.env --restart unless-stopped --network pos-app -p 3000:3000 indrafajar/nest-pos-be:latest
           EOF
