@@ -3,7 +3,7 @@ import { AppModule } from './app.module';
 import * as cookieParser from 'cookie-parser';
 import { AppService } from './app.service';
 import { HttpExceptionFilter } from './common/filters/http-exception.filter';
-import { ValidationPipe } from '@nestjs/common';
+import { Logger, ValidationPipe } from '@nestjs/common';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
@@ -23,8 +23,9 @@ async function bootstrap() {
   });
   appService.init();
   await app.listen(port, () => {
-    console.log('listening to port : ' + port);
-    console.log('url : http://localhost:' + port);
+    new Logger('WEB').log(`http://localhost:${port}`);
+    new Logger('CORS-DEV').log(`${corsDev}`);
+    new Logger('CORS-STG').log(`${corsStg}`);
   });
 }
 bootstrap();
