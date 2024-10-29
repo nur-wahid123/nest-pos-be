@@ -26,20 +26,22 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           push: true
-          tags: your-dockerhub-username/your-app:latest  # Update this
+          tags: indrafajar/nest-pos-be:latest  # Update this
 
       - name: Deploy to VM
         env:
           SSH_PRIVATE_KEY: ${{ secrets.VM_SSH_KEY }}
-          HOST: your_vm_ip_address  # Update with your VM IP
-          USER: your_vm_user  # Update with your VM username
+          HOST: ${{ secrets.VM_HOST }}  # Update with your VM IP
+          USER: ${{ secrets.VM_USERNAME }}
+          ENV_FILE_CONTENT: ${{ secrets.ENV_FILE_CONTENT }}
         run: |
           echo "${SSH_PRIVATE_KEY}" > /tmp/vm_key
           chmod 600 /tmp/vm_key
 
           ssh -o StrictHostKeyChecking=no -i /tmp/vm_key $USER@$HOST << 'EOF'
-            docker pull your-dockerhub-username/your-app:latest
-            docker stop your-container-name || true
-            docker rm your-container-name || true
-            docker run -d --name your-container-name -p 80:80 your-dockerhub-username/your-app:latest
+            echo "$ENV_FILE_CONTENT" > ~/nest/.env
+            docker pull indrafajar/nest-pos-be:latest
+            docker stop mynest || true
+            docker rm mynest || true
+            docker run -d --name mynest --env-file ~/nest/.env --restart unless-stopped --network pos-app -p 3000:3000 indrafajar/nest-pos-be:latest
           EOF
