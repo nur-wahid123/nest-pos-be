@@ -3,7 +3,7 @@ name: Deploy to VM
 on:
   push:
     branches:
-      - main  # Adjust this to your deployment branch
+      - master  # Adjust this to your deployment branch
 
 jobs:
   deploy:
