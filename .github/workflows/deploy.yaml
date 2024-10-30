@@ -42,4 +42,5 @@ jobs:
             docker stop mynest || true
             docker rm mynest || true
             docker run -d --name mynest --env-file ~/nest-pos-be/.env --restart unless-stopped --network pos-app -p 3000:3000 indrafajar/nest-pos-be:latest
+            docker image prune -f
           EOF

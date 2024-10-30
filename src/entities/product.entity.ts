@@ -40,6 +40,9 @@ export class Product extends CommonBaseMerchantEntity {
   @Type(() => Number)
   sellPrice!: number;
 
+  @Column({nullable:true, type:'text'})
+  image?:string
+
   /**
    * Relations
    */

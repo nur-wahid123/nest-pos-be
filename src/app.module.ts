@@ -38,8 +38,8 @@ import { SalesModule } from './modules/sales/sales.module';
       username: process.env.DB_USERNAME,
       entities: [__dirname + '/**/*.entity{.ts,.js}'],
       database: process.env.DB_NAME,
-      synchronize: process.env.DB_LOG == 'true' ? true : false,
-      logging: true,
+      logging: process.env.DB_LOG == 'true' ? true : false,
+      synchronize: process.env.DB_SYNC == 'true' ? true : false,
       namingStrategy: new SnakeNamingStrategy(),
     }),
 

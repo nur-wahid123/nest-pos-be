@@ -42,7 +42,13 @@ export class SaleRepository extends Repository<Sale> {
     if(page && take){
       query.offset(skip).limit(take)
     }
-    query.orderBy('sale.createdAt', order)
+    if(order){
+      query.orderBy('sale.createdAt', order)
+    }else{
+      query.orderBy('sale.createdAt', "DESC")
+    }
+    console.log((await query.getMany()).length);
+    
     return await query.getManyAndCount();
   }
 

@@ -27,7 +27,9 @@ export class SalesService {
   ) { }
 
   async findAll(query: QuerySaleDto,dateRange:QueryDateRangeDto,pageOptionsDto:PageOptionsDto) {
+    console.log(pageOptionsDto);
     const [data,itemCount] = await this.saleRepository.findSales(query,dateRange,pageOptionsDto);
+    
     const pageMeta = new PageMetaDto({ pageOptionsDto, itemCount });
     return new PageDto(data, pageMeta);
   }
