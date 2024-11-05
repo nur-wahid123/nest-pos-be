@@ -1,0 +1,240 @@
+{
+    "moota": {
+        "note": null,
+        "type": "CR",
+        "items": [
+            {
+                "qty": 1,
+                "name": "PROMO MURAH BUAT TEST",
+                "price": 3000,
+                "image_url": null,
+                "description": "-"
+            },
+            {
+                "qty": 1,
+                "name": "delivery fee",
+                "price": 7000,
+                "image_url": null,
+                "description": "-"
+            },
+            {
+                "qty": 1,
+                "name": "insurance",
+                "price": 8,
+                "image_url": null,
+                "description": "-"
+            }
+        ],
+        "total": 10009,
+        "trx_id": "PYM-67189b35ec365-67189b35ec366",
+        "balance": null,
+        "bank_id": "3VGjZmEvzrg",
+        "order_id": null,
+        "customers": {
+            "name": "Leo Leclerc",
+            "email": "leclerc@domain.com",
+            "phone": "085735121408",
+            "address": null
+        },
+        "sub_total": 10008,
+        "created_at": "2024-10-23T06:44:05.000000Z",
+        "expired_at": "2024-10-24T06:44:05.000000Z",
+        "description": "-",
+        "mutation_id": null,
+        "payment_url": "https://app.moota.co/payment/PYM-67189b35ec365-67189b35ec366",
+        "unique_code": 1,
+        "unique_note": "qpwkz",
+        "bank_account": {
+            "pkg": null,
+            "icon": "https://app.moota.co/images/icon-bank-bcaV3.png",
+            "meta": {
+                "session_id": "6fd4c5b8-886d-445c-9e3d-1eb9857c83fc",
+                "activity_summary": "Ditemukan 1 mutasi dalam 144.31 detik"
+            },
+            "label": "BCA",
+            "token": "3VGjZmEvzrg",
+            "is_big": 0,
+            "status": null,
+            "balance": "20067757.84",
+            "bank_id": "3VGjZmEvzrg",
+            "date_to": "2024-10-23 00:00:00",
+            "in_queue": 0,
+            "username": "alfisety0103",
+            "atas_nama": "ALFI SETYADI MOCHTAR",
+            "bank_type": "bcaV3",
+            "date_from": "2024-10-23 00:00:00",
+            "is_active": true,
+            "created_at": "2024-10-01 17:31:04",
+            "ip_address": null,
+            "next_queue": "2024-10-23 13:45:35",
+            "in_progress": 0,
+            "is_crawling": 1,
+            "last_update": "2024-10-23T06:35:35.000000Z",
+            "login_retry": 0,
+            "recurred_at": "2024-10-31 17:31:04",
+            "corporate_id": null,
+            "is_auto_start": 1,
+            "account_number": "0901125308",
+            "interval_refresh": 10,
+            "ip_address_expired_at": null
+        },
+        "redirect_url": null,
+        "customer_name": null,
+        "account_number": "0901125308",
+        "customer_email": null,
+        "customer_phone": null,
+        "unique_code_type": "INCREMENT",
+        "is_unique_code_active": true
+    },
+    "webhook": {
+        "bank": {
+            "pkg": null,
+            "icon": "https://app.moota.co/images/icon-bank-bcaV3.png",
+            "meta": {
+                "session_id": "0b13171e-637c-4f62-997f-b52796760864",
+                "activity_summary": "Ditemukan 2 mutasi dalam 0.05 detik"
+            },
+            "label": "BCA",
+            "token": "3VGjZmEvzrg",
+            "is_big": false,
+            "status": null,
+            "balance": "20067757.84",
+            "bank_id": "3VGjZmEvzrg",
+            "date_to": "2024-10-23 00:00:00",
+            "in_queue": false,
+            "username": "alfisety0103",
+            "atas_nama": "ALFI SETYADI MOCHTAR",
+            "bank_type": "bcaV3",
+            "date_from": "2024-10-23 00:00:00",
+            "is_active": true,
+            "created_at": "2024-10-01 17:31:04",
+            "ip_address": null,
+            "next_queue": "2024-10-23 13:56:46",
+            "in_progress": false,
+            "is_crawling": true,
+            "last_update": "",
+            "login_retry": 0,
+            "recurred_at": "2024-10-31 17:31:04",
+            "corporate_id": null,
+            "account_number": "0901125308",
+            "interval_refresh": 10,
+            "ip_address_expired_at": ""
+        },
+        "date": "2024-10-23 00:00:00",
+        "note": "",
+        "type": "CR",
+        "token": "A6j32JJYLzw",
+        "amount": 10009,
+        "balance": 20077766.84,
+        "bank_id": "3VGjZmEvzrg",
+        "taggings": [],
+        "created_at": "2024-10-23 13:46:48",
+        "updated_at": "2024-10-23 13:46:48",
+        "description": "TRSF E-BANKING CR2310/FTSCY/WS95031 10009.00MOHAMAD NAFIS",
+        "mutation_id": "A6j32JJYLzw",
+        "account_number": "0901125308",
+        "payment_detail": {
+            "total": 10009,
+            "status": "SUCCESS",
+            "trx_id": "PYM-67189b35ec365-67189b35ec366",
+            "bank_id": "3VGjZmEvzrg",
+            "order_id": null,
+            "mutation_id": "A6j32JJYLzw",
+            "account_number": "0901125308",
+            "amount_captured": 10009
+        }
+    },
+    "rajaongkir": {
+        "query": {
+            "courier": "pos",
+            "waybill": "P2410210167611"
+        },
+        "result": {
+            "details": {
+                "origin": "Jalan Merdeka No 150  Sukorejo  Sukorejo  SUKOREJO  KOTA BLITAR  JAWA TIMUR",
+                "weight": 0.1,
+                "destination": "Dsn Nglaos  RT 1 RW 1  Ds Jatinom  Kanigoro",
+                "shipper_city": "Jalan Merdeka No 150  Sukorejo  Sukorejo  SUKOREJO  KOTA BLITAR  JAWA TIMUR",
+                "waybill_date": "2024-10-21",
+                "waybill_time": "17:51:49",
+                "receiver_city": "Dsn Nglaos  RT 1 RW 1  Ds Jatinom  Kanigoro",
+                "receiver_name": "Firdauz",
+                "shippper_name": "3 B A Official Shop",
+                "waybill_number": "P2410210167611",
+                "shipper_address1": "",
+                "shipper_address2": "",
+                "shipper_address3": "",
+                "receiver_address1": "KAB BLITAR, KANIGORO, BANGGLE",
+                "receiver_address2": "",
+                "receiver_address3": ""
+            },
+            "summary": {
+                "origin": "Jalan Merdeka No 150  Sukorejo  Sukorejo  SUKOREJO  KOTA BLITAR  JAWA TIMUR",
+                "status": "DELIVERED",
+                "destination": "Dsn Nglaos  RT 1 RW 1  Ds Jatinom  Kanigoro",
+                "courier_code": "pos",
+                "courier_name": "POS Indonesia (POS)",
+                "service_code": "EC3",
+                "shipper_name": "3 B A Official Shop",
+                "waybill_date": "2024-10-21",
+                "receiver_name": "Firdauz",
+                "waybill_number": "P2410210167611"
+            },
+            "manifest": [
+                {
+                    "city_name": "KCP SANANKULON 66151",
+                    "manifest_code": "PENDING",
+                    "manifest_date": "2024-10-21",
+                    "manifest_time": "17:51:50",
+                    "manifest_description": "Connote telah dibuat oleh Dino Esza Puji Utama (590037140) di lokasi KCP SANANKULON 66151"
+                },
+                {
+                    "city_name": "KC BLITAR 66100",
+                    "manifest_code": "INLOCATION",
+                    "manifest_date": "2024-10-21",
+                    "manifest_time": "18:39:10",
+                    "manifest_description": "Barang anda telah melewati proses Receiving oleh : BUDI (992483890) di KC BLITAR 66100"
+                },
+                {
+                    "city_name": "KC BLITAR 66100",
+                    "manifest_code": "inBag",
+                    "manifest_date": "2024-10-21",
+                    "manifest_time": "19:30:48",
+                    "manifest_description": "Barang anda P2410210167611 telah melewati proses bagging dengan nomor bag PID58436037 oleh BUDI (992483890) di KC BLITAR 66100"
+                },
+                {
+                    "city_name": "KCP KANIGORO 66171",
+                    "manifest_code": "INLOCATION",
+                    "manifest_date": "2024-10-22",
+                    "manifest_time": "10:36:01",
+                    "manifest_description": "Paket P2410210167611 telah melewati proses Receiving oleh Mucholidin di KCP KANIGORO 66171 10:36"
+                },
+                {
+                    "city_name": "KCP KANIGORO 66171",
+                    "manifest_code": "DELIVERYRUNSHEET",
+                    "manifest_date": "2024-10-22",
+                    "manifest_time": "10:42:18",
+                    "manifest_description": "Barang P2410210167611 anda telah melewati proses DeliveryRunsheet oleh Mucholidin di KCP KANIGORO 66171 dan diterima oleh Erlangga Rahmadi P (560008464)"
+                },
+                {
+                    "city_name": "KCP KANIGORO 66171",
+                    "manifest_code": "DELIVERED",
+                    "manifest_date": "2024-10-22",
+                    "manifest_time": "15:20:57",
+                    "manifest_description": "Barang anda P2410210167611 selesai dikirim oleh Erlangga Rahmadi P (560008464) dan diterima oleh Firdaus (DITERIMA YANG BERSANGKUTAN)"
+                }
+            ],
+            "delivered": true,
+            "delivery_status": {
+                "status": "DELIVERED",
+                "pod_date": "2024-10-22",
+                "pod_time": "15:20:57",
+                "pod_receiver": "Firdaus (DITERIMA YANG BERSANGKUTAN)"
+            }
+        },
+        "status": {
+            "code": 200,
+            "description": "OK"
+        }
+    }
+}

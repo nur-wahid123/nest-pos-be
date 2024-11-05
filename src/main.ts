@@ -27,7 +27,6 @@ async function bootstrap() {
     new Logger('CORS-DEV').log(`${corsDev}`);
     new Logger('CORS-STG').log(`${corsStg}`);
     console.log('Halobro');
-    
   });
 }
 bootstrap();

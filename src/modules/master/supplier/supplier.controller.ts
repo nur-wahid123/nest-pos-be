@@ -32,7 +32,7 @@ export class SupplierController {
   }
 
   @Get('list')
-  findAll(@Query() filter:FilterDto,@Query() pageOptionsDto: PageOptionsDto) {
+  findAll(@Query() filter: FilterDto, @Query() pageOptionsDto: PageOptionsDto) {
     return this.supplierService.findAll(filter, pageOptionsDto);
   }
 

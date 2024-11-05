@@ -32,8 +32,8 @@ export class BrandsController {
   }
 
   @Get('list')
-  findAll(@Query() query:FilterDto,@Query() pageOptionsDto:PageOptionsDto) {
-    return this.brandsService.findAll(query,pageOptionsDto);
+  findAll(@Query() query: FilterDto, @Query() pageOptionsDto: PageOptionsDto) {
+    return this.brandsService.findAll(query, pageOptionsDto);
   }
 
   @Get('find/:id')

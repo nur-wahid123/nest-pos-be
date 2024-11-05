@@ -13,17 +13,22 @@ export class UomRepository extends Repository<Uom> {
   async findUoms(filter: FilterDto, pageOptionsDto: PageOptionsDto) {
     const { code, search } = filter;
     const { skip, take } = pageOptionsDto;
-    const query = this.dataSource
-      .createQueryBuilder(Uom, 'uom')
-      .where((qb) => {
-        code && qb.andWhere(`(lower(uom.code) like lower(:code))`, {
+    const query = this.dataSource.createQueryBuilder(Uom, 'uom').where((qb) => {
+      code &&
+        qb.andWhere(`(lower(uom.code) like lower(:code))`, {
           code: `%${code}%`,
         });
-        search && qb.andWhere(`(lower(uom.name) like lower(:search))`, {
+      search &&
+        qb.andWhere(`(lower(uom.name) like lower(:search))`, {
           search: `%${search}%`,
         });
-      });
-    if (skip !== undefined && take && !Number.isNaN(take) && !Number.isNaN(skip)) {
+    });
+    if (
+      skip !== undefined &&
+      take &&
+      !Number.isNaN(take) &&
+      !Number.isNaN(skip)
+    ) {
       query.offset(skip).limit(take);
     }
     return await query.getManyAndCount();

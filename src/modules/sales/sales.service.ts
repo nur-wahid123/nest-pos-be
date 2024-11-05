@@ -24,12 +24,20 @@ export class SalesService {
     private readonly saleRepository: SaleRepository,
     private readonly productRepository: ProductRepository,
     private readonly paymentRepository: PaymentRepository,
-  ) { }
+  ) {}
 
-  async findAll(query: QuerySaleDto,dateRange:QueryDateRangeDto,pageOptionsDto:PageOptionsDto) {
+  async findAll(
+    query: QuerySaleDto,
+    dateRange: QueryDateRangeDto,
+    pageOptionsDto: PageOptionsDto,
+  ) {
     console.log(pageOptionsDto);
-    const [data,itemCount] = await this.saleRepository.findSales(query,dateRange,pageOptionsDto);
-    
+    const [data, itemCount] = await this.saleRepository.findSales(
+      query,
+      dateRange,
+      pageOptionsDto,
+    );
+
     const pageMeta = new PageMetaDto({ pageOptionsDto, itemCount });
     return new PageDto(data, pageMeta);
   }
@@ -45,7 +53,6 @@ export class SalesService {
 
   async create(createSaleDto: CreateSaleDto, userId: number) {
     try {
-
       const reducedSaleItems = this.reduceDublicateProduct(
         createSaleDto.saleItems,
       );
@@ -64,7 +71,7 @@ export class SalesService {
       );
     } catch (error) {
       console.log(error);
-      throw new InternalServerErrorException('Internal Server error')
+      throw new InternalServerErrorException('Internal Server error');
     }
   }
 

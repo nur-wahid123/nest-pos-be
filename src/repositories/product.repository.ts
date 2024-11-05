@@ -91,6 +91,47 @@ export class ProductRepository extends Repository<Product> {
       await queryRunner.release();
     }
   }
+
+  async initImage() {
+    const response = await fetch('https://dummyjson.com/products?limit=194');
+    const { products } = await response.json();
+    // return products[0]
+
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    try {
+      await queryRunner.startTransaction();
+      // console.log(data.products[1]);
+      const newProducts: Product[] = [];
+      for (let index = 0; index < products.length; index++) {
+        // for (let index = 0; index < 2; index++) {
+        const product = products[index];
+
+        const existedProduct = await queryRunner.manager.findOne(Product, {
+          where: { code: product.sku },
+        });
+        if (existedProduct) {
+          if (existedProduct.image) {
+            continue;
+          } else {
+            existedProduct.image = product.images[0];
+          }
+        }
+        newProducts.push(existedProduct); // newProduct
+      }
+
+      await queryRunner.manager.save(newProducts, { chunk: 1000 });
+      await queryRunner.commitTransaction();
+      return newProducts;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      console.log(error);
+      throw new InternalServerErrorException();
+    } finally {
+      await queryRunner.release();
+    }
+  }
+
   async saveProduct(product: Product): Promise<Product> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
@@ -110,7 +151,8 @@ export class ProductRepository extends Repository<Product> {
 
   async findProducts(filter: QueryProductListDto, pageOptions: PageOptionsDto) {
     const { skip, take } = pageOptions;
-    const query = this.dataSource.createQueryBuilder(Product, 'product')
+    const query = this.dataSource
+      .createQueryBuilder(Product, 'product')
       .leftJoin('product.brand', 'brand')
       .leftJoin('product.category', 'category')
       .leftJoin('product.uom', 'uom')
@@ -134,7 +176,12 @@ export class ProductRepository extends Repository<Product> {
     console.log(take, skip);
 
     // Properly check for skip and take values
-    if (typeof skip === 'number' && typeof take === 'number' && !Number.isNaN(take) && !Number.isNaN(skip)) {
+    if (
+      typeof skip === 'number' &&
+      typeof take === 'number' &&
+      !Number.isNaN(take) &&
+      !Number.isNaN(skip)
+    ) {
       query.offset(skip).limit(take);
     }
 
@@ -148,13 +195,16 @@ export class ProductRepository extends Repository<Product> {
       qb.andWhere('category.id = :categoryId', { categoryId });
     }
     if (search) {
-      qb.andWhere(`(
+      qb.andWhere(
+        `(
         lower(product.name) like lower(:search) or 
         lower(product.code) like lower(:search) or 
         lower(brand.name) like lower(:search)
-        )`, {
-        search: `%${search}%`,
-      });
+        )`,
+        {
+          search: `%${search}%`,
+        },
+      );
     }
     if (code) {
       qb.andWhere('(lower(product.code) like lower(:code))', {
@@ -162,5 +212,4 @@ export class ProductRepository extends Repository<Product> {
       });
     }
   }
-
 }

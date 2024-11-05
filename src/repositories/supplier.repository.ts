@@ -6,7 +6,12 @@ import { City } from 'src/entities/city.entity';
 import { Supplier } from 'src/entities/supplier.entity';
 import { CreateSupplierDto } from 'src/modules/master/supplier/dto/create-supplier.dto';
 import { UpdateSupplierDto } from 'src/modules/master/supplier/dto/update-supplier.dto';
-import { DataSource, QueryRunner, Repository, SelectQueryBuilder } from 'typeorm';
+import {
+  DataSource,
+  QueryRunner,
+  Repository,
+  SelectQueryBuilder,
+} from 'typeorm';
 
 @Injectable()
 export class SupplierRepository extends Repository<Supplier> {
@@ -61,7 +66,6 @@ export class SupplierRepository extends Repository<Supplier> {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-
       const code = await this.autoGenerateCode(queryRunner);
       const newSupplier = new Supplier();
       const splr = Object.assign(newSupplier, createSupplierDto);
@@ -74,20 +78,20 @@ export class SupplierRepository extends Repository<Supplier> {
     } catch (error) {
       console.log(error);
       await queryRunner.rollbackTransaction();
-      throw new InternalServerErrorException("Internal Server Error");
+      throw new InternalServerErrorException('Internal Server Error');
     } finally {
       await queryRunner.release();
     }
   }
 
   async findAll(filter: FilterDto, pageOptionsDto: PageOptionsDto) {
-    const { take, skip, order } = pageOptionsDto
-    const query = this.dataSource.createQueryBuilder(Supplier, 'supplier')
+    const { take, skip, order } = pageOptionsDto;
+    const query = this.dataSource
+      .createQueryBuilder(Supplier, 'supplier')
       .where((qb) => {
         this.applyFilters(qb, filter);
       });
-    order &&
-      query.orderBy('supplier.name', order);
+    order && query.orderBy('supplier.name', order);
     take && query.limit(take);
     skip && query.offset(skip);
     return await query.getManyAndCount();

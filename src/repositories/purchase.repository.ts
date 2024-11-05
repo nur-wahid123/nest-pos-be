@@ -106,7 +106,7 @@ export class PurchaseRepository extends Repository<Purchase> {
     queryparam?: QueryPurchaseListDto,
   ) {
     const { code, supplier, search } = queryparam;
-    const { take,page, skip, order } = pageOptionsDto;
+    const { take, page, skip, order } = pageOptionsDto;
     const query = this.dataSource
       .createQueryBuilder(Purchase, 'purchase')
       .leftJoinAndSelect('purchase.supplier', 'supplier')
@@ -145,9 +145,9 @@ export class PurchaseRepository extends Repository<Purchase> {
       query.take(take);
       query.skip(skip);
     }
-    if(order){
+    if (order) {
       query.orderBy('purchase.createdAt', order);
-    }else{
+    } else {
       query.orderBy('purchase.createdAt', 'DESC');
     }
     return query;

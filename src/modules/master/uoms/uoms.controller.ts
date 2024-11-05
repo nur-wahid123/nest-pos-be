@@ -28,8 +28,8 @@ export class UomsController {
   constructor(private readonly uomsService: UomsService) {}
 
   @Get('list')
-  findAll(@Query() query:FilterDto,@Query() pageOptionsDto:PageOptionsDto) {
-    return this.uomsService.findAll(query,pageOptionsDto);
+  findAll(@Query() query: FilterDto, @Query() pageOptionsDto: PageOptionsDto) {
+    return this.uomsService.findAll(query, pageOptionsDto);
   }
 
   @Post()

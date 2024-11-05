@@ -25,29 +25,36 @@ export class SaleRepository extends Repository<Sale> {
     super(Sale, dataSource.createEntityManager());
   }
 
-  async findSales(filter: QuerySaleDto,dateRange:QueryDateRangeDto,pageOptionsDto:PageOptionsDto) {
-    const {finishDate,startDate} = dateRange
-    const {page,order,take,skip} = pageOptionsDto
+  async findSales(
+    filter: QuerySaleDto,
+    dateRange: QueryDateRangeDto,
+    pageOptionsDto: PageOptionsDto,
+  ) {
+    const { finishDate, startDate } = dateRange;
+    const { page, order, take, skip } = pageOptionsDto;
     const query = this.createQueryBuilder('sale')
       .leftJoinAndSelect('sale.saleItems', 'saleItems')
       .leftJoinAndSelect('saleItems.product', 'product')
       .leftJoinAndSelect('sale.payments', 'payments')
       .where((qb) => {
         this.aplyFilters(qb, filter);
-        if(startDate && finishDate){
-          qb.andWhere(`DATE(sale.createdAt) between :startDate and :finishDate`,{startDate,finishDate})
+        if (startDate && finishDate) {
+          qb.andWhere(
+            `DATE(sale.createdAt) between :startDate and :finishDate`,
+            { startDate, finishDate },
+          );
         }
       })
       .orderBy('sale.createdAt', 'DESC');
-    if(page && take){
-      query.skip(skip).take(take)
+    if (page && take) {
+      query.skip(skip).take(take);
     }
-    if(order){
-      query.orderBy('sale.createdAt', order)
-    }else{
-      query.orderBy('sale.createdAt', "DESC")
+    if (order) {
+      query.orderBy('sale.createdAt', order);
+    } else {
+      query.orderBy('sale.createdAt', 'DESC');
     }
-    
+
     return await query.getManyAndCount();
   }
 

@@ -39,11 +39,11 @@ export class SupplierService {
     );
   }
 
-  async findAll(
-    filter:FilterDto,
-    pageOptionsDto: PageOptionsDto,
-  ) {
-    const [entities, itemCount]= await this.supplierRepository.findAll(filter,pageOptionsDto);
+  async findAll(filter: FilterDto, pageOptionsDto: PageOptionsDto) {
+    const [entities, itemCount] = await this.supplierRepository.findAll(
+      filter,
+      pageOptionsDto,
+    );
 
     const pageMetaDto = new PageMetaDto({ pageOptionsDto, itemCount });
     return new PageDto(entities, pageMetaDto);

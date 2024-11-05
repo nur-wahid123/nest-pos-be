@@ -24,6 +24,7 @@ import { CityRepository } from './repositories/city.repository';
 import { ProvinceRepository } from './repositories/province.repository';
 import { IslandRepository } from './repositories/island.repository';
 import { SalesModule } from './modules/sales/sales.module';
+import { InventoryModule } from './modules/inventory/inventory.module';
 
 @Module({
   imports: [
@@ -53,6 +54,7 @@ import { SalesModule } from './modules/sales/sales.module';
     ProductsModule,
     PurchasesModule,
     SalesModule,
+    InventoryModule,
   ],
   controllers: [AppController],
   providers: [

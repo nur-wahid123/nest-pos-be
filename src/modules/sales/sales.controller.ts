@@ -32,8 +32,12 @@ export class SalesController {
   }
 
   @Get('list')
-  findAll(@Query() query: QuerySaleDto,@Query() dateRange:QueryDateRangeDto,@Query() pageOptionsDto:PageOptionsDto) {
-    return this.salesService.findAll(query,dateRange,pageOptionsDto);
+  findAll(
+    @Query() query: QuerySaleDto,
+    @Query() dateRange: QueryDateRangeDto,
+    @Query() pageOptionsDto: PageOptionsDto,
+  ) {
+    return this.salesService.findAll(query, dateRange, pageOptionsDto);
   }
 
   @Get('need-to-pay')

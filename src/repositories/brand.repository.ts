@@ -12,26 +12,36 @@ export class BrandRepository extends Repository<Brand> {
   }
 
   async findBrands(filter: FilterDto, pageOptionsDto: PageOptionsDto) {
-    const { code, search } = filter
-    const { skip, take } = pageOptionsDto
+    const { code, search } = filter;
+    const { skip, take } = pageOptionsDto;
     const query = this.datasource
-    .createQueryBuilder(Brand, 'brand')
-    .where((qb) => {
-      code &&
-      qb.andWhere(`(lower(brand.code) like lower(:code))`, { code:`%${code}%` })
-      search &&
-      qb.andWhere(`(
+      .createQueryBuilder(Brand, 'brand')
+      .where((qb) => {
+        code &&
+          qb.andWhere(`(lower(brand.code) like lower(:code))`, {
+            code: `%${code}%`,
+          });
+        search &&
+          qb.andWhere(
+            `(
         lower(brand.name) like lower(:search) or
         lower(brand.code) like lower(:search)
-        )`, { search:`%${search}%` })
+        )`,
+            { search: `%${search}%` },
+          );
       });
-      
-      console.log(skip,take);
-      if (skip !== undefined && take && !Number.isNaN(take) && !Number.isNaN(skip)) {
-      query.offset(skip).limit(take)
+
+    console.log(skip, take);
+    if (
+      skip !== undefined &&
+      take &&
+      !Number.isNaN(take) &&
+      !Number.isNaN(skip)
+    ) {
+      query.offset(skip).limit(take);
     }
 
-    return query.getManyAndCount()
+    return query.getManyAndCount();
   }
 
   async createBrand(

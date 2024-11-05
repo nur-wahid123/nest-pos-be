@@ -53,6 +53,13 @@ export class ProductsController {
     return this.productsService.init();
   }
 
+  @Post('init-image/add')
+  initImage() {
+    console.log('hello');
+
+    return this.productsService.initImage();
+  }
+
   @Patch('update/:id')
   update(
     @Param('id') id: string,

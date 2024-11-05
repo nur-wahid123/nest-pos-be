@@ -67,11 +67,14 @@ export class UomsService {
     return this.uomRepository.save(newUom);
   }
 
-  async findAll(query:FilterDto, pageOptionsDto:PageOptionsDto) {
-    const [data,itemCount] = await this.uomRepository.findUoms(query,pageOptionsDto);
-     
-    const pageMetaDto = new PageMetaDto({pageOptionsDto,itemCount})
-    return new PageDto(data,pageMetaDto)
+  async findAll(query: FilterDto, pageOptionsDto: PageOptionsDto) {
+    const [data, itemCount] = await this.uomRepository.findUoms(
+      query,
+      pageOptionsDto,
+    );
+
+    const pageMetaDto = new PageMetaDto({ pageOptionsDto, itemCount });
+    return new PageDto(data, pageMetaDto);
   }
 
   findOne(id: number) {

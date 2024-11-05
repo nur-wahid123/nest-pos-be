@@ -33,6 +33,10 @@ export class ProductsService {
     return this.productRepository.init();
   }
 
+  initImage() {
+    return this.productRepository.initImage();
+  }
+
   async create(
     createProductDto: CreateProductDto,
     userId: number,
