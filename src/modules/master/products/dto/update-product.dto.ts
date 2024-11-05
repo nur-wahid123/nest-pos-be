@@ -11,6 +11,10 @@ export class UpdateProductDto {
   code!: string;
 
   @IsOptional()
+  @IsString()
+  image?: string;
+
+  @IsOptional()
   @IsNumber()
   @Type(() => Number)
   @Min(0)

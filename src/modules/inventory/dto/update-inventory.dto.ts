@@ -7,13 +7,9 @@ import {
   Min,
   ValidateNested,
 } from 'class-validator';
-import { Expose, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 
 export class UpdateInventoryDto {
-  @IsNotEmpty()
-  @IsNumber()
-  @Expose({ name: 'product_id' })
-  productId?: number;
 
   @IsNotEmpty()
   @IsNumber()

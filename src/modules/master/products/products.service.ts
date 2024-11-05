@@ -108,7 +108,7 @@ export class ProductsService {
   }
 
   findOne(id: number): Promise<Product> {
-    return this.productRepository.findOneBy({ id });
+    return this.productRepository.findOne({where: {id}, relations: {category: true, brand: true, uom: true, supplier: true}});
   }
 
   async update(
@@ -145,7 +145,8 @@ export class ProductsService {
       product.uom = uom;
     }
     product.name = updateProductDto?.name ?? product.name;
-    product.code = updateProductDto?.code ?? undefined;
+    product.code = updateProductDto?.code ?? null;
+    product.image = updateProductDto?.image ?? null;
     product.buyPrice = updateProductDto?.buyPrice ?? product.buyPrice;
     product.sellPrice = updateProductDto?.sellPrice ?? product.sellPrice;
 

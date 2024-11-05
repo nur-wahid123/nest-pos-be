@@ -16,7 +16,6 @@ import { Payload } from 'src/common/decorators/payload.decorator';
 import { JwtPayload } from 'src/modules/auth/jwt-payload.interface';
 import { Product } from 'src/entities/product.entity';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
-import { QueryListDto } from '../categories/dto/query-list.dto';
 import { QueryProductListDto } from './dto/query-product-list.dto';
 import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 
@@ -41,7 +40,7 @@ export class ProductsController {
     return this.productsService.findAll(query, pageOptions);
   }
 
-  @Get('find/:id')
+  @Get('detail/:id')
   findOne(@Param('id') id: string) {
     return this.productsService.findOne(+id);
   }
