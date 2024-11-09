@@ -5,7 +5,6 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                // Pull the code from the Git repository
                 git branch: 'master', url: 'https://github.com/nur-wahid123/nest-pos-be.git'
             }
         }
@@ -14,7 +13,6 @@ pipeline {
             steps {
                 withCredentials([file(credentialsId: 'env_file', variable: 'ENV_FILE')]) {
 
-                        // Remove any existing .env file
                         sh 'rm -f .env'
 
                         // Use absolute paths for copying the file

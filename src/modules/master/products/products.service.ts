@@ -102,7 +102,6 @@ export class ProductsService {
       query,
       pageOptionsDto,
     );
-    // const itemCount = data.length
     const pageMeta = new PageMetaDto({ pageOptionsDto, itemCount });
     return new PageDto(data, pageMeta);
   }

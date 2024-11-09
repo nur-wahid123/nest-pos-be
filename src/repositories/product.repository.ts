@@ -35,7 +35,6 @@ export class ProductRepository extends Repository<Product> {
         }
 
         const newProduct = new Product();
-        // return { msg: 'success' }
         newProduct.code = product.sku;
         newProduct.name = product.title;
 
@@ -72,9 +71,9 @@ export class ProductRepository extends Repository<Product> {
         }
         newProduct.uom = existedUom;
 
-        newProduct.buyPrice = Math.ceil(Number(product.price) * 15670); // product.price
-        newProduct.sellPrice = Math.ceil(Number(product.price) * 15670); // product.price
-        newProducts.push(newProduct); // newProduct
+        newProduct.buyPrice = Math.ceil(Number(product.price) * 15670);
+        newProduct.sellPrice = Math.ceil(Number(product.price) * 15670);
+        newProducts.push(newProduct);
       }
 
       await queryRunner.manager.save(newProducts, { chunk: 1000 });
@@ -111,7 +110,7 @@ export class ProductRepository extends Repository<Product> {
             existedProduct.image = product.images[0];
           }
         }
-        newProducts.push(existedProduct); // newProduct
+        newProducts.push(existedProduct);
       }
 
       await queryRunner.manager.save(newProducts, { chunk: 1000 });
@@ -168,7 +167,6 @@ export class ProductRepository extends Repository<Product> {
       });
 
 
-    // Properly check for skip and take values
     if (
       typeof skip === 'number' &&
       typeof take === 'number' &&

@@ -91,7 +91,6 @@ export class PurchasesService {
   private async mapPurchaseItems(
     data: CreatePurchaseItemDto[],
   ): Promise<PurchaseItem[]> {
-    //purchaseItems
     const productIds = data.map((item) => item.product_id);
     const products = await this.productRepository.findBy({
       id: In(productIds),

@@ -25,10 +25,8 @@ export class SupplierService {
     createSupplierDto: CreateSupplierDto,
     userId: number,
   ): Promise<Supplier> {
-    //generate code
     const { cityId } = createSupplierDto;
 
-    //check city
     const city = await this.cityRepository.findOneBy({ id: cityId });
     if (!city) throw new BadRequestException(['city not found']);
 

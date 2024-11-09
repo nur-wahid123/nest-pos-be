@@ -1,4 +1,7 @@
 import { Injectable } from '@nestjs/common';
+import { PageMetaDto } from 'src/common/dto/page-meta.dto';
+import { PageOptionsDto } from 'src/common/dto/page-option.dto';
+import { PageDto } from 'src/common/dto/page.dto';
 import { codeFormater } from 'src/common/utils/auto-generate-code.util';
 import Category from 'src/entities/category.entity';
 import { QueryListDto } from 'src/modules/master/categories/dto/query-list.dto';
@@ -10,8 +13,9 @@ export class CategoryRepository extends Repository<Category> {
     super(Category, dataSource.createEntityManager());
   }
 
-  findCategories(query: QueryListDto): Promise<Category[]> {
+  async findCategories(query: QueryListDto,pageOptionsDto:PageOptionsDto) {
     const { search } = query;
+    const {page,take,skip} = pageOptionsDto
     const queryBuilder = this.createQueryBuilder('category').orderBy(
       'category.name',
       'ASC',
@@ -21,8 +25,16 @@ export class CategoryRepository extends Repository<Category> {
         search: `%${search}%`,
       });
     }
+    console.log(page,take,skip);
+    
+    if(page && take){
+      queryBuilder.skip(skip).take(take)
+    }
 
-    return queryBuilder.getMany();
+    const [data,itemCount] = await queryBuilder.getManyAndCount();
+    const meta = new PageMetaDto({itemCount,pageOptionsDto});
+    return new PageDto(data,meta)
+
   }
   findCategoriesCasheer(query: QueryListDto): Promise<Category[]> {
     const { search } = query;

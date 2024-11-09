@@ -21,6 +21,9 @@ export default class InventoryLedger extends CommonBaseMerchantEntity {
   @Column({ nullable: false })
   direction!: number;
 
+  @Column({ nullable: true })
+  note?: string;
+
   @Column({ nullable: false })
   @Expose({ name: 'qty_before_update' })
   qtyBeforeUpdate!: number;

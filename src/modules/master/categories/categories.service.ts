@@ -4,6 +4,7 @@ import { UpdateCategoryDto } from './dto/update-category.dto';
 import { CategoryRepository } from 'src/repositories/category.repository';
 import Category from 'src/entities/category.entity';
 import { QueryListDto } from './dto/query-list.dto';
+import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 
 @Injectable()
 export class CategoriesService {
@@ -21,9 +22,12 @@ export class CategoriesService {
     return this.categoryRepository.save(newCategory);
   }
 
-  findAll(query: QueryListDto, isCasheer?: boolean): Promise<Category[]> {
-    if (isCasheer) return this.categoryRepository.findCategoriesCasheer(query);
-    return this.categoryRepository.findCategories(query);
+  findAll(query: QueryListDto,pageOptionsDto:PageOptionsDto) {
+    return this.categoryRepository.findCategories(query,pageOptionsDto);
+  }
+
+  findCasheer(query: QueryListDto) {
+    return this.categoryRepository.findCategoriesCasheer(query);
   }
 
   findOne(id: number): Promise<Category> {

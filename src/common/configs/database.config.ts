@@ -22,7 +22,7 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
       logging: dBlog,
       namingStrategy: new SnakeNamingStrategy(),
       extra: {
-        options: '-c timezone=UTC', // Ensure session timezone is UTC
+        options: '-c timezone=UTC', 
       },
     };
   },

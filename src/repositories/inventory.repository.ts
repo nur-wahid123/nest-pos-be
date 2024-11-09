@@ -2,8 +2,10 @@ import { Injectable, InternalServerErrorException, NotFoundException } from '@ne
 import { FilterDto } from 'src/common/dto/filter.dto';
 import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 import { StatusCount } from 'src/common/enums/status-count.enum';
+import InventoryLedger from 'src/entities/inventory-ledger.entity';
 import { Inventory } from 'src/entities/inventory.entity';
 import { Product } from 'src/entities/product.entity';
+import { QueryInventoryDto } from 'src/modules/inventory/dto/query-inventory.dto';
 import { DataSource, Repository } from 'typeorm';
 
 @Injectable()
@@ -32,6 +34,23 @@ export class InventoryRepository extends Repository<Inventory> {
         return await query.getManyAndCount();
     }
 
+    async inventoryInformation(filter:FilterDto){
+        const query = this.dataSource
+        .createQueryBuilder(Product, 'product')
+        .leftJoin('product.inventory', 'inventory')
+        .where((qb) => {
+            this.applyFilters(qb, filter);
+        })
+        .select('count(product.id) as all_product')
+        .addSelect('sum(inventory.qty) as total_item')
+        .addSelect('sum(inventory.qty * product.sellPrice) as value_of_products')
+        return await query.getRawOne<{
+            all_product: number
+            , total_item: number
+            , value_of_products: number
+        }>();
+    }
+
     async updateInventory(inventory: Inventory, userId: number) {
         const queryRunner = this.dataSource.createQueryRunner()
         await queryRunner.connect()
@@ -44,8 +63,9 @@ export class InventoryRepository extends Repository<Inventory> {
                 lock: { mode: 'pessimistic_write' }
             })
             if (!invt) {
-                invt = new Inventory()
-                invt.createdBy = userId
+                inventory.createdBy = userId
+            }else{
+                inventory.id = invt.id
             }
             const product = await queryRunner.manager.findOne(Product, {
                 where: {
@@ -55,12 +75,19 @@ export class InventoryRepository extends Repository<Inventory> {
             if (!product) {
                 throw new NotFoundException('product not found')
             }
-            invt.updatedBy = userId
-            invt.qty = inventory.qty
-            invt.product = product
-            await queryRunner.manager.save(invt)
+            inventory.updatedBy = userId
+            inventory.qty = inventory.qty
+            await queryRunner.manager.save(inventory)
+            const inventoryLedger = new InventoryLedger()
+            inventoryLedger.inventory = inventory
+            inventoryLedger.qty = inventory.qty
+            inventoryLedger.qtyBeforeUpdate = invt ? invt.qty : 0
+            inventoryLedger.qtyAfterUpdate = inventory.qty
+            inventoryLedger.direction = inventory.qty - (invt ? invt.qty : 0) > 0 ? 1 : -1
+            inventoryLedger.createdBy = userId
+            await queryRunner.manager.save(inventoryLedger)
             await queryRunner.commitTransaction()
-            return invt
+            return inventory
         } catch (error) {
             await queryRunner.rollbackTransaction()
             console.log(error);

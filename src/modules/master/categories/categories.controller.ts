@@ -16,6 +16,7 @@ import { Payload } from 'src/common/decorators/payload.decorator';
 import { JwtPayload } from 'src/modules/auth/jwt-payload.interface';
 import { JwtAuthGuard } from 'src/guards/jwt-auth.guard';
 import { QueryListDto } from './dto/query-list.dto';
+import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 
 @Controller('categories')
 @UseGuards(JwtAuthGuard)
@@ -30,13 +31,13 @@ export class CategoriesController {
     return this.categoriesService.create(createCategoryDto, payload.sub);
   }
 
-  @Get()
-  findAll(@Query() query: QueryListDto) {
-    return this.categoriesService.findAll(query);
+  @Get('list')
+  findAll(@Query() query: QueryListDto,@Query()pageOptionsDto:PageOptionsDto) {
+    return this.categoriesService.findAll(query,pageOptionsDto);
   }
   @Get('cashier')
   findInCashier(@Query() query: QueryListDto) {
-    return this.categoriesService.findAll(query, true);
+    return this.categoriesService.findCasheer(query);
   }
 
   @Get(':id')

@@ -8,6 +8,7 @@ import { PageMetaDto } from 'src/common/dto/page-meta.dto';
 import { PageDto } from 'src/common/dto/page.dto';
 import { Inventory } from 'src/entities/inventory.entity';
 import { Product } from 'src/entities/product.entity';
+import { FilterDto } from 'src/common/dto/filter.dto';
 
 @Injectable()
 export class InventoryService {
@@ -17,7 +18,11 @@ export class InventoryService {
     return 'This action adds a new inventory';
   }
 
-  async findAll(filter: QueryInventoryDto, pageOptionsDto: PageOptionsDto) {
+  inventoryInformation(filter: FilterDto) {
+    return this.inventoryRepository.inventoryInformation(filter);
+  }
+
+  async findAll(filter: FilterDto, pageOptionsDto: PageOptionsDto) {
     const [data, itemCount] = await this.inventoryRepository.findAll(
       filter,
       pageOptionsDto,
