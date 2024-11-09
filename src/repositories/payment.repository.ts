@@ -55,7 +55,6 @@ export class PaymentRepository extends Repository<Payment> {
       throw new BadRequestException(
         'The payment amount must not exceed the amount due',
       );
-    console.log(needToPay, paid);
 
     try {
       const payment = new Payment();
@@ -216,7 +215,6 @@ export class PaymentRepository extends Repository<Payment> {
       if (today < dueDate) return 0;
       const diffTime = Math.abs(today.getTime() - dueDate.getTime());
       const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-      console.log(diffDays);
       const lateFeesPerWeek = total * 0.05;
       const weeks = Math.ceil(diffDays / 7);
       return lateFeesPerWeek * weeks;
@@ -277,7 +275,6 @@ export class PaymentRepository extends Repository<Payment> {
       });
 
       if (inventory) {
-        console.log(v?.sale);
 
         const invLdgr = new InventoryLedger();
         invLdgr.sale = v?.sale;
@@ -315,7 +312,6 @@ export class PaymentRepository extends Repository<Payment> {
           qty: v?.qty,
           createdBy: userId,
         });
-        console.log(inventory, v);
         await ettManager.save(inventory);
         const inventoryLedger = ettManager.create(InventoryLedger, {
           purchase: v?.purchase,

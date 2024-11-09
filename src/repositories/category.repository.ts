@@ -32,7 +32,6 @@ export class CategoryRepository extends Repository<Category> {
       .orderBy('category.name', 'ASC');
     queryBuilder.where((qb) => {
       if (search) {
-        console.log('oi');
 
         qb.andWhere('lower(category.name) like lower(:search)', {
           search: `%${search}%`,

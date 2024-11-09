@@ -15,11 +15,7 @@ export class AuthService {
     private readonly hashPassword: HashPassword,
   ) {}
   register(createUserDto: CreateUserDto): Promise<User> {
-    try {
-      return this.usersService.createUser(createUserDto);
-    } catch (error) {
-      console.log('auth-s');
-    }
+    return this.usersService.createUser(createUserDto);
   }
 
   async validateUser(userLoginDto: UserLoginDto): Promise<User> {
@@ -44,7 +40,6 @@ export class AuthService {
     if (!user) {
       throw new ForbiddenException('Username Or Password are incorrect');
     }
-    console.log(user);
 
     const payload = await this.validateUser(dto);
 

@@ -73,7 +73,6 @@ export class SaleRepository extends Repository<Sale> {
       let inventory = await manager.findOne(Inventory, {
         where: { product: { id: v?.product.id } },
       });
-      console.log(inventory, v);
 
       if (!inventory || inventory.qty < v?.qty) correct = false;
     });

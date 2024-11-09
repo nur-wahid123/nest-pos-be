@@ -31,7 +31,6 @@ export class SalesService {
     dateRange: QueryDateRangeDto,
     pageOptionsDto: PageOptionsDto,
   ) {
-    console.log(pageOptionsDto);
     const [data, itemCount] = await this.saleRepository.findSales(
       query,
       dateRange,

@@ -13,7 +13,7 @@ export class BrandRepository extends Repository<Brand> {
 
   async findBrands(filter: FilterDto, pageOptionsDto: PageOptionsDto) {
     const { code, search } = filter;
-    const { skip, take } = pageOptionsDto;
+    const { skip,page, take } = pageOptionsDto;
     const query = this.datasource
       .createQueryBuilder(Brand, 'brand')
       .where((qb) => {
@@ -31,14 +31,10 @@ export class BrandRepository extends Repository<Brand> {
           );
       });
 
-    console.log(skip, take);
     if (
-      skip !== undefined &&
-      take &&
-      !Number.isNaN(take) &&
-      !Number.isNaN(skip)
+      page && take
     ) {
-      query.offset(skip).limit(take);
+      query.skip(skip).take(take);
     }
 
     return query.getManyAndCount();
@@ -48,7 +44,6 @@ export class BrandRepository extends Repository<Brand> {
     createBrandDto: CreateBrandDto,
     userId: number,
   ): Promise<Brand> {
-    console.log(userId);
 
     const queryRunner = this.datasource.createQueryRunner();
     await queryRunner.connect();

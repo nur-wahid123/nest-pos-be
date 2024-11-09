@@ -18,16 +18,13 @@ export class ProductRepository extends Repository<Product> {
   async init() {
     const response = await fetch('https://dummyjson.com/products?limit=194');
     const { products } = await response.json();
-    // return products[0]
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     try {
       await queryRunner.startTransaction();
-      // console.log(data.products[1]);
       const newProducts: Product[] = [];
       for (let index = 0; index < products.length; index++) {
-        // for (let index = 0; index < 2; index++) {
         const product = products[index];
 
         const existedProduct = await queryRunner.manager.findOne(Product, {
@@ -95,16 +92,13 @@ export class ProductRepository extends Repository<Product> {
   async initImage() {
     const response = await fetch('https://dummyjson.com/products?limit=194');
     const { products } = await response.json();
-    // return products[0]
 
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     try {
       await queryRunner.startTransaction();
-      // console.log(data.products[1]);
       const newProducts: Product[] = [];
       for (let index = 0; index < products.length; index++) {
-        // for (let index = 0; index < 2; index++) {
         const product = products[index];
 
         const existedProduct = await queryRunner.manager.findOne(Product, {
@@ -173,7 +167,6 @@ export class ProductRepository extends Repository<Product> {
         this.applyFilters(qb, filter);
       });
 
-    console.log(take, skip);
 
     // Properly check for skip and take values
     if (

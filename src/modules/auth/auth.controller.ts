@@ -40,11 +40,7 @@ export class AuthController {
 
   @Post('register')
   register(@Body() createUserDto: CreateUserDto) {
-    try {
-      return this.authService.register(createUserDto);
-    } catch (error) {
-      console.log('auth-c');
-    }
+    return this.authService.register(createUserDto);
   }
 
   @UseGuards(JwtAuthGuard)

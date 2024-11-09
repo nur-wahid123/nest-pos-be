@@ -97,7 +97,6 @@ export class PurchasesService {
     const products = await this.productRepository.findBy({
       id: In(productIds),
     });
-    console.log(products.length, productIds.length);
 
     if (products.length !== productIds.length) {
       throw new BadRequestException('One or more products not found');

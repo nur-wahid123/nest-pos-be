@@ -47,15 +47,11 @@ export class ProductsController {
 
   @Get('init/add')
   init() {
-    console.log('hello');
-
     return this.productsService.init();
   }
 
   @Post('init-image/add')
   initImage() {
-    console.log('hello');
-
     return this.productsService.initImage();
   }
 

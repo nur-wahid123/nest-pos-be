@@ -20,7 +20,6 @@ export class UserRepository extends Repository<User> {
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error);
-      console.log('user-r');
       throw new InternalServerErrorException();
     } finally {
       await queryRunner.release();

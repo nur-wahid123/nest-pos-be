@@ -61,7 +61,6 @@ export class UserService {
    * @returns promise of user
    */
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-    try {
       const user: User = new User();
       user.name = createUserDto.name;
       user.age = createUserDto.age;
@@ -77,15 +76,10 @@ export class UserService {
       user.password = await hash(createUserDto.password, salt);
       user.gender = createUserDto.gender;
       return this.userRepository.createUser(user);
-    } catch (error) {
-      console.log('user-s');
-    }
   }
 
   async isUsernameExists(username: string): Promise<boolean> {
     const user = await this.userRepository.findOneBy({ username });
-    console.log(user);
-
     return user != null ? true : false;
   }
 

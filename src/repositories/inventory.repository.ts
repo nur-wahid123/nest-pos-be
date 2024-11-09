@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { FilterDto } from 'src/common/dto/filter.dto';
 import { PageOptionsDto } from 'src/common/dto/page-option.dto';
+import { StatusCount } from 'src/common/enums/status-count.enum';
 import { Inventory } from 'src/entities/inventory.entity';
 import { Product } from 'src/entities/product.entity';
 import { DataSource, Repository } from 'typeorm';
@@ -24,9 +25,9 @@ export class InventoryRepository extends Repository<Inventory> {
                 this.applyFilters(qb, filter);
             })
             .orderBy('product.name', order);
-        if (page && skip) {
-            query.skip(take);
-            query.take(skip);
+            if (page && take) {
+            query.skip(skip);
+            query.take(take);
         }
         return await query.getManyAndCount();
     }
@@ -73,7 +74,7 @@ export class InventoryRepository extends Repository<Inventory> {
     }
 
     applyFilters(qb: any, filter: FilterDto) {
-        const { code, search } = filter;
+        const { code, search, status } = filter;
         code &&
             qb.andWhere(`(lower(product.code) like lower(:code))`, {
                 code: `%${code}%`,
@@ -82,5 +83,17 @@ export class InventoryRepository extends Repository<Inventory> {
             qb.andWhere(`(lower(product.name) like lower(:search) or lower(product.code) like lower(:search))`, {
                 search: `%${search}%`,
             });
+        if (status) {
+            switch (status) {
+                case StatusCount.MORE_THAN_ZERO:
+                    qb.andWhere('inventory.qty > 0');
+                    break;
+                case StatusCount.NONE:
+                    qb.andWhere(('inventory.qty <= 0 or inventory.qty is null'));
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
