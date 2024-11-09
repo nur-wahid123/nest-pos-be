@@ -1,12 +1,8 @@
-import { Expose } from 'class-transformer';
 import {
   Entity,
-  CreateDateColumn,
   Column,
   PrimaryGeneratedColumn,
   OneToMany,
-  DeleteDateColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import CommonBaseEntity from './base/base.entity';
 import { Province } from './province.entity';

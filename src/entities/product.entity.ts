@@ -1,13 +1,10 @@
 import { Expose, Type } from 'class-transformer';
 import {
   Entity,
-  CreateDateColumn,
   Column,
   PrimaryGeneratedColumn,
   OneToMany,
   ManyToOne,
-  UpdateDateColumn,
-  DeleteDateColumn,
   OneToOne,
 } from 'typeorm';
 import Brand from './brand.entity';

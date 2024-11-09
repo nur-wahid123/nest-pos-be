@@ -25,25 +25,16 @@ import { ProvinceRepository } from './repositories/province.repository';
 import { IslandRepository } from './repositories/island.repository';
 import { SalesModule } from './modules/sales/sales.module';
 import { InventoryModule } from './modules/inventory/inventory.module';
+import { typeOrmAsyncConfig } from './common/configs/database.config';
+import { join } from 'path';
 
 @Module({
   imports: [
     ConfigModule.forRoot({
       isGlobal: true,
+      envFilePath: [join(__dirname, '..', 'env', `.env`), '.env'],
     }),
-    TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: process.env.DB_HOST,
-      port: +process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
-      username: process.env.DB_USERNAME,
-      entities: [__dirname + '/**/*.entity{.ts,.js}'],
-      database: process.env.DB_NAME,
-      logging: process.env.DB_LOG == 'true' ? true : false,
-      synchronize: process.env.DB_SYNC == 'true' ? true : false,
-      namingStrategy: new SnakeNamingStrategy(),
-    }),
-
+    TypeOrmModule.forRootAsync(typeOrmAsyncConfig),
     UserModule,
     AuthModule,
     UomsModule,

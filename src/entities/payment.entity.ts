@@ -1,18 +1,13 @@
 import { Expose, Type } from 'class-transformer';
 import {
   Entity,
-  CreateDateColumn,
   Column,
   PrimaryGeneratedColumn,
-  DeleteDateColumn,
-  UpdateDateColumn,
-  OneToMany,
   ManyToOne,
-  OneToOne,
 } from 'typeorm';
 import { Sale } from './sale.entity';
 import { Purchase } from './purchase.entity';
-import { PaymentType } from 'src/modules/payments/enum/payment-type.enum';
+import { PaymentType } from '../modules/payments/enum/payment-type.enum';
 import CommonBaseMerchantEntity from './base/base-merchant.entity';
 
 @Entity({ name: 'payments' })

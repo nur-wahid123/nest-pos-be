@@ -13,13 +13,17 @@ export const typeOrmAsyncConfig: TypeOrmModuleAsyncOptions = {
     return {
       type: 'postgres',
       host: process.env.DB_HOST,
-      port: +process.env.DB_PORT,
-      password: process.env.DB_PASSWORD,
+      port: Number(process.env.DB_PORT),
       username: process.env.DB_USERNAME,
-      entities: [__dirname + '/../**/*.entity{.ts,.js}'],
+      password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
-      synchronize: true,
-      logging: true,
+      entities: [__dirname + '/../../**/*.entity{.ts,.js}'],
+      synchronize: false,
+      logging: dBlog,
+      namingStrategy: new SnakeNamingStrategy(),
+      extra: {
+        options: '-c timezone=UTC', // Ensure session timezone is UTC
+      },
     };
   },
 };

@@ -1,12 +1,8 @@
-import { Expose } from 'class-transformer';
 import {
   Entity,
-  CreateDateColumn,
   Column,
   PrimaryGeneratedColumn,
   OneToMany,
-  DeleteDateColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { Product } from './product.entity';
 import CommonBaseMerchantEntity from './base/base-merchant.entity';

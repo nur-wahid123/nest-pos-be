@@ -23,7 +23,6 @@ import { PageDto } from 'src/common/dto/page.dto';
 import { CreatePaymentDto } from './dto/create-payment.dto';
 import { PaymentRepository } from 'src/repositories/payment.repository';
 import { PaymentStatus } from 'src/common/enums/payment-status.enum';
-import { Purchase } from 'src/entities/purchase.entity';
 
 @Injectable()
 export class PurchasesService {

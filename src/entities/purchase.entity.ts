@@ -15,7 +15,7 @@ import { PurchaseItem } from './purchase-item.entity';
 import { Supplier } from './supplier.entity';
 import { Payment } from './payment.entity';
 import InventoryLedger from './inventory-ledger.entity';
-import { PaymentStatus } from 'src/common/enums/payment-status.enum';
+import { PaymentStatus } from '../common/enums/payment-status.enum';
 import CommonBaseMerchantEntity from './base/base-merchant.entity';
 
 @Entity({ name: 'purchases' })
