@@ -1,11 +1,11 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { PageMetaDto } from 'src/common/dto/page-meta.dto';
 import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 import { PageDto } from 'src/common/dto/page.dto';
-import { codeFormater } from 'src/common/utils/auto-generate-code.util';
+import { codeFormater, codeFormaterWithOutLocation } from 'src/common/utils/auto-generate-code.util';
 import Category from 'src/entities/category.entity';
 import { QueryListDto } from 'src/modules/master/categories/dto/query-list.dto';
-import { DataSource, Repository } from 'typeorm';
+import { DataSource, QueryRunner, Repository } from 'typeorm';
 
 @Injectable()
 export class CategoryRepository extends Repository<Category> {
@@ -56,9 +56,47 @@ export class CategoryRepository extends Repository<Category> {
     return queryBuilder.getMany();
   }
 
-  async autoGenerateCode(): Promise<string> {
+  async updateCategory(category: Category): Promise<Category> {
+    const qR = this.dataSource.createQueryRunner();
+    await qR.connect();
+    await qR.startTransaction();
+    try {
+      await qR.manager.save(category);
+      await qR.commitTransaction();
+      return category;
+    } catch (error) {
+      await qR.rollbackTransaction();
+      throw error;
+    } finally {
+      await qR.release();
+    }
+  }
+
+  async saveCategory(category: Category): Promise<Category> {
+    const qR = this.dataSource.createQueryRunner();
+    await qR.connect();
+    await qR.startTransaction();
+    try {
+      const foundCategory = await qR.manager.createQueryBuilder(Category,'category').where('lower(category.name) = lower(:name)',{name:category.name}).getOne()
+      if(foundCategory){
+        throw new BadRequestException(['Category name already exists'])
+      }
+      category.code = await this.autoGenerateCode(qR);
+      await qR.manager.save(category);
+      await qR.commitTransaction();
+      return category;
+    } catch (error) {
+      await qR.rollbackTransaction();
+      console.log(error);
+      throw error;
+    } finally {
+      await qR.release();
+    }
+  }
+
+  async autoGenerateCode(qr: QueryRunner): Promise<string> {
     const newDate = new Date();
-    const lastRecord = await this.dataSource
+    const lastRecord = await qr.manager
       .createQueryBuilder(Category, 'category')
       .where(`EXTRACT(YEAR FROM category.createdAt) = :year`, {
         year: newDate.getFullYear(),
@@ -66,6 +104,7 @@ export class CategoryRepository extends Repository<Category> {
       .andWhere('category.code like :pref', {
         pref: 'ET/CA%',
       })
+      .setLock('pessimistic_write')
       .orderBy('category.code', 'DESC')
       .getOne();
     return await codeFormater(

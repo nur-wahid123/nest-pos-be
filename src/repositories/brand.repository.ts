@@ -1,4 +1,4 @@
-import { Injectable, InternalServerErrorException } from '@nestjs/common';
+import { BadRequestException, Injectable, InternalServerErrorException, NotFoundException } from '@nestjs/common';
 import { FilterDto } from 'src/common/dto/filter.dto';
 import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 import Brand from 'src/entities/brand.entity';
@@ -49,10 +49,42 @@ export class BrandRepository extends Repository<Brand> {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const brand = await queryRunner.manager.save(Brand, {
-        ...createBrandDto,
-        createdBy: userId,
-      });
+      const existingBrandCode = await queryRunner.manager.findOne(Brand, {
+        where: {
+          code: createBrandDto.code
+        }
+      })
+      if (existingBrandCode) {
+        throw new NotFoundException('Brand code already exists');
+      }
+      const codeRegex = /^[a-zA-Z]{1,10}$/;
+      if (!codeRegex.test(createBrandDto.code)) {
+        throw new BadRequestException('Brand code must be a string, no space, no number or any other character, only a - z and maximum length of 10');
+      }
+      const brand = new Brand()
+      brand.name = createBrandDto.name;
+      brand.code = createBrandDto.code.toUpperCase();
+      brand.createdBy = userId;
+      await queryRunner.manager.save(brand);
+      await queryRunner.commitTransaction();
+      return brand;
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      console.log(error);
+      throw error
+    } finally {
+      await queryRunner.release();
+    }
+  }
+  async updateBrand(
+    brand: Brand,
+  ): Promise<Brand> {
+
+    const queryRunner = this.datasource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      await queryRunner.manager.save(brand);
       await queryRunner.commitTransaction();
       return brand;
     } catch (error) {
@@ -62,4 +94,6 @@ export class BrandRepository extends Repository<Brand> {
       await queryRunner.release();
     }
   }
+
+
 }

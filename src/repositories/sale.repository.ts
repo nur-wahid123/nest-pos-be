@@ -67,6 +67,59 @@ export class SaleRepository extends Repository<Sale> {
       });
   }
 
+  async initBuyPrice0() {
+    const queryRunner = this.dataSource.createQueryRunner();
+    await queryRunner.connect();
+    await queryRunner.startTransaction();
+    try {
+      const saleItems = await queryRunner.manager.find(SaleItem, { relations: { product: true }, select: { id: true, buyPrice: true, product: { id: true, buyPrice: true } } });
+      console.log("oi");
+      saleItems.map(async (v) => {
+        console.log(v);
+        if (Number(v.buyPrice) === 0) {
+          v.buyPrice = Number(v.product.buyPrice);
+          await queryRunner.manager.save(v);
+        }
+      })
+      await queryRunner.commitTransaction();
+      return saleItems
+    } catch (error) {
+      await queryRunner.rollbackTransaction();
+      console.log(error);
+      if (error instanceof BadRequestException) throw error
+      throw new InternalServerErrorException('internal server error');
+    } finally {
+      await queryRunner.release();
+    }
+  }
+  async initBuyPrice() {
+    const status = 200
+    return "hello "
+  }
+
+  async getInformation(filter: QuerySaleDto, dateRange: QueryDateRangeDto) {
+    const { startDate, finishDate } = dateRange
+    const query = this.dataSource.createQueryBuilder(Sale, 'sale')
+      .leftJoin('sale.saleItems', 'saleItems')
+      .leftJoin('saleItems.product', 'product')
+      .select('count(sale.id) as all_sale')
+      .addSelect('sum(sale.total) as total')
+      .addSelect(
+        'SUM(sale.total) - SUM(saleItems.buyPrice * saleItems.qty)',
+        'total_returns'
+      )
+      .where((qb) => {
+        this.aplyFilters(qb, filter);
+        if (startDate && finishDate) {
+          qb.andWhere(
+            `DATE(sale.createdAt) between :startDate and :finishDate`,
+            { startDate, finishDate },
+          );
+        }
+      })
+    return await query.getRawOne()
+  }
+
   private checkStock(saleItems: SaleItem[], manager: EntityManager) {
     let correct = true;
     saleItems.map(async (v) => {

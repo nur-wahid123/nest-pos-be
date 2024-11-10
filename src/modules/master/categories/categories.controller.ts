@@ -23,7 +23,7 @@ import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
-  @Post()
+  @Post('create')
   create(
     @Body() createCategoryDto: CreateCategoryDto,
     @Payload() payload: JwtPayload,
@@ -40,12 +40,12 @@ export class CategoriesController {
     return this.categoriesService.findCasheer(query);
   }
 
-  @Get(':id')
+  @Get('detail/:id')
   findOne(@Param('id') id: string) {
     return this.categoriesService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch('update/:id')
   update(
     @Param('id') id: string,
     @Body() updateCategoryDto: UpdateCategoryDto,

@@ -50,6 +50,15 @@ export class SalesService {
     return this.paymentRepository.paySale(createSalePaymentDto, userId);
   }
 
+  information(filter:QuerySaleDto, dateRange: QueryDateRangeDto){
+    const data = this.saleRepository.getInformation(filter, dateRange);
+    return data;
+  }
+
+  init(){
+    return this.saleRepository.initBuyPrice();
+  }
+
   async create(createSaleDto: CreateSaleDto, userId: number) {
     try {
       const reducedSaleItems = this.reduceDublicateProduct(
@@ -100,6 +109,7 @@ export class SalesService {
     const products = await this.productRepository.find({
       where: { id: In(productIds) },
       relations: { inventory: true },
+      select: { id: true, buyPrice: true, inventory: {qty:true} },
     });
     if (productIds.length !== products.length)
       throw new NotFoundException('one or more products not found');
@@ -115,6 +125,7 @@ export class SalesService {
       const { price, productId, qty } = v;
       const saleItem = new SaleItem();
       saleItem.createdBy = userId;
+      saleItem.buyPrice = products.find((item) => item.id == productId).buyPrice;
       saleItem.price = price;
       saleItem.product = products.find((item) => item.id == productId);
       saleItem.qty = qty;

@@ -36,7 +36,7 @@ export class BrandsController {
     return this.brandsService.findAll(query, pageOptionsDto);
   }
 
-  @Get('find/:id')
+  @Get('detail/:id')
   findOne(@Param('id') id: string) {
     return this.brandsService.findOne(+id);
   }

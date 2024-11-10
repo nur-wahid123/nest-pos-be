@@ -5,6 +5,7 @@ import { CategoryRepository } from 'src/repositories/category.repository';
 import Category from 'src/entities/category.entity';
 import { QueryListDto } from './dto/query-list.dto';
 import { PageOptionsDto } from 'src/common/dto/page-option.dto';
+import { toTitleCase } from 'src/common/utils/util';
 
 @Injectable()
 export class CategoriesService {
@@ -14,12 +15,10 @@ export class CategoriesService {
     createCategoryDto: CreateCategoryDto,
     userId: number,
   ): Promise<Category> {
-    const code = await this.categoryRepository.autoGenerateCode();
     const newCategory = new Category();
-    newCategory.code = code;
-    newCategory.name = createCategoryDto.name;
+    newCategory.name = toTitleCase(createCategoryDto.name);
     newCategory.createdBy = userId;
-    return this.categoryRepository.save(newCategory);
+    return this.categoryRepository.saveCategory(newCategory);
   }
 
   findAll(query: QueryListDto,pageOptionsDto:PageOptionsDto) {
@@ -43,7 +42,7 @@ export class CategoriesService {
     if (!category) throw new NotFoundException('Category Not Found');
     category.name = updateCategoryDto?.name;
     category.updatedBy = userId;
-    return this.categoryRepository.save(category);
+    return this.categoryRepository.updateCategory(category);
   }
 
   async remove(id: number, userId: number) {

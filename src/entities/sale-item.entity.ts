@@ -19,6 +19,11 @@ export default class SaleItem extends CommonBaseMerchantEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
+  @Column({ nullable: false, type: 'bigint',default:0 })
+  @Expose({ name: 'buy_price' })
+  @Type(() => Number)
+  buyPrice!: number;
+
   @Column({ nullable: false, type: 'bigint' })
   @Type(() => Number)
   price!: number;

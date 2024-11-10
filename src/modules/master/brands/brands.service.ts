@@ -43,7 +43,7 @@ export class BrandsService {
     if (!brand) throw new NotFoundException('Brand, not found');
     brand.name = updateBrandDto?.name;
     brand.updatedBy = userId;
-    return this.brandRepository.save(brand);
+    return this.brandRepository.updateBrand(brand);
   }
 
   async remove(id: number, userId: number) {

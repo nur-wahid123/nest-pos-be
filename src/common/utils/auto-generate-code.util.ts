@@ -5,11 +5,15 @@ export const codeFormater = async (
   currentCode?: string | null,
 ): Promise<string> => {
   const newdate = new Date(date);
+  let currentCounter = "0001";
+  if (currentCode) {
+    currentCounter = (parseInt(currentCode?.slice(-4), 10) + 1).toString().padStart(4, '0');
+  }
   let formatedDate = newdate.toISOString().slice(0, 10).replace(/-/g, '');
   if (secondPrefix === 'SP' || secondPrefix === 'SL' || secondPrefix === 'CU') {
     formatedDate = newdate.toISOString().slice(0, 4).replace(/-/g, '');
   }
-  return `${fistPrefix}/${secondPrefix}${formatedDate}/${currentCode + 1}`;
+  return `${fistPrefix}/${secondPrefix}${formatedDate}${currentCounter}`;
 };
 export const codeFormaterWithOutLocation = async (
   secondPrefix: string,

@@ -17,6 +17,8 @@ import { DataSource, EntityManager, Repository } from 'typeorm';
 import { Sale } from 'src/entities/sale.entity';
 import { CreateSalePaymentDto } from 'src/modules/sales/dto/create-payment.dto';
 import SaleItem from 'src/entities/sale-item.entity';
+import { QuerySaleDto } from 'src/modules/sales/dto/query-sale.dto';
+import { QueryDateRangeDto } from 'src/common/dto/query-purchase-date-range.dto';
 
 @Injectable()
 export class PaymentRepository extends Repository<Payment> {

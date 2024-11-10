@@ -10,7 +10,7 @@ import { QuerySaleDto } from './dto/query-sale.dto';
 import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 import { QueryDateRangeDto } from 'src/common/dto/query-purchase-date-range.dto';
 
-@UseGuards(JwtAuthGuard)
+// @UseGuards(JwtAuthGuard)
 @Controller('sales')
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
@@ -21,6 +21,11 @@ export class SalesController {
     @Payload() payload: JwtPayload,
   ): Promise<Sale> {
     return this.salesService.create(createSaleDto, +payload.sub);
+  }
+
+  @Get('init')
+  init() {
+    this.salesService.init();
   }
 
   @Post('payment')
@@ -38,6 +43,11 @@ export class SalesController {
     @Query() pageOptionsDto: PageOptionsDto,
   ) {
     return this.salesService.findAll(query, dateRange, pageOptionsDto);
+  }
+
+  @Get('information')
+  information(@Query() query: QuerySaleDto,@Query() dateRange: QueryDateRangeDto,) {
+    return this.salesService.information(query,dateRange);
   }
 
   @Get('need-to-pay')
