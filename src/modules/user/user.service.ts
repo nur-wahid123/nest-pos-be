@@ -3,13 +3,10 @@ import {
   ForbiddenException,
   Injectable,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { genSalt, hash } from 'bcrypt';
 import { User } from 'src/entities/user.entity';
-import { ResponseMessage } from 'src/common/response/ResponseMessage.util';
 import { UserRepository } from 'src/repositories/user.repository';
 import HashPassword from 'src/common/utils/hash-password.util';
 
@@ -61,21 +58,21 @@ export class UserService {
    * @returns promise of user
    */
   async createUser(createUserDto: CreateUserDto): Promise<User> {
-      const user: User = new User();
-      user.name = createUserDto.name;
-      user.age = createUserDto.age;
-      if (await this.isUsernameExists(createUserDto.username)) {
-        throw new BadRequestException('Username Sudah digunakan');
-      }
-      user.username = createUserDto.username;
-      if (await this.isEmailExists(createUserDto.email)) {
-        throw new BadRequestException('Email Sudah digunakan');
-      }
-      user.email = createUserDto.email;
-      const salt = await genSalt(10);
-      user.password = await hash(createUserDto.password, salt);
-      user.gender = createUserDto.gender;
-      return this.userRepository.createUser(user);
+    const user: User = new User();
+    user.name = createUserDto.name;
+    user.age = createUserDto.age;
+    if (await this.isUsernameExists(createUserDto.username)) {
+      throw new BadRequestException('Username Sudah digunakan');
+    }
+    user.username = createUserDto.username;
+    if (await this.isEmailExists(createUserDto.email)) {
+      throw new BadRequestException('Email Sudah digunakan');
+    }
+    user.email = createUserDto.email;
+    const salt = await genSalt(10);
+    user.password = await hash(createUserDto.password, salt);
+    user.gender = createUserDto.gender;
+    return this.userRepository.createUser(user);
   }
 
   async isUsernameExists(username: string): Promise<boolean> {
@@ -132,7 +129,7 @@ export class UserService {
    * @returns promise of udpate user
    */
   updateUser(id: number, updateUserDto: UpdateUserDto) {
-    return new ResponseMessage('Okay');
+    return { id, updateUserDto };
   }
 
   /**

@@ -32,8 +32,11 @@ export class CategoriesController {
   }
 
   @Get('list')
-  findAll(@Query() query: QueryListDto,@Query()pageOptionsDto:PageOptionsDto) {
-    return this.categoriesService.findAll(query,pageOptionsDto);
+  findAll(
+    @Query() query: QueryListDto,
+    @Query() pageOptionsDto: PageOptionsDto,
+  ) {
+    return this.categoriesService.findAll(query, pageOptionsDto);
   }
   @Get('cashier')
   findInCashier(@Query() query: QueryListDto) {

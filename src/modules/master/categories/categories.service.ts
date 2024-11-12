@@ -21,8 +21,8 @@ export class CategoriesService {
     return this.categoryRepository.saveCategory(newCategory);
   }
 
-  findAll(query: QueryListDto,pageOptionsDto:PageOptionsDto) {
-    return this.categoryRepository.findCategories(query,pageOptionsDto);
+  findAll(query: QueryListDto, pageOptionsDto: PageOptionsDto) {
+    return this.categoryRepository.findCategories(query, pageOptionsDto);
   }
 
   findCasheer(query: QueryListDto) {

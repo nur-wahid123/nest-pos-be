@@ -12,7 +12,6 @@ import {
 import { InventoryService } from './inventory.service';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
-import { QueryInventoryDto } from './dto/query-inventory.dto';
 import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 import { Payload } from 'src/common/decorators/payload.decorator';
 import { JwtPayload } from '../auth/jwt-payload.interface';
@@ -35,10 +34,7 @@ export class InventoryController {
   }
 
   @Get('list')
-  findAll(
-    @Query() query: FilterDto,
-    @Query() pageOptions: PageOptionsDto,
-  ) {
+  findAll(@Query() query: FilterDto, @Query() pageOptions: PageOptionsDto) {
     return this.inventoryService.findAll(query, pageOptions);
   }
 
@@ -52,11 +48,10 @@ export class InventoryController {
   update(
     @Param('id') id: string,
     @Body() updateInventoryDto: UpdateInventoryDto,
-    @Payload() payoad: JwtPayload
+    @Payload() payoad: JwtPayload,
   ) {
-    return this.inventoryService.update(+id, updateInventoryDto,+payoad.sub);
+    return this.inventoryService.update(+id, updateInventoryDto, +payoad.sub);
   }
-
 
   @Delete('remove/:id')
   remove(@Param('id') id: string) {

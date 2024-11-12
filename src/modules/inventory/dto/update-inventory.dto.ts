@@ -1,5 +1,3 @@
-import { PartialType } from '@nestjs/mapped-types';
-import { CreateInventoryDto } from './create-inventory.dto';
 import {
   IsArray,
   IsNotEmpty,
@@ -10,7 +8,6 @@ import {
 import { Type } from 'class-transformer';
 
 export class UpdateInventoryDto {
-
   @IsNotEmpty()
   @IsNumber()
   @Min(0)

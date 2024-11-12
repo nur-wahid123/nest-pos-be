@@ -1,13 +1,9 @@
-import { Expose } from 'class-transformer';
 import {
   Entity,
-  CreateDateColumn,
   Column,
   PrimaryGeneratedColumn,
   ManyToOne,
   OneToMany,
-  DeleteDateColumn,
-  UpdateDateColumn,
 } from 'typeorm';
 import { Product } from './product.entity';
 import { City } from './city.entity';

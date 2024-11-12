@@ -1,4 +1,12 @@
-import { Body, Controller, Get, Post, Query, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  UseGuards,
+} from '@nestjs/common';
 import { SalesService } from './sales.service';
 import { Payload } from 'src/common/decorators/payload.decorator';
 import { JwtPayload } from '../auth/jwt-payload.interface';
@@ -12,6 +20,7 @@ import { QueryDateRangeDto } from 'src/common/dto/query-purchase-date-range.dto'
 
 // @UseGuards(JwtAuthGuard)
 @Controller('sales')
+@UseGuards(JwtAuthGuard)
 export class SalesController {
   constructor(private readonly salesService: SalesService) {}
 
@@ -45,9 +54,17 @@ export class SalesController {
     return this.salesService.findAll(query, dateRange, pageOptionsDto);
   }
 
+  @Get('detail/:id')
+  detail(@Param('id') id: string) {
+    return this.salesService.findOne(+id);
+  }
+
   @Get('information')
-  information(@Query() query: QuerySaleDto,@Query() dateRange: QueryDateRangeDto,) {
-    return this.salesService.information(query,dateRange);
+  information(
+    @Query() query: QuerySaleDto,
+    @Query() dateRange: QueryDateRangeDto,
+  ) {
+    return this.salesService.information(query, dateRange);
   }
 
   @Get('need-to-pay')

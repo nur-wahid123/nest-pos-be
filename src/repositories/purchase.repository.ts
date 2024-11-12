@@ -5,9 +5,7 @@ import {
 } from '@nestjs/common';
 import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 import { codeFormater } from 'src/common/utils/auto-generate-code.util';
-import { autoGenerateCodeBank } from 'src/common/utils/multi-payment-process.util';
 import { Merchant } from 'src/entities/merchant.entity';
-import { Payment } from 'src/entities/payment.entity';
 import { PurchaseItem } from 'src/entities/purchase-item.entity';
 import { Purchase } from 'src/entities/purchase.entity';
 import { Supplier } from 'src/entities/supplier.entity';
@@ -114,7 +112,7 @@ export class PurchaseRepository extends Repository<Purchase> {
       .leftJoinAndSelect('purchase.purchaseItems', 'purchaseItems')
       .leftJoinAndSelect('purchaseItems.product', 'product');
     query.where((qb) => {
-      search &&
+      if (search)
         qb.andWhere(
           `(
               lower(purchase.code) like lower(:search) OR 
@@ -126,11 +124,11 @@ export class PurchaseRepository extends Repository<Purchase> {
             search: `%${search}%`,
           },
         );
-      code &&
+      if (code)
         qb.andWhere(`(lower(purchase.code) like lower(:code) )`, {
           code: `%${code}%`,
         });
-      supplier &&
+      if (supplier)
         qb.andWhere(
           `(lower(supplier.code) like lower(:supplier) OR lower(supplier.name)  like lower(:supplier))`,
           {
@@ -159,23 +157,8 @@ export class PurchaseRepository extends Repository<Purchase> {
   ) {
     const { startDate, finishDate } = timeRange;
 
-    startDate && query.andWhere('purchase.date >= :startDate', { startDate });
-    finishDate &&
+    if (startDate) query.andWhere('purchase.date >= :startDate', { startDate });
+    if (finishDate)
       query.andWhere('purchase.date <= :finishDate', { finishDate });
-  }
-
-  private applyPageOptions(
-    query: SelectQueryBuilder<Purchase>,
-    pageOptionsDto: PageOptionsDto,
-    orderColumn: string,
-    orderColumn2?: string,
-  ) {
-    const { order, skip, take } = pageOptionsDto;
-    if (order) {
-      orderColumn && query.orderBy(orderColumn, order);
-      orderColumn2 && query.addOrderBy(orderColumn2, order);
-    }
-    skip && query.offset(skip);
-    take && query.limit(take);
   }
 }

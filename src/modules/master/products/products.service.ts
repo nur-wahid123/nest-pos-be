@@ -12,8 +12,6 @@ import { SupplierRepository } from 'src/repositories/supplier.repository';
 import { UomRepository } from 'src/repositories/uom.repository';
 import { Supplier } from 'src/entities/supplier.entity';
 import { Product } from 'src/entities/product.entity';
-import { QueryListDto } from '../categories/dto/query-list.dto';
-import { Like } from 'typeorm';
 import { QueryProductListDto } from './dto/query-product-list.dto';
 import { PageDto } from 'src/common/dto/page.dto';
 import { PageMetaDto } from 'src/common/dto/page-meta.dto';
@@ -41,16 +39,16 @@ export class ProductsService {
     createProductDto: CreateProductDto,
     userId: number,
   ): Promise<Product> {
-    let {
+    const {
       brandId,
       buyPrice,
       categoryId,
       code,
-      name,
       sellPrice,
       uomId,
       supplierId,
     } = createProductDto;
+    let { name } = createProductDto;
     const checkCode = await this.productRepository.findOneBy({ code: code });
     if (checkCode) throw new BadRequestException('code already exists');
     const category = await this.categoryRepository.findOneBy({
@@ -107,7 +105,10 @@ export class ProductsService {
   }
 
   findOne(id: number): Promise<Product> {
-    return this.productRepository.findOne({where: {id}, relations: {category: true, brand: true, uom: true, supplier: true}});
+    return this.productRepository.findOne({
+      where: { id },
+      relations: { category: true, brand: true, uom: true, supplier: true },
+    });
   }
 
   async update(

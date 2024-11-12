@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { CreateInventoryDto } from './dto/create-inventory.dto';
 import { UpdateInventoryDto } from './dto/update-inventory.dto';
-import { QueryInventoryDto } from './dto/query-inventory.dto';
 import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 import { InventoryRepository } from 'src/repositories/inventory.repository';
 import { PageMetaDto } from 'src/common/dto/page-meta.dto';
@@ -12,10 +11,10 @@ import { FilterDto } from 'src/common/dto/filter.dto';
 
 @Injectable()
 export class InventoryService {
-  constructor(private readonly inventoryRepository: InventoryRepository) { }
+  constructor(private readonly inventoryRepository: InventoryRepository) {}
 
   create(createInventoryDto: CreateInventoryDto) {
-    return 'This action adds a new inventory';
+    return createInventoryDto;
   }
 
   inventoryInformation(filter: FilterDto) {
@@ -36,16 +35,16 @@ export class InventoryService {
   }
 
   update(
-    productId: number, 
+    productId: number,
     updateInventoryDto: UpdateInventoryDto,
-    userId:number
+    userId: number,
   ) {
     const inventory = new Inventory();
     const product = new Product();
     product.id = productId;
     inventory.product = product;
     inventory.qty = updateInventoryDto.qty;
-    return this.inventoryRepository.updateInventory(inventory,userId);
+    return this.inventoryRepository.updateInventory(inventory, userId);
   }
 
   remove(id: number) {

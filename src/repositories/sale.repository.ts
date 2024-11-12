@@ -58,10 +58,21 @@ export class SaleRepository extends Repository<Sale> {
     return await query.getManyAndCount();
   }
 
+  async detailSale(id: number) {
+    const sale = await this.createQueryBuilder('sale')
+      .leftJoinAndSelect('sale.saleItems', 'saleItems')
+      .leftJoinAndSelect('saleItems.product', 'product')
+      .leftJoinAndSelect('sale.payments', 'payments')
+      .leftJoinAndSelect('product.uom', 'uom')
+      .where('sale.id = :id', { id })
+      .getOne();
+    return sale;
+  }
+
   private aplyFilters(qb: SelectQueryBuilder<Sale>, query: QuerySaleDto) {
     const { saleCode, search } = query;
-    saleCode && qb.andWhere('sale.code = :saleCode', { saleCode });
-    search &&
+    if (saleCode) qb.andWhere('sale.code = :saleCode', { saleCode });
+    if (search)
       qb.andWhere('lower(sale.code) like lower(:search)', {
         search: `%${search}%`,
       });
@@ -72,41 +83,48 @@ export class SaleRepository extends Repository<Sale> {
     await queryRunner.connect();
     await queryRunner.startTransaction();
     try {
-      const saleItems = await queryRunner.manager.find(SaleItem, { relations: { product: true }, select: { id: true, buyPrice: true, product: { id: true, buyPrice: true } } });
-      console.log("oi");
+      const saleItems = await queryRunner.manager.find(SaleItem, {
+        relations: { product: true },
+        select: {
+          id: true,
+          buyPrice: true,
+          product: { id: true, buyPrice: true },
+        },
+      });
+      console.log('oi');
       saleItems.map(async (v) => {
         console.log(v);
         if (Number(v.buyPrice) === 0) {
           v.buyPrice = Number(v.product.buyPrice);
           await queryRunner.manager.save(v);
         }
-      })
+      });
       await queryRunner.commitTransaction();
-      return saleItems
+      return saleItems;
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error);
-      if (error instanceof BadRequestException) throw error
+      if (error instanceof BadRequestException) throw error;
       throw new InternalServerErrorException('internal server error');
     } finally {
       await queryRunner.release();
     }
   }
   async initBuyPrice() {
-    const status = 200
-    return "hello "
+    return 'hello ';
   }
 
   async getInformation(filter: QuerySaleDto, dateRange: QueryDateRangeDto) {
-    const { startDate, finishDate } = dateRange
-    const query = this.dataSource.createQueryBuilder(Sale, 'sale')
+    const { startDate, finishDate } = dateRange;
+    const query = this.dataSource
+      .createQueryBuilder(Sale, 'sale')
       .leftJoin('sale.saleItems', 'saleItems')
       .leftJoin('saleItems.product', 'product')
-      .select('count(sale.id) as all_sale')
+      .select('count(distinct(sale.id)) as all_sale')
       .addSelect('sum(sale.total) as total')
       .addSelect(
         'SUM(sale.total) - SUM(saleItems.buyPrice * saleItems.qty)',
-        'total_returns'
+        'total_returns',
       )
       .where((qb) => {
         this.aplyFilters(qb, filter);
@@ -116,14 +134,14 @@ export class SaleRepository extends Repository<Sale> {
             { startDate, finishDate },
           );
         }
-      })
-    return await query.getRawOne()
+      });
+    return await query.getRawOne();
   }
 
   private checkStock(saleItems: SaleItem[], manager: EntityManager) {
     let correct = true;
     saleItems.map(async (v) => {
-      let inventory = await manager.findOne(Inventory, {
+      const inventory = await manager.findOne(Inventory, {
         where: { product: { id: v?.product.id } },
       });
 
@@ -136,7 +154,7 @@ export class SaleRepository extends Repository<Sale> {
     queryRunner: QueryRunner,
     date: Date,
   ): Promise<string> {
-    const newDate = new Date(date).toDateString();
+    const newDate = new Date(date).toISOString();
     const lastRecord = await queryRunner.manager
       .createQueryBuilder(Sale, 'sale')
       .where('sale.date = :date', { date: newDate })
@@ -160,11 +178,11 @@ export class SaleRepository extends Repository<Sale> {
     const queryRunner = this.dataSource.createQueryRunner();
     await queryRunner.connect();
     await queryRunner.startTransaction();
-    const isCorrect = this.checkStock(child, queryRunner.manager);
-    if (!isCorrect) throw new BadRequestException('Stock not enough');
-    const code = await this.autoGenerateCode(queryRunner, parent.date);
 
     try {
+      const isCorrect = this.checkStock(child, queryRunner.manager);
+      if (!isCorrect) throw new BadRequestException('Stock not enough');
+      const code = await this.autoGenerateCode(queryRunner, parent.date);
       const sale = new Sale();
       sale.note = parent?.note;
       sale.date = parent.date;
@@ -181,7 +199,7 @@ export class SaleRepository extends Repository<Sale> {
     } catch (error) {
       await queryRunner.rollbackTransaction();
       console.log(error);
-      throw new InternalServerErrorException();
+      throw error;
     } finally {
       await queryRunner.release();
     }

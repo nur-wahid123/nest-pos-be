@@ -7,8 +7,6 @@ import {
   HttpCode,
   HttpStatus,
   Post,
-  Query,
-  Req,
   Res,
   UseFilters,
   UseGuards,
@@ -19,8 +17,7 @@ import { JwtAuthGuard } from '../../guards/jwt-auth.guard';
 import { UserLoginDto } from './dto/login-user.dto';
 import { CreateUserDto } from 'src/modules/user/dto/create-user.dto';
 import { Token } from 'src/common/types/token.type';
-import { User } from 'src/entities/user.entity';
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import { Payload } from 'src/common/decorators/payload.decorator';
 import { JwtPayload } from './jwt-payload.interface';
 import { ResponseInterceptor } from 'src/common/interceptors/response.interceptor';

@@ -1,10 +1,5 @@
 import { Expose } from 'class-transformer';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Inventory } from './inventory.entity';
 import { Purchase } from './purchase.entity';
 import { Sale } from './sale.entity';

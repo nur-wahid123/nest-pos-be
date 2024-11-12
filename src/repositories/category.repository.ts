@@ -2,7 +2,7 @@ import { BadRequestException, Injectable } from '@nestjs/common';
 import { PageMetaDto } from 'src/common/dto/page-meta.dto';
 import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 import { PageDto } from 'src/common/dto/page.dto';
-import { codeFormater, codeFormaterWithOutLocation } from 'src/common/utils/auto-generate-code.util';
+import { codeFormater } from 'src/common/utils/auto-generate-code.util';
 import Category from 'src/entities/category.entity';
 import { QueryListDto } from 'src/modules/master/categories/dto/query-list.dto';
 import { DataSource, QueryRunner, Repository } from 'typeorm';
@@ -13,9 +13,9 @@ export class CategoryRepository extends Repository<Category> {
     super(Category, dataSource.createEntityManager());
   }
 
-  async findCategories(query: QueryListDto,pageOptionsDto:PageOptionsDto) {
+  async findCategories(query: QueryListDto, pageOptionsDto: PageOptionsDto) {
     const { search } = query;
-    const {page,take,skip} = pageOptionsDto
+    const { page, take, skip } = pageOptionsDto;
     const queryBuilder = this.createQueryBuilder('category').orderBy(
       'category.name',
       'ASC',
@@ -25,16 +25,15 @@ export class CategoryRepository extends Repository<Category> {
         search: `%${search}%`,
       });
     }
-    console.log(page,take,skip);
-    
-    if(page && take){
-      queryBuilder.skip(skip).take(take)
+    console.log(page, take, skip);
+
+    if (page && take) {
+      queryBuilder.skip(skip).take(take);
     }
 
-    const [data,itemCount] = await queryBuilder.getManyAndCount();
-    const meta = new PageMetaDto({itemCount,pageOptionsDto});
-    return new PageDto(data,meta)
-
+    const [data, itemCount] = await queryBuilder.getManyAndCount();
+    const meta = new PageMetaDto({ itemCount, pageOptionsDto });
+    return new PageDto(data, meta);
   }
   findCategoriesCasheer(query: QueryListDto): Promise<Category[]> {
     const { search } = query;
@@ -44,7 +43,6 @@ export class CategoryRepository extends Repository<Category> {
       .orderBy('category.name', 'ASC');
     queryBuilder.where((qb) => {
       if (search) {
-
         qb.andWhere('lower(category.name) like lower(:search)', {
           search: `%${search}%`,
         });
@@ -77,9 +75,12 @@ export class CategoryRepository extends Repository<Category> {
     await qR.connect();
     await qR.startTransaction();
     try {
-      const foundCategory = await qR.manager.createQueryBuilder(Category,'category').where('lower(category.name) = lower(:name)',{name:category.name}).getOne()
-      if(foundCategory){
-        throw new BadRequestException(['Category name already exists'])
+      const foundCategory = await qR.manager
+        .createQueryBuilder(Category, 'category')
+        .where('lower(category.name) = lower(:name)', { name: category.name })
+        .getOne();
+      if (foundCategory) {
+        throw new BadRequestException(['Category name already exists']);
       }
       category.code = await this.autoGenerateCode(qR);
       await qR.manager.save(category);

@@ -1,10 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  ManyToOne,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Sale } from './sale.entity';
 import { Purchase } from './purchase.entity';
 import { PaymentType } from '../modules/payments/enum/payment-type.enum';

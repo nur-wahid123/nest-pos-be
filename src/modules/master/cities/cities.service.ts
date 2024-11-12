@@ -21,6 +21,7 @@ export class CitiesService {
     if (city.length > 0) {
       return city;
     }
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const indonesia = require('indonesia-cities-regencies');
     const cities: InitCityDto[] = indonesia.getAll();
     return this.cityRepository.initCreate(cities);

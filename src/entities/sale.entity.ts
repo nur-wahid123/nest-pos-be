@@ -1,14 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import {
-  Entity,
-  Column,
-  PrimaryGeneratedColumn,
-  CreateDateColumn,
-  UpdateDateColumn,
-  DeleteDateColumn,
-  OneToMany,
-  OneToOne,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, OneToMany } from 'typeorm';
 import SaleItem from './sale-item.entity';
 import { Payment } from './payment.entity';
 import InventoryLedger from './inventory-ledger.entity';

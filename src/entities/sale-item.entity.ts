@@ -1,15 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import {
-  Entity,
-  CreateDateColumn,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  DeleteDateColumn,
-  UpdateDateColumn,
-  ManyToOne,
-  OneToOne,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Sale } from './sale.entity';
 import { Product } from './product.entity';
 import CommonBaseMerchantEntity from './base/base-merchant.entity';
@@ -19,7 +9,7 @@ export default class SaleItem extends CommonBaseMerchantEntity {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ nullable: false, type: 'bigint',default:0 })
+  @Column({ nullable: false, type: 'bigint', default: 0 })
   @Expose({ name: 'buy_price' })
   @Type(() => Number)
   buyPrice!: number;

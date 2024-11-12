@@ -6,6 +6,32 @@ on:
       - master  # Adjust this to your deployment branch
 
 jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '20'
+
+      - name: Install dependencies
+        run: |
+          echo "Installing dependencies..."
+          npm install
+
+      - name: Test Code
+        run: |
+          echo "Testing code..."
+          npm run test
+      
+      - name: Lint Code
+        run: |
+          echo "Linting code..."
+          npm run lint
   deploy:
     runs-on: ubuntu-latest
 

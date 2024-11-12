@@ -7,7 +7,6 @@ import { CreateSupplierDto } from './dto/create-supplier.dto';
 import { UpdateSupplierDto } from './dto/update-supplier.dto';
 import { SupplierRepository } from 'src/repositories/supplier.repository';
 import { CityRepository } from 'src/repositories/city.repository';
-import { City } from 'src/entities/city.entity';
 import { Supplier } from 'src/entities/supplier.entity';
 import { FilterDto } from 'src/common/dto/filter.dto';
 import { PageOptionsDto } from 'src/common/dto/page-option.dto';

@@ -14,11 +14,11 @@ export class UomRepository extends Repository<Uom> {
     const { code, search } = filter;
     const { skip, take } = pageOptionsDto;
     const query = this.dataSource.createQueryBuilder(Uom, 'uom').where((qb) => {
-      code &&
+      if (code)
         qb.andWhere(`(lower(uom.code) like lower(:code))`, {
           code: `%${code}%`,
         });
-      search &&
+      if (search)
         qb.andWhere(`(lower(uom.name) like lower(:search))`, {
           search: `%${search}%`,
         });

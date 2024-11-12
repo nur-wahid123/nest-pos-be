@@ -5,7 +5,6 @@ import { codeFormater } from 'src/common/utils/auto-generate-code.util';
 import { City } from 'src/entities/city.entity';
 import { Supplier } from 'src/entities/supplier.entity';
 import { CreateSupplierDto } from 'src/modules/master/supplier/dto/create-supplier.dto';
-import { UpdateSupplierDto } from 'src/modules/master/supplier/dto/update-supplier.dto';
 import {
   DataSource,
   QueryRunner,
@@ -91,19 +90,19 @@ export class SupplierRepository extends Repository<Supplier> {
       .where((qb) => {
         this.applyFilters(qb, filter);
       });
-    order && query.orderBy('supplier.name', order);
-    take && query.limit(take);
-    skip && query.offset(skip);
+    if (order) query.orderBy('supplier.name', order);
+    if (take) query.limit(take);
+    if (skip) query.offset(skip);
     return await query.getManyAndCount();
   }
 
   private applyFilters(qb: SelectQueryBuilder<Supplier>, query: FilterDto) {
     const { code, search } = query;
-    code &&
+    if (code)
       qb.andWhere(`(lower(supplier.code) like lower(:code) )`, {
         code: `%${code}%`,
       });
-    search &&
+    if (search)
       qb.andWhere(`(lower(supplier.name) like lower(:search) )`, {
         search: `%${search}%`,
       });

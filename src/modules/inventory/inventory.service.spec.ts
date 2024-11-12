@@ -5,14 +5,17 @@ import { InventoryRepository } from 'src/repositories/inventory.repository';
 export const InventoryMockRepository = {
   createInventory: jest.fn(),
   updateInventory: jest.fn(),
-}
+};
 
 describe('InventoryService', () => {
   let service: InventoryService;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [InventoryService,{provide:InventoryRepository,useValue:InventoryMockRepository}],
+      providers: [
+        InventoryService,
+        { provide: InventoryRepository, useValue: InventoryMockRepository },
+      ],
     }).compile();
 
     service = module.get<InventoryService>(InventoryService);

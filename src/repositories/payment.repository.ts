@@ -8,7 +8,6 @@ import { autoGenerateCodeBank } from 'src/common/utils/multi-payment-process.uti
 import InventoryLedger from 'src/entities/inventory-ledger.entity';
 import { Inventory } from 'src/entities/inventory.entity';
 import { Payment } from 'src/entities/payment.entity';
-import { Product } from 'src/entities/product.entity';
 import { PurchaseItem } from 'src/entities/purchase-item.entity';
 import { Purchase } from 'src/entities/purchase.entity';
 import { CreatePaymentDto } from 'src/modules/purchases/dto/create-payment.dto';
@@ -17,8 +16,6 @@ import { DataSource, EntityManager, Repository } from 'typeorm';
 import { Sale } from 'src/entities/sale.entity';
 import { CreateSalePaymentDto } from 'src/modules/sales/dto/create-payment.dto';
 import SaleItem from 'src/entities/sale-item.entity';
-import { QuerySaleDto } from 'src/modules/sales/dto/query-sale.dto';
-import { QueryDateRangeDto } from 'src/common/dto/query-purchase-date-range.dto';
 
 @Injectable()
 export class PaymentRepository extends Repository<Payment> {
@@ -41,22 +38,29 @@ export class PaymentRepository extends Repository<Payment> {
     await queryRunner.connect();
 
     await queryRunner.startTransaction();
-    const sale = await queryRunner.manager.findOne(Sale, {
-      where: {
-        code: saleCode,
-      },
-      relations: {
-        payments: true,
-        saleItems: { product: true, sale: true },
-      },
-    });
-    if (sale.paymentStatus === PaymentStatus.PAID)
+    const sale = await queryRunner.manager
+      .createQueryBuilder(Sale, 'sale')
+      .where('sale.code = :saleCode', { saleCode })
+      .leftJoinAndSelect('sale.payments', 'payments')
+      .leftJoinAndSelect('sale.saleItems', 'saleItems')
+      .leftJoinAndSelect('saleItems.product', 'product')
+      // .setLock('pessimistic_read')
+      .getOne();
+    if (!sale) {
+      await queryRunner.rollbackTransaction();
+      throw new BadRequestException('sale not found');
+    }
+    if (sale.paymentStatus === PaymentStatus.PAID) {
+      await queryRunner.rollbackTransaction();
       throw new BadRequestException('purchase already paid');
+    }
     const needToPay = await this.calculateSaleNeedToPay(sale);
-    if (Number(paid) > Number(needToPay.needToPay))
+    if (Number(paid) > Number(needToPay.needToPay)) {
+      await queryRunner.rollbackTransaction();
       throw new BadRequestException(
         'The payment amount must not exceed the amount due',
       );
+    }
 
     try {
       const payment = new Payment();
@@ -272,12 +276,11 @@ export class PaymentRepository extends Repository<Payment> {
     userId: number,
   ) {
     saleItems.map(async (v) => {
-      let inventory = await ettManager.findOne(Inventory, {
+      const inventory = await ettManager.findOne(Inventory, {
         where: { product: { id: v?.product.id } },
       });
 
       if (inventory) {
-
         const invLdgr = new InventoryLedger();
         invLdgr.sale = v?.sale;
         invLdgr.inventory = inventory;

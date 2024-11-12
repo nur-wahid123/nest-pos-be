@@ -1,14 +1,5 @@
 import { Expose, Type } from 'class-transformer';
-import {
-  Entity,
-  CreateDateColumn,
-  Column,
-  PrimaryGeneratedColumn,
-  OneToMany,
-  ManyToOne,
-  DeleteDateColumn,
-  UpdateDateColumn,
-} from 'typeorm';
+import { Entity, Column, PrimaryGeneratedColumn, ManyToOne } from 'typeorm';
 import { Product } from './product.entity';
 import { Purchase } from './purchase.entity';
 import CommonBaseMerchantEntity from './base/base-merchant.entity';

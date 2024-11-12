@@ -7,17 +7,20 @@ export async function autoGenerateCodeBank(
   queryRunner: EntityManager,
   secondPrefix?: string,
 ): Promise<string> {
-  const newDate = new Date(date).toDateString();
+  const newDate = new Date(date).toISOString();
   const lastRecord = await queryRunner
     .createQueryBuilder(Payment, 'payment')
-    .where('payment.date = :date', { date: newDate })
+    .where('DATE(payment.createdAt) = :date', { date: newDate })
     .andWhere('payment.code ILIKE :code', {
       code: `${secondPrefix}%`,
     })
+    .select('payment.code')
     .setLock('pessimistic_write')
-    .orderBy('payment.code', 'DESC')
+    .orderBy('payment.createdAt', 'DESC')
     .useTransaction(true)
     .getOne();
+  console.log(lastRecord);
+
   return await codeFormaterWithOutLocation(
     secondPrefix ?? 'PJ',
     date,

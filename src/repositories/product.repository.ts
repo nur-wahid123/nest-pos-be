@@ -3,9 +3,7 @@ import { PageOptionsDto } from 'src/common/dto/page-option.dto';
 import Brand from 'src/entities/brand.entity';
 import Category from 'src/entities/category.entity';
 import { Product } from 'src/entities/product.entity';
-import { Supplier } from 'src/entities/supplier.entity';
 import { Uom } from 'src/entities/uom.entity';
-import { CreateProductDto } from 'src/modules/master/products/dto/create-product.dto';
 import { QueryProductListDto } from 'src/modules/master/products/dto/query-product-list.dto';
 import { DataSource, Repository, SelectQueryBuilder } from 'typeorm';
 
@@ -165,7 +163,6 @@ export class ProductRepository extends Repository<Product> {
       .where((qb) => {
         this.applyFilters(qb, filter);
       });
-
 
     if (
       typeof skip === 'number' &&
